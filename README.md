@@ -1,0 +1,2 @@
+# ediary
+Electronic diary
