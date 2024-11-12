@@ -1,5 +1,6 @@
 package org.srd.ediary.application.service;
 
+import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -38,6 +39,10 @@ class OwnerServiceTest {
 
     @Test
     void testLoginOwnerNonExisting() {
+        String login = "example";
+        String password = "abc123";
+        Mockito.when(ownerRepo.getByLoginAndPassword(login, password)).thenReturn(Optional.empty());
 
+        assertThrows(EntityNotFoundException.class, () -> service.loginOwner(login, password));
     }
 }
