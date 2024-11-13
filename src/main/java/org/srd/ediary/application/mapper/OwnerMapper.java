@@ -11,8 +11,8 @@ import org.srd.ediary.domain.model.Owner;
 public interface OwnerMapper {
     OwnerMapper INSTANCE = Mappers.getMapper(OwnerMapper.class);
 
-    @Mapping(target = "id" , ignore = true)
-    @Mapping(target = "createdDate" , defaultExpression = "java(java.time.LocalDate.now())")
-    Owner ownerCreateDtoToOwner(OwnerCreateDTO dto);
+//    @Mapping(target = "id" , ignore = true)
+//    @Mapping(target = "createdDate" , defaultExpression = "java(java.time.LocalDate.now())")
+//    Owner ownerCreateDtoToOwner(OwnerCreateDTO dto);
     OwnerInfoDTO OwnerToOwnerInfoDto(Owner owner);
 }
