@@ -10,11 +10,12 @@ public class Diary {
     private int cntEntry;
     private LocalDate createdDate;
 
-    public Diary(Long ownerID, String title, String description, int cntEntry) {
+    public Diary(Long ownerID, String title, String description) {
+        this.id = null;
         this.ownerID = ownerID;
         this.title = title;
         this.description = description;
-        this.cntEntry = cntEntry;
+        this.cntEntry = 0;
         this.createdDate = LocalDate.now();
     }
 
@@ -40,5 +41,29 @@ public class Diary {
 
     public LocalDate getCreatedDate() {
         return createdDate;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public void setOwnerID(Long ownerID) {
+        this.ownerID = ownerID;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public void setCntEntry(int cntEntry) {
+        this.cntEntry = cntEntry;
+    }
+
+    public void setCreatedDate(LocalDate createdDate) {
+        this.createdDate = createdDate;
     }
 }

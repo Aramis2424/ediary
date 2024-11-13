@@ -1,6 +1,7 @@
 package org.srd.ediary.domain.model;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 public class Entry {
     private Long id;
@@ -9,4 +10,37 @@ public class Entry {
     private String title;
     private String content;
     private LocalDate createdDate;
+
+    public Entry(Long diaryID, String title, String content) {
+        this.id = null;
+        this.diaryID = diaryID;
+        this.moodID = null;
+        this.title = title;
+        this.content = content;
+        this.createdDate = LocalDate.now();
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public Long getDiaryID() {
+        return diaryID;
+    }
+
+    public Long getMoodID() {
+        return moodID;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public String getContent() {
+        return content;
+    }
+
+    public LocalDate getCreatedDate() {
+        return createdDate;
+    }
 }
