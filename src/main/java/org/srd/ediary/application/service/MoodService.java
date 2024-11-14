@@ -1,0 +1,58 @@
+package org.srd.ediary.application.service;
+
+import jakarta.persistence.EntityNotFoundException;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.srd.ediary.application.dto.MoodCreateDTO;
+import org.srd.ediary.application.dto.MoodInfoDTO;
+import org.srd.ediary.application.dto.MoodUpdateDTO;
+import org.srd.ediary.application.mapper.MoodMapper;
+import org.srd.ediary.domain.model.Mood;
+import org.srd.ediary.domain.repository.MoodRepository;
+
+import java.util.ArrayList;
+import java.util.List;
+
+@Service
+@Transactional
+@RequiredArgsConstructor
+public class MoodService {
+    private final MoodRepository moodRepo;
+
+    public MoodInfoDTO getMood(Long id) {
+        Mood mood = moodRepo.getByID(id)
+                .orElseThrow(() -> new EntityNotFoundException("No mood with such id"));
+        return MoodMapper.INSTANCE.moodToMoodInfoDto(mood);
+    }
+
+    public List<MoodInfoDTO> getMoodsByOwner(Long ownerID) {
+        List<Mood> moods = moodRepo.getAllByOwnerID(ownerID);
+        List<MoodInfoDTO> dtoList = new ArrayList<>(moods.size());
+        for (var mood : moods)
+            dtoList.add(MoodMapper.INSTANCE.moodToMoodInfoDto(mood));
+        return dtoList;
+    }
+
+    public MoodInfoDTO create(MoodCreateDTO dto) {
+        Mood mood = new Mood(dto.ownerID(), dto.scoreMood(), dto.scoreProductivity(), dto.bedtime(), dto.wakeUpTime());
+        return MoodMapper.INSTANCE.moodToMoodInfoDto(moodRepo.save(mood));
+    }
+
+    public MoodInfoDTO update(Long id, MoodUpdateDTO dto) {
+        Mood mood = moodRepo.getByID(id)
+                .map(m -> {
+                    m.setWakeUpTime(dto.wakeUpTime());
+                    m.setBedtime(dto.bedtime());
+                    m.setScoreMood(dto.scoreMood());
+                    m.setScoreProductivity(dto.scoreProductivity());
+                    return m;
+                })
+                .orElseThrow(() -> new EntityNotFoundException("No such mood id"));
+        return MoodMapper.INSTANCE.moodToMoodInfoDto(moodRepo.save(mood));
+    }
+
+    public void delete(Long id) {
+        moodRepo.delete(id);
+    }
+}
