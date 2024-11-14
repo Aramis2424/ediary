@@ -6,4 +6,5 @@ import java.util.Optional;
 
 public interface OwnerRepository extends CrudRepository<Owner>{
     Optional<Owner> getByLoginAndPassword(String login, String password);
+    Optional<Owner> getByLogin(String login);
 }
