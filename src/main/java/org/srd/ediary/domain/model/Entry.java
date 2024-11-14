@@ -43,4 +43,12 @@ public class Entry {
     public LocalDate getCreatedDate() {
         return createdDate;
     }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
+    }
 }
