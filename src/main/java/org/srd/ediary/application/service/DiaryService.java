@@ -41,12 +41,12 @@ public class DiaryService {
 
     public DiaryInfoDTO create(DiaryCreateDTO dto) {
         Diary diary = new Diary(dto.ownerID(), dto.title(), dto.description());
-        diaryRepo.save(diary);
+        diary= diaryRepo.save(diary);
         return DiaryMapper.INSTANCE.diaryToDiaryInfoDto(diary);
     }
 
-    public DiaryInfoDTO update(DiaryUpdateDTO dto) { // TODO удалить метод update из репозитория
-        Diary diary = diaryRepo.getByID(dto.id())
+    public DiaryInfoDTO update(Long id, DiaryUpdateDTO dto) {
+        Diary diary = diaryRepo.getByID(id)
                 .map(d -> {
                     d.setTitle(dto.title());
                     d.setDescription(dto.description());
