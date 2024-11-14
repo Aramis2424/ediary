@@ -9,7 +9,7 @@ public class Entry {
     private Long moodID;
     private String title;
     private String content;
-    private LocalDate createdDate;
+    private final LocalDate createdDate;
 
     public Entry(Long diaryID, String title, String content) {
         this.id = null;
@@ -42,6 +42,18 @@ public class Entry {
 
     public LocalDate getCreatedDate() {
         return createdDate;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public void setDiaryID(Long diaryID) {
+        this.diaryID = diaryID;
+    }
+
+    public void setMoodID(Long moodID) {
+        this.moodID = moodID;
     }
 
     public void setTitle(String title) {
