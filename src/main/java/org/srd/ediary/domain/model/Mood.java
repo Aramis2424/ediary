@@ -5,16 +5,16 @@ import java.time.LocalDateTime;
 
 public class Mood {
     private Long id;
-    private Long ownerID;
+    private Owner owner;
     private int scoreMood;
     private int scoreProductivity;
     private LocalDateTime bedtime;
     private LocalDateTime wakeUpTime;
     private final LocalDate createdAt;
 
-    public Mood(Long ownerID, int scoreMood, int scoreProductivity, LocalDateTime bedtime, LocalDateTime wakeUpTime) {
+    public Mood(Owner owner, int scoreMood, int scoreProductivity, LocalDateTime bedtime, LocalDateTime wakeUpTime) {
         this.id = null;
-        this.ownerID = ownerID;
+        this.owner = owner;
         this.scoreMood = scoreMood;
         this.scoreProductivity = scoreProductivity;
         this.bedtime = bedtime;
@@ -26,8 +26,8 @@ public class Mood {
         return id;
     }
 
-    public Long getOwnerID() {
-        return ownerID;
+    public Owner getOwnerID() {
+        return owner;
     }
 
     public int getScoreMood() {
@@ -54,8 +54,8 @@ public class Mood {
         this.id = id;
     }
 
-    public void setOwnerID(Long ownerID) {
-        this.ownerID = ownerID;
+    public void setOwnerID(Owner owner) {
+        this.owner = owner;
     }
 
     public void setScoreMood(int scoreMood) {
