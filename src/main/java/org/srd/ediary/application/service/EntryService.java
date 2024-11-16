@@ -6,8 +6,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.srd.ediary.application.dto.EntryCreateDTO;
 import org.srd.ediary.application.dto.EntryInfoDTO;
+import org.srd.ediary.application.dto.EntryUpdateDTO;
 import org.srd.ediary.application.mapper.EntryMapper;
+import org.srd.ediary.domain.model.Diary;
 import org.srd.ediary.domain.model.Entry;
+import org.srd.ediary.domain.repository.DiaryRepository;
 import org.srd.ediary.domain.repository.EntryRepository;
 
 import java.util.ArrayList;
@@ -19,6 +22,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class EntryService {
     private final EntryRepository entryRepo;
+    private final DiaryRepository diaryRepo;
 
     public EntryInfoDTO getEntry(Long id) {
         Entry entry = entryRepo.getByID(id)
@@ -35,11 +39,12 @@ public class EntryService {
     }
 
     public EntryInfoDTO create(EntryCreateDTO dto) {
-        Entry entry = new Entry(dto.diaryID(), dto.title(), dto.content());
+        Diary diary = diaryRepo.getByID(dto.diaryID()).orElseThrow(() -> new EntityNotFoundException("No such diary"));
+        Entry entry = new Entry(diary, dto.title(), dto.content());
         return EntryMapper.INSTANCE.EntryToEntryInfoDto(entryRepo.save(entry));
     }
 
-    public EntryInfoDTO update(Long id, EntryCreateDTO dto) {
+    public EntryInfoDTO update(Long id, EntryUpdateDTO dto) {
         Entry entry = entryRepo.getByID(id)
                 .map(e -> {
                     e.setTitle(dto.title());
