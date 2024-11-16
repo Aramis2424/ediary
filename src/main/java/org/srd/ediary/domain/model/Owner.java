@@ -11,7 +11,7 @@ public class Owner {
     private final LocalDate createdDate;
 
     public Owner(String name, LocalDate birthDate, String login, String password) {
-        this.id = -1L;
+        this.id = null;
         this.name = name;
         this.birthDate = birthDate;
         this.login = login;
