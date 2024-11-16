@@ -40,7 +40,7 @@ class OwnerServiceTest {
         String login = "example";
         String password = "abc123";
         Owner owner = new Owner("Ivan", LocalDate.of(2000, 1, 1), login, password);
-        OwnerInfoDTO expected = new OwnerInfoDTO("Ivan", LocalDate.of(2000, 1, 1),
+        OwnerInfoDTO expected = new OwnerInfoDTO(null,"Ivan", LocalDate.of(2000, 1, 1),
                 login, LocalDate.now());
         when(encoder.encode(anyString())).thenReturn("encodedPassword");
         when(ownerRepo.getByLoginAndPassword(login, "encodedPassword")).thenReturn(Optional.of(owner));
@@ -66,7 +66,7 @@ class OwnerServiceTest {
         String password = "abc123";
         OwnerCreateDTO createDto = new OwnerCreateDTO("Ivan",
                 LocalDate.of(2000, 1, 1), login, password);
-        OwnerInfoDTO expected = new OwnerInfoDTO("Ivan", LocalDate.of(2000, 1, 1),
+        OwnerInfoDTO expected = new OwnerInfoDTO(null,"Ivan", LocalDate.of(2000, 1, 1),
                 login, LocalDate.now());
         when(encoder.encode(anyString())).thenReturn("encodedPassword");
         when(ownerRepo.getByLogin(login)).thenReturn(Optional.empty());

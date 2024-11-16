@@ -10,8 +10,10 @@ import org.srd.ediary.application.dto.DiaryUpdateDTO;
 import org.srd.ediary.application.mapper.DiaryMapper;
 import org.srd.ediary.domain.model.Diary;
 import org.srd.ediary.domain.model.Entry;
+import org.srd.ediary.domain.model.Owner;
 import org.srd.ediary.domain.repository.DiaryRepository;
 import org.srd.ediary.domain.repository.EntryRepository;
+import org.srd.ediary.domain.repository.OwnerRepository;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,6 +24,7 @@ import java.util.List;
 public class DiaryService {
     private final DiaryRepository diaryRepo;
     private final EntryRepository entryRepo;
+    private final OwnerRepository ownerRepo;
 
     public DiaryInfoDTO getDiary(Long id) {
         Diary diary = diaryRepo.getByID(id).orElseThrow(() -> new EntityNotFoundException("No diary with such id"));
@@ -40,7 +43,8 @@ public class DiaryService {
     }
 
     public DiaryInfoDTO create(DiaryCreateDTO dto) {
-        Diary diary = new Diary(dto.ownerID(), dto.title(), dto.description());
+        Owner owner = ownerRepo.getByID(dto.ownerID()).orElseThrow(() -> new EntityNotFoundException("No such owner"));
+        Diary diary = new Diary(owner, dto.title(), dto.description());
         diary= diaryRepo.save(diary);
         return DiaryMapper.INSTANCE.diaryToDiaryInfoDto(diary);
     }

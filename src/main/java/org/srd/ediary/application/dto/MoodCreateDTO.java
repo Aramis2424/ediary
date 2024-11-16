@@ -1,6 +1,5 @@
 package org.srd.ediary.application.dto;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 public record MoodCreateDTO(

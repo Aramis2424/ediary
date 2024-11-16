@@ -4,15 +4,15 @@ import java.time.LocalDate;
 
 public class Diary {
     private Long id;
-    private Long ownerID;
+    private Owner owner;
     private String title;
     private String description;
     private int cntEntry;
     private LocalDate createdDate;
 
-    public Diary(Long ownerID, String title, String description) {
+    public Diary(Owner owner, String title, String description) {
         this.id = null;
-        this.ownerID = ownerID;
+        this.owner = owner;
         this.title = title;
         this.description = description;
         this.cntEntry = 0;
@@ -23,8 +23,8 @@ public class Diary {
         return id;
     }
 
-    public Long getOwnerID() {
-        return ownerID;
+    public Owner getOwnerID() {
+        return owner;
     }
 
     public String getTitle() {
@@ -47,8 +47,8 @@ public class Diary {
         this.id = id;
     }
 
-    public void setOwnerID(Long ownerID) {
-        this.ownerID = ownerID;
+    public void setOwnerID(Owner owner) {
+        this.owner = owner;
     }
 
     public void setTitle(String title) {
