@@ -9,7 +9,9 @@ import org.srd.ediary.application.dto.MoodInfoDTO;
 import org.srd.ediary.application.dto.MoodUpdateDTO;
 import org.srd.ediary.application.mapper.MoodMapper;
 import org.srd.ediary.domain.model.Mood;
+import org.srd.ediary.domain.model.Owner;
 import org.srd.ediary.domain.repository.MoodRepository;
+import org.srd.ediary.domain.repository.OwnerRepository;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,6 +21,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class MoodService {
     private final MoodRepository moodRepo;
+    private final OwnerRepository ownerRepo;
 
     public MoodInfoDTO getMood(Long id) {
         Mood mood = moodRepo.getByID(id)
@@ -35,7 +38,8 @@ public class MoodService {
     }
 
     public MoodInfoDTO create(MoodCreateDTO dto) {
-        Mood mood = new Mood(dto.ownerID(), dto.scoreMood(), dto.scoreProductivity(), dto.bedtime(), dto.wakeUpTime());
+        Owner owner = ownerRepo.getByID(dto.ownerID()).orElseThrow(() -> new EntityNotFoundException("No such user"));
+        Mood mood = new Mood(owner, dto.scoreMood(), dto.scoreProductivity(), dto.bedtime(), dto.wakeUpTime());
         return MoodMapper.INSTANCE.moodToMoodInfoDto(moodRepo.save(mood));
     }
 

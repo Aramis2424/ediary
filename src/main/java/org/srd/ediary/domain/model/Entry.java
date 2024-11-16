@@ -5,16 +5,16 @@ import java.time.LocalDateTime;
 
 public class Entry {
     private Long id;
-    private Long diaryID;
-    private Long moodID;
+    private Diary diary;
+    private Mood mood;
     private String title;
     private String content;
     private final LocalDate createdDate;
 
-    public Entry(Long diaryID, String title, String content) {
+    public Entry(Diary diary, String title, String content) {
         this.id = null;
-        this.diaryID = diaryID;
-        this.moodID = null;
+        this.diary = diary;
+        this.mood = null;
         this.title = title;
         this.content = content;
         this.createdDate = LocalDate.now();
@@ -24,12 +24,12 @@ public class Entry {
         return id;
     }
 
-    public Long getDiaryID() {
-        return diaryID;
+    public Diary getDiaryID() {
+        return diary;
     }
 
-    public Long getMoodID() {
-        return moodID;
+    public Mood getMoodID() {
+        return mood;
     }
 
     public String getTitle() {
@@ -48,12 +48,12 @@ public class Entry {
         this.id = id;
     }
 
-    public void setDiaryID(Long diaryID) {
-        this.diaryID = diaryID;
+    public void setDiaryID(Diary diary) {
+        this.diary = diary;
     }
 
-    public void setMoodID(Long moodID) {
-        this.moodID = moodID;
+    public void setMoodID(Mood mood) {
+        this.mood = mood;
     }
 
     public void setTitle(String title) {
