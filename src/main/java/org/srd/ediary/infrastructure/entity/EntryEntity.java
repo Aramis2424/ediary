@@ -5,7 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.srd.ediary.domain.model.Owner;
+import org.srd.ediary.domain.model.Diary;
+import org.srd.ediary.domain.model.Mood;
 
 import java.time.LocalDate;
 
@@ -14,22 +15,23 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "owners")
-public class DiaryEntity {
+@Table(name = "entries")
+public class EntryEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "diary_id")
+    @Column(name = "entry_id")
     private Long id;
-    @Column(name = "owner_fk")
+    @Column(name = "diary_fk")
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "owner_fk")
-    private Owner owner;
-    @Column(length = 255)
+    @JoinColumn(name = "diary_fk")
+    private Diary diary;
+    @Column(name = "mood_fk")
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "mood_fk")
+    private Mood mood;
+
     private String title;
-    @Column(length = 255)
-    private String description;
-    @Column(name = "cnt_entries")
-    private int cntEntry;
+    private String content;
     @Column(name = "created_date")
     private LocalDate createdDate;
 }

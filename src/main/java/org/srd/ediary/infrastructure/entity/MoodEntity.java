@@ -8,28 +8,31 @@ import lombok.Setter;
 import org.srd.ediary.domain.model.Owner;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "owners")
-public class DiaryEntity {
+@Table(name = "moods")
+public class MoodEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "diary_id")
+    @Column(name = "mood_id")
     private Long id;
     @Column(name = "owner_fk")
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "owner_fk")
     private Owner owner;
-    @Column(length = 255)
-    private String title;
-    @Column(length = 255)
-    private String description;
-    @Column(name = "cnt_entries")
-    private int cntEntry;
+    @Column(name = "score_mood")
+    private int scoreMood;
+    @Column(name = "score_productivity")
+    private int scoreProductivity;
+    @Column(name = "bedtime")
+    private LocalDateTime bedtime;
+    @Column(name = "wake_up_time")
+    private LocalDateTime wakeUpTime;
     @Column(name = "created_date")
-    private LocalDate createdDate;
+    private LocalDate createdAt;
 }
