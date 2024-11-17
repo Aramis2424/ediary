@@ -26,7 +26,7 @@ public class Mood {
         return id;
     }
 
-    public Owner getOwnerID() {
+    public Owner getOwner() {
         return owner;
     }
 
@@ -54,7 +54,7 @@ public class Mood {
         this.id = id;
     }
 
-    public void setOwnerID(Owner owner) {
+    public void setOwner(Owner owner) {
         this.owner = owner;
     }
 

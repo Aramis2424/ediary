@@ -31,7 +31,7 @@ public class EntryService {
     }
 
     public List<EntryInfoDTO> getAllEntriesByDiary(Long diaryID) {
-        List<Entry> entries = entryRepo.getAllByDiaryID(diaryID);
+        List<Entry> entries = entryRepo.getAllByDiary(diaryID);
         List<EntryInfoDTO> dtoList = new ArrayList<>(entries.size());
         for (var entry : entries)
             dtoList.add(EntryMapper.INSTANCE.EntryToEntryInfoDto(entry));

@@ -33,7 +33,7 @@ public class DiaryService {
     }
 
     public List<DiaryInfoDTO> getOwnerDiaries(Long ownerID) {
-        List<Diary> diaries = diaryRepo.getAllByOwnerID(ownerID);
+        List<Diary> diaries = diaryRepo.getAllByOwner(ownerID);
 
         List<DiaryInfoDTO> diariesDTO = new ArrayList<>(diaries.size());
         for (var d : diaries)
@@ -60,7 +60,7 @@ public class DiaryService {
     }
 
     public void remove(Long id) {
-        List<Entry> entries = entryRepo.getAllByDiaryID(id);
+        List<Entry> entries = entryRepo.getAllByDiary(id);
         for (var entry : entries)
             entryRepo.delete(entry.getId());
         diaryRepo.delete(id);

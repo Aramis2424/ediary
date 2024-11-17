@@ -15,8 +15,6 @@ import org.srd.ediary.domain.repository.EntryRepository;
 import org.srd.ediary.domain.repository.OwnerRepository;
 
 import java.time.LocalDate;
-import java.time.LocalTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -62,7 +60,7 @@ class DiaryServiceTest {
         DiaryInfoDTO dto2 = new DiaryInfoDTO(null,"d2", "of2", 0, LocalDate.now());
         DiaryInfoDTO dto3 = new DiaryInfoDTO(null,"d3", "of3", 0, LocalDate.now());
         List<DiaryInfoDTO> expected = List.of(dto1, dto2, dto3);
-        when(diaryRepo.getAllByOwnerID(ownerID)).thenReturn(diaries);
+        when(diaryRepo.getAllByOwner(ownerID)).thenReturn(diaries);
 
         List<DiaryInfoDTO> actual = service.getOwnerDiaries(ownerID);
 

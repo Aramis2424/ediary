@@ -24,11 +24,11 @@ public class Entry {
         return id;
     }
 
-    public Diary getDiaryID() {
+    public Diary getDiary() {
         return diary;
     }
 
-    public Mood getMoodID() {
+    public Mood getMood() {
         return mood;
     }
 
@@ -48,11 +48,11 @@ public class Entry {
         this.id = id;
     }
 
-    public void setDiaryID(Diary diary) {
+    public void setDiary(Diary diary) {
         this.diary = diary;
     }
 
-    public void setMoodID(Mood mood) {
+    public void setMood(Mood mood) {
         this.mood = mood;
     }
 
