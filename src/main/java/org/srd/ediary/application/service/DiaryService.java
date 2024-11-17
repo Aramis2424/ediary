@@ -33,7 +33,7 @@ public class DiaryService {
     }
 
     public List<DiaryInfoDTO> getOwnerDiaries(Long ownerID) {
-        List<Diary> diaries = diaryRepo.getAllByOwnerID(ownerID);
+        List<Diary> diaries = diaryRepo.getAllByOwner(ownerID);
 
         List<DiaryInfoDTO> diariesDTO = new ArrayList<>(diaries.size());
         for (var d : diaries)
