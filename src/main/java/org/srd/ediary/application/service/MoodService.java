@@ -30,7 +30,7 @@ public class MoodService {
     }
 
     public List<MoodInfoDTO> getMoodsByOwner(Long ownerID) {
-        List<Mood> moods = moodRepo.getAllByOwnerID(ownerID);
+        List<Mood> moods = moodRepo.getAllByOwner(ownerID);
         List<MoodInfoDTO> dtoList = new ArrayList<>(moods.size());
         for (var mood : moods)
             dtoList.add(MoodMapper.INSTANCE.moodToMoodInfoDto(mood));

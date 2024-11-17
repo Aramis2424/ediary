@@ -60,7 +60,7 @@ public class DiaryService {
     }
 
     public void remove(Long id) {
-        List<Entry> entries = entryRepo.getAllByDiaryID(id);
+        List<Entry> entries = entryRepo.getAllByDiary(id);
         for (var entry : entries)
             entryRepo.delete(entry.getId());
         diaryRepo.delete(id);
