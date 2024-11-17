@@ -14,7 +14,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 interface SpringEntryRepository extends CrudRepository<EntryEntity, Long> {
-    List<EntryEntity> getAllByDiary(Long id);
+    List<EntryEntity> getAllByDiaryId(Long id);
 }
 
 @Repository
@@ -41,7 +41,7 @@ public class EntryRepositoryAdapter implements EntryRepository {
 
     @Override
     public List<Entry> getAllByDiary(Long id) {
-        List<EntryEntity> entityList = repo.getAllByDiary(id);
+        List<EntryEntity> entityList = repo.getAllByDiaryId(id);
         return entityList.stream()
                 .map(EntryEntityMapper.INSTANCE::entityToModel)
                 .collect(Collectors.toList());

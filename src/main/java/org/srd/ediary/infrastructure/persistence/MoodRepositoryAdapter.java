@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Optional;
 
 interface SpringMoodRepository extends CrudRepository<MoodEntity, Long> {
-    List<MoodEntity> findAllByOwner(Long id);
+    List<MoodEntity> findAllByOwnerId(Long id);
 }
 
 @Repository
@@ -40,7 +40,7 @@ public class MoodRepositoryAdapter implements MoodRepository {
 
     @Override
     public List<Mood> getAllByOwner(Long id) {
-        List<MoodEntity> moodEntities = repo.findAllByOwner(id);
+        List<MoodEntity> moodEntities = repo.findAllByOwnerId(id);
         List<Mood> moods = new ArrayList<>(moodEntities.size());
         for (var mood : moodEntities)
             moods.add(MoodEntityMapper.INSTANCE.entityToModel(mood));

@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.Optional;
 
 interface SpringDiaryRepository extends CrudRepository<DiaryEntity, Long> {
-    List<DiaryEntity> findAllByOwner(Long id);
+    List<DiaryEntity> findAllByOwnerId(Long id);
 }
 
 @Repository
@@ -40,7 +40,7 @@ public class DiaryRepositoryAdapter implements DiaryRepository {
 
     @Override
     public List<Diary> getAllByOwner(Long id) {
-        List<DiaryEntity> diaryEntities = repo.findAllByOwner(id);
+        List<DiaryEntity> diaryEntities = repo.findAllByOwnerId(id);
         List<Diary> diaries = new ArrayList<>(diaryEntities.size());
         for (var diary : diaryEntities)
             diaries.add(DiaryEntityMapper.INSTANCE.entityToModel(diary));
