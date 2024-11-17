@@ -20,10 +20,9 @@ public class DiaryEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "diary_id")
     private Long id;
-    @Column(name = "owner_fk")
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "owner_fk")
-    private Owner owner;
+    private OwnerEntity owner;
     @Column(length = 255)
     private String title;
     @Column(length = 255)

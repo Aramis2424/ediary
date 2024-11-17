@@ -21,14 +21,12 @@ public class EntryEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "entry_id")
     private Long id;
-    @Column(name = "diary_fk")
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "diary_fk")
-    private Diary diary;
-    @Column(name = "mood_fk")
+    private DiaryEntity diary;
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "mood_fk")
-    private Mood mood;
+    private MoodEntity mood;
 
     private String title;
     private String content;

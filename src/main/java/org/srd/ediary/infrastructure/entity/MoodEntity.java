@@ -21,10 +21,9 @@ public class MoodEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "mood_id")
     private Long id;
-    @Column(name = "owner_fk")
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "owner_fk")
-    private Owner owner;
+    private OwnerEntity owner;
     @Column(name = "score_mood")
     private int scoreMood;
     @Column(name = "score_productivity")
