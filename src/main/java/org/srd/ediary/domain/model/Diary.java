@@ -23,7 +23,7 @@ public class Diary {
         return id;
     }
 
-    public Owner getOwnerID() {
+    public Owner getOwner() {
         return owner;
     }
 
@@ -47,7 +47,7 @@ public class Diary {
         this.id = id;
     }
 
-    public void setOwnerID(Owner owner) {
+    public void setOwner(Owner owner) {
         this.owner = owner;
     }
 
