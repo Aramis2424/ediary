@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.srd.ediary.application.dto.OwnerCreateDTO;
 import org.srd.ediary.application.dto.OwnerInfoDTO;
+import org.srd.ediary.application.dto.OwnerLoginDTO;
 import org.srd.ediary.application.service.OwnerService;
 
 @RestController
@@ -20,12 +21,7 @@ public class OwnerController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<OwnerInfoDTO> loginOwner(@RequestBody LoginRequest req) {
-        return new ResponseEntity<>(service.loginOwner(req.login, req.password), HttpStatus.OK);
+    public ResponseEntity<OwnerInfoDTO> loginOwner(@RequestBody OwnerLoginDTO req) {
+        return new ResponseEntity<>(service.loginOwner(req.login(), req.password()), HttpStatus.OK);
     }
-
-    private record LoginRequest( // TODO переписать как DTO
-            String login,
-            String password
-    ) {}
 }
