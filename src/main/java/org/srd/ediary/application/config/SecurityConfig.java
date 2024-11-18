@@ -20,7 +20,7 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.httpBasic(AbstractHttpConfigurer::disable);
-
+        http.csrf(AbstractHttpConfigurer::disable);
         return http.build();
     }
 }
