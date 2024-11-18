@@ -3,7 +3,7 @@ package org.srd.ediary.domain.model;
 import java.time.LocalDate;
 
 public class Owner {
-    private final Long id;
+    private Long id;
     private final String name;
     private final LocalDate birthDate;
     private final String login;
@@ -41,5 +41,9 @@ public class Owner {
 
     public LocalDate getCreatedDate() {
         return createdDate;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 }

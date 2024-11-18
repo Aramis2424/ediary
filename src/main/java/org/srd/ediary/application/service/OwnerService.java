@@ -34,7 +34,7 @@ public class OwnerService {
 
         if (ownerRepo.getByLogin(owner.getLogin()).isPresent())
             throw new ExistingLoginException(owner.getLogin());
-        ownerRepo.save(owner);
+        owner = ownerRepo.save(owner);
 
         return OwnerMapper.INSTANCE.OwnerToOwnerInfoDto(owner);
     }
