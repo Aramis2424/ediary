@@ -14,6 +14,8 @@ import org.srd.ediary.application.mapper.OwnerMapper;
 import org.srd.ediary.domain.model.Owner;
 import org.srd.ediary.domain.repository.OwnerRepository;
 
+import java.util.Optional;
+
 @Service
 @Transactional
 @RequiredArgsConstructor
@@ -23,10 +25,12 @@ public class OwnerService {
     private final OwnerRepository ownerRepo;
 
     public OwnerInfoDTO loginOwner(String login, String password) {
-        Owner owner = ownerRepo
-                .getByLoginAndPassword(login, passwordEncoder.encode(password)).orElseThrow(() ->
-                        new EntityNotFoundException("User not found"));
-        return OwnerMapper.INSTANCE.OwnerToOwnerInfoDto(owner);
+        Optional<Owner> optionalOwner = ownerRepo.getByLogin(login);
+        if (optionalOwner.isEmpty() ||
+                !passwordEncoder.matches(password, optionalOwner.get().getPassword())) {
+            throw new EntityNotFoundException("Incorrect login or password"); // TODO создать отдельное исключение
+        }
+        return OwnerMapper.INSTANCE.OwnerToOwnerInfoDto(optionalOwner.get());
     }
 
     public OwnerInfoDTO registerOwner(OwnerCreateDTO dto) {
