@@ -46,6 +46,13 @@ dependencies {
 	implementation 'org.postgresql:postgresql'
 }
 
+configurations {
+	developmentOnly
+	runtimeClasspath {
+		extendsFrom developmentOnly
+	}
+}
+
 tasks.named('test') {
 	useJUnitPlatform()
 	finalizedBy jacocoTestReport
