@@ -7,6 +7,8 @@ import org.springframework.web.bind.annotation.*;
 import org.srd.ediary.application.dto.EntryCreateDTO;
 import org.srd.ediary.application.dto.EntryInfoDTO;
 import org.srd.ediary.application.dto.EntryUpdateDTO;
+import org.srd.ediary.application.exception.DiaryNotFoundException;
+import org.srd.ediary.application.exception.EntryNotFoundException;
 import org.srd.ediary.application.service.EntryService;
 
 import java.util.List;
@@ -41,5 +43,15 @@ public class EntryController {
     public HttpStatus deleteEntry(@PathVariable Long entryId) {
         service.delete(entryId);
         return HttpStatus.OK;
+    }
+
+    @ExceptionHandler(DiaryNotFoundException.class)
+    public ResponseEntity<String> handleDiaryNotFoundException(DiaryNotFoundException ex) {
+        return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(EntryNotFoundException.class)
+    public ResponseEntity<String> handleEntryNotFoundException(EntryNotFoundException ex) {
+        return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
     }
 }

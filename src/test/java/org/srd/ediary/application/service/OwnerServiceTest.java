@@ -1,21 +1,16 @@
 package org.srd.ediary.application.service;
 
 import jakarta.persistence.EntityNotFoundException;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.srd.ediary.application.dto.OwnerCreateDTO;
 import org.srd.ediary.application.dto.OwnerInfoDTO;
-import org.srd.ediary.application.exception.ExistingLoginException;
+import org.srd.ediary.application.exception.OwnerAlreadyExistException;
 import org.srd.ediary.domain.model.Owner;
 import org.srd.ediary.domain.repository.OwnerRepository;
 
@@ -88,7 +83,7 @@ class OwnerServiceTest {
         when(encoder.encode(anyString())).thenReturn("encodedPassword");
         when(ownerRepo.getByLogin(login)).thenReturn(Optional.of(owner));
 
-        assertThrows(ExistingLoginException.class, () -> service.registerOwner(createDto));
+        assertThrows(OwnerAlreadyExistException.class, () -> service.registerOwner(createDto));
 
         verify(ownerRepo, never()).save(Mockito.any(Owner.class));
     }
