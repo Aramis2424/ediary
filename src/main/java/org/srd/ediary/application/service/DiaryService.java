@@ -7,6 +7,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.srd.ediary.application.dto.DiaryCreateDTO;
 import org.srd.ediary.application.dto.DiaryInfoDTO;
 import org.srd.ediary.application.dto.DiaryUpdateDTO;
+import org.srd.ediary.application.exception.DiaryNotFoundException;
+import org.srd.ediary.application.exception.OwnerNotFoundException;
 import org.srd.ediary.application.mapper.DiaryMapper;
 import org.srd.ediary.domain.model.Diary;
 import org.srd.ediary.domain.model.Entry;
@@ -27,7 +29,7 @@ public class DiaryService {
     private final OwnerRepository ownerRepo;
 
     public DiaryInfoDTO getDiary(Long id) {
-        Diary diary = diaryRepo.getByID(id).orElseThrow(() -> new EntityNotFoundException("No diary with such id"));
+        Diary diary = diaryRepo.getByID(id).orElseThrow(() -> new DiaryNotFoundException("No diary with such id"));
 
         return DiaryMapper.INSTANCE.diaryToDiaryInfoDto(diary);
     }
@@ -43,7 +45,7 @@ public class DiaryService {
     }
 
     public DiaryInfoDTO create(DiaryCreateDTO dto) { // TODO реализовать как owner.addDiary(diary);
-        Owner owner = ownerRepo.getByID(dto.ownerID()).orElseThrow(() -> new EntityNotFoundException("No such owner"));
+        Owner owner = ownerRepo.getByID(dto.ownerID()).orElseThrow(() -> new OwnerNotFoundException("No such owner"));
         Diary diary = new Diary(owner, dto.title(), dto.description());
         diary= diaryRepo.save(diary);
         return DiaryMapper.INSTANCE.diaryToDiaryInfoDto(diary);
@@ -55,7 +57,7 @@ public class DiaryService {
                     d.setTitle(dto.title());
                     d.setDescription(dto.description());
                     return diaryRepo.save(d);
-                }).orElseThrow(() -> new EntityNotFoundException("No diary with such id"));
+                }).orElseThrow(() -> new DiaryNotFoundException("No diary with such id"));
         return DiaryMapper.INSTANCE.diaryToDiaryInfoDto(diary);
     }
 

@@ -7,6 +7,8 @@ import org.springframework.web.bind.annotation.*;
 import org.srd.ediary.application.dto.DiaryCreateDTO;
 import org.srd.ediary.application.dto.DiaryInfoDTO;
 import org.srd.ediary.application.dto.DiaryUpdateDTO;
+import org.srd.ediary.application.exception.DiaryNotFoundException;
+import org.srd.ediary.application.exception.OwnerNotFoundException;
 import org.srd.ediary.application.service.DiaryService;
 
 import java.util.List;
@@ -41,5 +43,15 @@ public class DiaryController {
     public HttpStatus deleteDiary(@PathVariable Long diaryId) {
         service.remove(diaryId);
         return HttpStatus.OK;
+    }
+
+    @ExceptionHandler(DiaryNotFoundException.class)
+    public ResponseEntity<String> handleDiaryNotFoundException(DiaryNotFoundException ex) {
+        return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(OwnerNotFoundException.class)
+    public ResponseEntity<String> handleOwnerNotFoundException(OwnerNotFoundException ex) {
+        return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
     }
 }
