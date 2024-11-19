@@ -7,6 +7,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.srd.ediary.application.dto.EntryCreateDTO;
 import org.srd.ediary.application.dto.EntryInfoDTO;
 import org.srd.ediary.application.dto.EntryUpdateDTO;
+import org.srd.ediary.application.exception.DiaryNotFoundException;
+import org.srd.ediary.application.exception.EntryNotFoundException;
 import org.srd.ediary.application.mapper.EntryMapper;
 import org.srd.ediary.domain.model.Diary;
 import org.srd.ediary.domain.model.Entry;
@@ -26,7 +28,7 @@ public class EntryService {
 
     public EntryInfoDTO getEntry(Long id) {
         Entry entry = entryRepo.getByID(id)
-                .orElseThrow(() -> new EntityNotFoundException("No entry with such id"));
+                .orElseThrow(() -> new EntryNotFoundException("No entry with such id"));
         return EntryMapper.INSTANCE.EntryToEntryInfoDto(entry);
     }
 
@@ -39,7 +41,7 @@ public class EntryService {
     }
 
     public EntryInfoDTO create(EntryCreateDTO dto) {
-        Diary diary = diaryRepo.getByID(dto.diaryID()).orElseThrow(() -> new EntityNotFoundException("No such diary"));
+        Diary diary = diaryRepo.getByID(dto.diaryID()).orElseThrow(() -> new DiaryNotFoundException("No such diary"));
         Entry entry = new Entry(diary, dto.title(), dto.content());
         return EntryMapper.INSTANCE.EntryToEntryInfoDto(entryRepo.save(entry));
     }
@@ -51,7 +53,7 @@ public class EntryService {
                     e.setContent(dto.content());
                     return e;
                 })
-                .orElseThrow(() -> new EntityNotFoundException("No entry with such id"));
+                .orElseThrow(() -> new EntryNotFoundException("No entry with such id"));
         return EntryMapper.INSTANCE.EntryToEntryInfoDto(entryRepo.save(entry));
     }
 
