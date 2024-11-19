@@ -1,3 +1,6 @@
+# Fake data
+metaData/fakeDataGenerator/*.sql
+
 # Compiled class file
 *.class
 
