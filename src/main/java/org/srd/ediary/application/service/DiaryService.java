@@ -35,14 +35,14 @@ public class DiaryService {
     public List<DiaryInfoDTO> getOwnerDiaries(Long ownerID) {
         List<Diary> diaries = diaryRepo.getAllByOwner(ownerID);
 
-        List<DiaryInfoDTO> diariesDTO = new ArrayList<>(diaries.size());
+        List<DiaryInfoDTO> diariesDTO = new ArrayList<>(diaries.size()); // TODO вынести в мэппер
         for (var d : diaries)
             diariesDTO.add(DiaryMapper.INSTANCE.diaryToDiaryInfoDto(d));
 
         return diariesDTO;
     }
 
-    public DiaryInfoDTO create(DiaryCreateDTO dto) {
+    public DiaryInfoDTO create(DiaryCreateDTO dto) { // TODO реализовать как owner.addDiary(diary);
         Owner owner = ownerRepo.getByID(dto.ownerID()).orElseThrow(() -> new EntityNotFoundException("No such owner"));
         Diary diary = new Diary(owner, dto.title(), dto.description());
         diary= diaryRepo.save(diary);
