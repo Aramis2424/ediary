@@ -7,6 +7,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.srd.ediary.application.dto.MoodCreateDTO;
 import org.srd.ediary.application.dto.MoodInfoDTO;
 import org.srd.ediary.application.dto.MoodUpdateDTO;
+import org.srd.ediary.application.exception.MoodNotFoundException;
+import org.srd.ediary.application.exception.OwnerNotFoundException;
 import org.srd.ediary.application.mapper.MoodMapper;
 import org.srd.ediary.domain.model.Mood;
 import org.srd.ediary.domain.model.Owner;
@@ -25,7 +27,7 @@ public class MoodService {
 
     public MoodInfoDTO getMood(Long id) {
         Mood mood = moodRepo.getByID(id)
-                .orElseThrow(() -> new EntityNotFoundException("No mood with such id"));
+                .orElseThrow(() -> new MoodNotFoundException("No mood with such id"));
         return MoodMapper.INSTANCE.moodToMoodInfoDto(mood);
     }
 
@@ -38,7 +40,7 @@ public class MoodService {
     }
 
     public MoodInfoDTO create(MoodCreateDTO dto) {
-        Owner owner = ownerRepo.getByID(dto.ownerID()).orElseThrow(() -> new EntityNotFoundException("No such user"));
+        Owner owner = ownerRepo.getByID(dto.ownerID()).orElseThrow(() -> new OwnerNotFoundException("No such user"));
         Mood mood = new Mood(owner, dto.scoreMood(), dto.scoreProductivity(), dto.bedtime(), dto.wakeUpTime());
         return MoodMapper.INSTANCE.moodToMoodInfoDto(moodRepo.save(mood));
     }
@@ -52,7 +54,7 @@ public class MoodService {
                     m.setScoreProductivity(dto.scoreProductivity());
                     return m;
                 })
-                .orElseThrow(() -> new EntityNotFoundException("No such mood id"));
+                .orElseThrow(() -> new MoodNotFoundException("No such mood id"));
         return MoodMapper.INSTANCE.moodToMoodInfoDto(moodRepo.save(mood));
     }
 

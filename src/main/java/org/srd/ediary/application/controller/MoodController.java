@@ -5,6 +5,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.srd.ediary.application.dto.*;
+import org.srd.ediary.application.exception.MoodNotFoundException;
+import org.srd.ediary.application.exception.OwnerNotFoundException;
 import org.srd.ediary.application.service.MoodService;
 
 import java.util.List;
@@ -39,5 +41,15 @@ public class MoodController {
     public HttpStatus deleteMood(@PathVariable Long moodId) {
         service.delete(moodId);
         return HttpStatus.OK;
+    }
+
+    @ExceptionHandler(OwnerNotFoundException.class)
+    public ResponseEntity<String> handleOwnerNotFoundException(OwnerNotFoundException ex) {
+        return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(MoodNotFoundException.class)
+    public ResponseEntity<String> handleMoodNotFoundException(MoodNotFoundException ex) {
+        return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
     }
 }
