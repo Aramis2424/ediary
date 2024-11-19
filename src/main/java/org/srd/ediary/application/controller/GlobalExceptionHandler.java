@@ -15,6 +15,6 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(NoHandlerFoundException.class)
     public ResponseEntity<String> handleNoHandlerFoundException(NoHandlerFoundException ex) {
-        return new ResponseEntity<>("The is not page, you are looking for...", HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>("The is not page, you are looking for ...", HttpStatus.NOT_FOUND);
     }
 }
