@@ -1,12 +1,10 @@
 package org.srd.ediary.domain.model;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 public class Entry {
     private Long id;
     private Diary diary;
-    private Mood mood;
     private String title;
     private String content;
     private final LocalDate createdDate;
@@ -14,7 +12,6 @@ public class Entry {
     public Entry(Diary diary, String title, String content) {
         this.id = null;
         this.diary = diary;
-        this.mood = null;
         this.title = title;
         this.content = content;
         this.createdDate = LocalDate.now();
@@ -26,10 +23,6 @@ public class Entry {
 
     public Diary getDiary() {
         return diary;
-    }
-
-    public Mood getMood() {
-        return mood;
     }
 
     public String getTitle() {
@@ -50,10 +43,6 @@ public class Entry {
 
     public void setDiary(Diary diary) {
         this.diary = diary;
-    }
-
-    public void setMood(Mood mood) {
-        this.mood = mood;
     }
 
     public void setTitle(String title) {
