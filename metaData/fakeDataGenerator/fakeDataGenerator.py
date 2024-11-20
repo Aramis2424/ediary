@@ -72,14 +72,14 @@ class DataGenerator:
     def create_diary_attributes_line(self, owner_id, diary_id):
         title = self.faker.sentence(nb_words=2)
         description = " ".join(self.faker.sentences(nb=1))
-        cnt_entry = DataGenerator.get_number_of_entries()
+        cnt_entries = DataGenerator.get_number_of_entries()
         created_date = self.faker.date_between_dates(date(2015, 1, 1), date(2020, 1, 1))
 
-        self.cnt_entries_per_diary[diary_id] = cnt_entry
+        self.cnt_entries_per_diary[diary_id] = cnt_entries
 
         table = "diaries"
-        columns = ["owner_fk", "title", "description", "cnt_entry", "created_date"]
-        values = [owner_id, title, description, cnt_entry, created_date]
+        columns = ["owner_fk", "title", "description", "cnt_entries", "created_date"]
+        values = [owner_id, title, description, cnt_entries, created_date]
 
         return DataGenerator.create_insert_command_line(table, columns, values)
 
@@ -119,12 +119,12 @@ class DataGenerator:
 
     def create_entry_attributes_line(self, diary_id):
         title = self.faker.sentence(nb_words=2)
-        description = " ".join(self.faker.sentences(nb=3))
+        content = " ".join(self.faker.sentences(nb=3))
         created_date = self.faker.date_between_dates(date(2020, 1, 1), date(2024, 1, 1))
 
         table = "entries"
-        columns = ["diary_id", "title", "description", "created_date"]
-        values = [diary_id, title, description, created_date]
+        columns = ["diary_fk", "title", "content", "created_date"]
+        values = [diary_id, title, content, created_date]
 
         return DataGenerator.create_insert_command_line(table, columns, values)
 
