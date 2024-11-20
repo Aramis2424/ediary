@@ -10,6 +10,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.srd.ediary.application.dto.OwnerCreateDTO;
 import org.srd.ediary.application.dto.OwnerInfoDTO;
+import org.srd.ediary.application.exception.InvalidCredentialsException;
 import org.srd.ediary.application.exception.OwnerAlreadyExistException;
 import org.srd.ediary.domain.model.Owner;
 import org.srd.ediary.domain.repository.OwnerRepository;
@@ -37,8 +38,8 @@ class OwnerServiceTest {
         Owner owner = new Owner("Ivan", LocalDate.of(2000, 1, 1), login, password);
         OwnerInfoDTO expected = new OwnerInfoDTO(null,"Ivan", LocalDate.of(2000, 1, 1),
                 login, LocalDate.now());
-        when(encoder.encode(anyString())).thenReturn("encodedPassword");
-        when(ownerRepo.getByLoginAndPassword(login, "encodedPassword")).thenReturn(Optional.of(owner));
+        when(encoder.matches(password, password)).thenReturn(true);
+        when(ownerRepo.getByLogin(login)).thenReturn(Optional.of(owner));
 
         OwnerInfoDTO actual = service.loginOwner(login, password);
 
@@ -49,10 +50,9 @@ class OwnerServiceTest {
     void testLoginOwnerNonExisting() {
         String login = "example";
         String password = "abc123";
-        when(encoder.encode(anyString())).thenReturn("encodedPassword");
-        when(ownerRepo.getByLoginAndPassword(login, "encodedPassword")).thenReturn(Optional.empty());
+        when(ownerRepo.getByLogin(login)).thenReturn(Optional.empty());
 
-        assertThrows(EntityNotFoundException.class, () -> service.loginOwner(login, password));
+        assertThrows(InvalidCredentialsException.class, () -> service.loginOwner(login, password));
     }
 
     @Test
@@ -61,11 +61,12 @@ class OwnerServiceTest {
         String password = "abc123";
         OwnerCreateDTO createDto = new OwnerCreateDTO("Ivan",
                 LocalDate.of(2000, 1, 1), login, password);
+        Owner owner = new Owner("Ivan", LocalDate.of(2000, 1, 1), login, password);
         OwnerInfoDTO expected = new OwnerInfoDTO(null,"Ivan", LocalDate.of(2000, 1, 1),
                 login, LocalDate.now());
         when(encoder.encode(anyString())).thenReturn("encodedPassword");
         when(ownerRepo.getByLogin(login)).thenReturn(Optional.empty());
-        when(ownerRepo.save(Mockito.any(Owner.class))).thenReturn(Mockito.any(Owner.class));
+        when(ownerRepo.save(Mockito.any(Owner.class))).thenReturn(owner);
 
         OwnerInfoDTO actual = service.registerOwner(createDto);
 

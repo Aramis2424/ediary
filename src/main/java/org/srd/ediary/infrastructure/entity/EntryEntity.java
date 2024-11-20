@@ -24,10 +24,6 @@ public class EntryEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "diary_fk")
     private DiaryEntity diary;
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "mood_fk")
-    private MoodEntity mood;
-
     private String title;
     private String content;
     @Column(name = "created_date")
