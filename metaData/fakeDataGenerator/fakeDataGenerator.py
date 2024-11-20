@@ -4,7 +4,7 @@ from random import randint
 
 
 class DataGenerator:
-    OWNERS_FILE = "./owners.sql"
+    OWNERS_FILE = "./data/owners.sql"
 
     gender = ["male", "female"]
     faker = Faker("en_US")
