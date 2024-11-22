@@ -3,6 +3,7 @@ package org.srd.ediary.application.security.jwt;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import javax.crypto.spec.SecretKeySpec;
@@ -14,8 +15,10 @@ import java.util.Map;
 
 @Component
 public class JwtUtils {
-    private final String jwtSecret = "yourSecretKey"; // Замените на свой секретный ключ
-    private final int jwtExpirationMs = 3600000; // 1 час
+    @Value("${jwt.secret}")
+    private String jwtSecret;
+    @Value("${jwt.expiration}")
+    private int jwtExpirationMs;
 
     // Генерация токена
     public String generateToken(String username) {
