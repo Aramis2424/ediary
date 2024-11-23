@@ -9,9 +9,11 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.srd.ediary.application.security.AuthUserDetailsService;
 import org.srd.ediary.application.security.jwt.JwtAuthenticationEntryPoint;
 import org.srd.ediary.application.security.jwt.JwtFilter;
@@ -33,6 +35,20 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.httpBasic(AbstractHttpConfigurer::disable);
         http.csrf(AbstractHttpConfigurer::disable);
+
+        http.authorizeHttpRequests(req -> {
+            req.requestMatchers("/token/*", "/hello").permitAll();
+            req.anyRequest().authenticated();
+        });
+
+        http.sessionManagement(session ->
+                session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+
+        http.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
+
+        http.exceptionHandling(exception ->
+                exception.authenticationEntryPoint(jwtAuthenticationEntryPoint));
+
         return http.build();
     }
 
