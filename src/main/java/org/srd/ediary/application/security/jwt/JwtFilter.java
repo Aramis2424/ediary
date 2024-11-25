@@ -8,6 +8,7 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -19,7 +20,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
-import java.util.Objects;
 
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
@@ -32,8 +32,9 @@ public class JwtFilter extends OncePerRequestFilter {
     private final UserDetailsService userDetailsService;
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
-            throws ServletException, IOException {
+    protected void doFilterInternal(@NonNull HttpServletRequest request,
+                                    @NonNull HttpServletResponse response,
+                                    @NonNull FilterChain chain) throws ServletException, IOException {
         try {
             final String header = request.getHeader(AUTHORIZATION);
             String token = null;
@@ -58,6 +59,8 @@ public class JwtFilter extends OncePerRequestFilter {
         } catch (ExpiredJwtException | BadCredentialsException | UnsupportedJwtException |
                  MalformedJwtException | SignatureException jwtException) {
             request.setAttribute("exception", jwtException);
+        } catch (Exception ex) {
+            request.setAttribute("exception", "Unknown error: " + ex.getMessage());
         }
         chain.doFilter(request, response);
     }

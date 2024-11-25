@@ -37,7 +37,8 @@ public class SecurityConfig {
         http.csrf(AbstractHttpConfigurer::disable);
 
         http.authorizeHttpRequests(req -> {
-            req.requestMatchers("/token/*", "/hello").permitAll();
+            req.requestMatchers("/token/*").permitAll();
+            req.requestMatchers("/hello").permitAll();
             req.anyRequest().authenticated();
         });
 
