@@ -11,6 +11,8 @@ import org.srd.ediary.application.security.dto.TokenResponse;
 import org.srd.ediary.application.security.jwt.JwtUtils;
 
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -24,7 +26,9 @@ public class TokenService {
                         tokenRequest.username(), tokenRequest.password())
         );
         final UserDetails userDetails = userDetailsService.loadUserByUsername(tokenRequest.username());
-        String token = jwtUtils.generateToken(Collections.emptyMap(), userDetails.getUsername());
+        Map<String, Object> claims = new HashMap<>();
+        claims.put("userId", 31);
+        String token = jwtUtils.generateToken(claims, userDetails.getUsername());
         return TokenResponse.builder()
                 .token(token)
                 .build();

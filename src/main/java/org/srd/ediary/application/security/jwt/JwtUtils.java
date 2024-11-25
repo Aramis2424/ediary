@@ -45,6 +45,10 @@ public class JwtUtils {
         return extractClaimBody(bearerToken, Claims::getSubject);
     }
 
+    public Long extractUserId(String bearerToken) {
+        return extractClaimBody(bearerToken, getUserId());
+    }
+
     public <T> T extractClaimBody(String bearerToken, Function<Claims, T> claimsResolver) {
         Jws<Claims> jwsClaims = extractClaims(bearerToken);
         return claimsResolver.apply(jwsClaims.getBody());
@@ -55,6 +59,10 @@ public class JwtUtils {
                 .setSigningKey(getSigningKey())
                 .build()
                 .parseClaimsJws(bearerToken);
+    }
+
+    private Function<Claims, Long> getUserId() {
+        return claims -> claims.get("userId", Long.class);
     }
 
     public boolean validateToken(String token, UserDetails userDetails) {
