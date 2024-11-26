@@ -17,11 +17,11 @@ import java.util.Optional;
 public class AuthUserDetailsService implements UserDetailsService {
     private final OwnerRepository ownerRepo;
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException { // TODO вернуть свой UserDetails с id
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         Optional<Owner> optionalOwner = ownerRepo.getByLogin(username);
         if (optionalOwner.isEmpty())
             throw new UsernameNotFoundException(String.format("User not found, or unauthorized %s", username));
         Owner owner = optionalOwner.get();
-        return new User(owner.getLogin(), owner.getPassword(), Collections.emptyList());
+        return new OwnerDetails(owner.getLogin(), owner.getPassword(), Collections.emptyList(), owner.getId());
     }
 }
