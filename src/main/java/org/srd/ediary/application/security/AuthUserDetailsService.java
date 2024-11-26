@@ -17,7 +17,7 @@ import java.util.Optional;
 public class AuthUserDetailsService implements UserDetailsService {
     private final OwnerRepository ownerRepo;
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException { // TODO вернуть свой UserDetails с id
         Optional<Owner> optionalOwner = ownerRepo.getByLogin(username);
         if (optionalOwner.isEmpty())
             throw new UsernameNotFoundException(String.format("User not found, or unauthorized %s", username));

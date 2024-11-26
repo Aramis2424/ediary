@@ -3,6 +3,7 @@ package org.srd.ediary.application.security.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.srd.ediary.application.security.AuthUserDetailsService;
@@ -25,7 +26,8 @@ public class TokenService {
         this.authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
                         tokenRequest.username(), tokenRequest.password())
         );
-        final UserDetails userDetails = userDetailsService.loadUserByUsername(tokenRequest.username());
+        final UserDetails userDetails = userDetailsService.loadUserByUsername(tokenRequest.username()); // TODO эти данные можно получить из securitySession по-идее
+        //final UserDetails userDetails1 = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         Map<String, Object> claims = new HashMap<>();
         claims.put("userId", 31);
         String token = jwtUtils.generateToken(claims, userDetails.getUsername());
