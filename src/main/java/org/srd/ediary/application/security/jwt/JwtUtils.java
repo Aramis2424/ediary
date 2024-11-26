@@ -65,9 +65,9 @@ public class JwtUtils {
         return claims -> claims.get("userId", Long.class);
     }
 
-    public boolean validateToken(String token, UserDetails userDetails) {
+    public boolean validateToken(String token) {
         final String userName = extractUsername(token);
-        return isTokenAlive(token) && userName.equals(userDetails.getUsername());
+        return isTokenAlive(token);
     }
 
     private Boolean isTokenAlive(String bearerToken) {
