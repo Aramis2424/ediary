@@ -2,6 +2,7 @@ package org.srd.ediary.application.service;
 
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.srd.ediary.application.dto.MoodCreateDTO;
@@ -25,12 +26,14 @@ public class MoodService {
     private final MoodRepository moodRepo;
     private final OwnerRepository ownerRepo;
 
+    @PreAuthorize("@moodAccess.isAllowed(#id, authentication.principal.id)")
     public MoodInfoDTO getMood(Long id) {
         Mood mood = moodRepo.getByID(id)
                 .orElseThrow(() -> new MoodNotFoundException("No mood with such id"));
         return MoodMapper.INSTANCE.moodToMoodInfoDto(mood);
     }
 
+    @PreAuthorize("#ownerID.equals(authentication.principal.id)")
     public List<MoodInfoDTO> getMoodsByOwner(Long ownerID) {
         List<Mood> moods = moodRepo.getAllByOwner(ownerID);
         List<MoodInfoDTO> dtoList = new ArrayList<>(moods.size());
@@ -39,12 +42,14 @@ public class MoodService {
         return dtoList;
     }
 
+    @PreAuthorize("#dto.ownerID().equals(authentication.principal.id)")
     public MoodInfoDTO create(MoodCreateDTO dto) {
         Owner owner = ownerRepo.getByID(dto.ownerID()).orElseThrow(() -> new OwnerNotFoundException("No such user"));
         Mood mood = new Mood(owner, dto.scoreMood(), dto.scoreProductivity(), dto.bedtime(), dto.wakeUpTime());
         return MoodMapper.INSTANCE.moodToMoodInfoDto(moodRepo.save(mood));
     }
 
+    @PreAuthorize("@moodAccess.isAllowed(#id, authentication.principal.id)")
     public MoodInfoDTO update(Long id, MoodUpdateDTO dto) {
         Mood mood = moodRepo.getByID(id)
                 .map(m -> {
@@ -58,6 +63,7 @@ public class MoodService {
         return MoodMapper.INSTANCE.moodToMoodInfoDto(moodRepo.save(mood));
     }
 
+    @PreAuthorize("@moodAccess.isAllowed(#id, authentication.principal.id)")
     public void delete(Long id) {
         moodRepo.delete(id);
     }
