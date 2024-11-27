@@ -38,7 +38,7 @@ public class DiaryService {
     }
 
     @PreAuthorize("#ownerID.equals(authentication.principal.id)")
-    public List<DiaryInfoDTO> getOwnerDiaries(Long ownerID) {
+    public List<DiaryInfoDTO> getOwnerDiaries(Long ownerID) { // TODO поменять название метода
         List<Diary> diaries = diaryRepo.getAllByOwner(ownerID);
 
         List<DiaryInfoDTO> diariesDTO = new ArrayList<>(diaries.size()); // TODO вынести в мэппер
