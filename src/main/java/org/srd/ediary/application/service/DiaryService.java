@@ -2,6 +2,8 @@ package org.srd.ediary.application.service;
 
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PostAuthorize;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.srd.ediary.application.dto.DiaryCreateDTO;
@@ -28,12 +30,14 @@ public class DiaryService {
     private final EntryRepository entryRepo;
     private final OwnerRepository ownerRepo;
 
+    @PreAuthorize("@diaryAccess.isAllowed(#id, authentication.principal.id)")
     public DiaryInfoDTO getDiary(Long id) {
         Diary diary = diaryRepo.getByID(id).orElseThrow(() -> new DiaryNotFoundException("No diary with such id"));
 
         return DiaryMapper.INSTANCE.diaryToDiaryInfoDto(diary);
     }
 
+    @PreAuthorize("#ownerID.equals(authentication.principal.id)")
     public List<DiaryInfoDTO> getOwnerDiaries(Long ownerID) {
         List<Diary> diaries = diaryRepo.getAllByOwner(ownerID);
 
@@ -44,6 +48,7 @@ public class DiaryService {
         return diariesDTO;
     }
 
+    @PreAuthorize("#dto.ownerID().equals(authentication.principal.id)")
     public DiaryInfoDTO create(DiaryCreateDTO dto) { // TODO реализовать как owner.addDiary(diary);
         Owner owner = ownerRepo.getByID(dto.ownerID()).orElseThrow(() -> new OwnerNotFoundException("No such owner"));
         Diary diary = new Diary(owner, dto.title(), dto.description());
@@ -51,6 +56,8 @@ public class DiaryService {
         return DiaryMapper.INSTANCE.diaryToDiaryInfoDto(diary);
     }
 
+
+    @PreAuthorize("@diaryAccess.isAllowed(#id, authentication.principal.id)")
     public DiaryInfoDTO update(Long id, DiaryUpdateDTO dto) {
         Diary diary = diaryRepo.getByID(id)
                 .map(d -> {
@@ -61,6 +68,7 @@ public class DiaryService {
         return DiaryMapper.INSTANCE.diaryToDiaryInfoDto(diary);
     }
 
+    @PreAuthorize("@diaryAccess.isAllowed(#id, authentication.principal.id)")
     public void remove(Long id) {
         List<Entry> entries = entryRepo.getAllByDiary(id);
         for (var entry : entries)
