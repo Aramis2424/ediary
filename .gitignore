@@ -1,6 +1,9 @@
 # Fake data
 metaData/fakeDataGenerator/data/
 
+# secrets properties file
+secrets.properties
+
 # Compiled class file
 *.class
 

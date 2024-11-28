@@ -2,6 +2,7 @@ package org.srd.ediary.application.service;
 
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.srd.ediary.application.dto.EntryCreateDTO;
@@ -26,12 +27,14 @@ public class EntryService {
     private final EntryRepository entryRepo;
     private final DiaryRepository diaryRepo;
 
+    @PreAuthorize("@entryAccess.isAllowed(#id, authentication.principal.id)")
     public EntryInfoDTO getEntry(Long id) {
         Entry entry = entryRepo.getByID(id)
                 .orElseThrow(() -> new EntryNotFoundException("No entry with such id"));
         return EntryMapper.INSTANCE.EntryToEntryInfoDto(entry);
     }
 
+    @PreAuthorize("@entryAccess.isDiaryBelongsOwner(#diaryID, authentication.principal.id)")
     public List<EntryInfoDTO> getAllEntriesByDiary(Long diaryID) {
         List<Entry> entries = entryRepo.getAllByDiary(diaryID);
         List<EntryInfoDTO> dtoList = new ArrayList<>(entries.size());
@@ -40,12 +43,14 @@ public class EntryService {
         return dtoList;
     }
 
+    @PreAuthorize("@entryAccess.isDiaryBelongsOwner(#dto.diaryID, authentication.principal.id)")
     public EntryInfoDTO create(EntryCreateDTO dto) {
         Diary diary = diaryRepo.getByID(dto.diaryID()).orElseThrow(() -> new DiaryNotFoundException("No such diary"));
         Entry entry = new Entry(diary, dto.title(), dto.content());
         return EntryMapper.INSTANCE.EntryToEntryInfoDto(entryRepo.save(entry));
     }
 
+    @PreAuthorize("@entryAccess.isAllowed(#id, authentication.principal.id)")
     public EntryInfoDTO update(Long id, EntryUpdateDTO dto) {
         Entry entry = entryRepo.getByID(id)
                 .map(e -> {
@@ -57,6 +62,7 @@ public class EntryService {
         return EntryMapper.INSTANCE.EntryToEntryInfoDto(entryRepo.save(entry));
     }
 
+    @PreAuthorize("@entryAccess.isAllowed(#id, authentication.principal.id)")
     public void delete(Long id) {
         entryRepo.delete(id);
     }
