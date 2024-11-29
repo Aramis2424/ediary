@@ -1,0 +1,14 @@
+TRUNCATE TABLE diaries RESTART IDENTITY CASCADE;
+INSERT INTO diaries (owner_fk, title, description, cnt_entries, created_date) VALUES (1, 'Budget.', 'Everyone health early senior attack coach whom some.', 1, '2018-12-24');
+INSERT INTO diaries (owner_fk, title, description, cnt_entries, created_date) VALUES (2, 'Amount.', 'Ask right fine example anything reality seek.', 0, '2017-05-09');
+INSERT INTO diaries (owner_fk, title, description, cnt_entries, created_date) VALUES (3, 'Special the.', 'View plant discussion say at enough.', 2, '2016-01-02');
+INSERT INTO diaries (owner_fk, title, description, cnt_entries, created_date) VALUES (4, 'Party result.', 'Morning system our yet she kid place.', 4, '2015-01-03');
+INSERT INTO diaries (owner_fk, title, description, cnt_entries, created_date) VALUES (5, 'Growth.', 'Sing whatever interest realize page.', 1, '2018-06-13');
+INSERT INTO diaries (owner_fk, title, description, cnt_entries, created_date) VALUES (6, 'Set.', 'Already quality both choice water.', 1, '2015-01-17');
+INSERT INTO diaries (owner_fk, title, description, cnt_entries, created_date) VALUES (6, 'List.', 'Road imagine political time above.', 3, '2019-01-05');
+INSERT INTO diaries (owner_fk, title, description, cnt_entries, created_date) VALUES (7, 'Set.', 'Thousand court act final seem.', 1, '2016-11-16');
+INSERT INTO diaries (owner_fk, title, description, cnt_entries, created_date) VALUES (7, 'Top.', 'Late store eight miss central.', 1, '2018-08-07');
+INSERT INTO diaries (owner_fk, title, description, cnt_entries, created_date) VALUES (8, 'Mother.', 'Not total important yet material ready relate.', 1, '2015-05-21');
+INSERT INTO diaries (owner_fk, title, description, cnt_entries, created_date) VALUES (9, 'But attention.', 'Explain stop of item.', 1, '2018-12-17');
+INSERT INTO diaries (owner_fk, title, description, cnt_entries, created_date) VALUES (9, 'Will.', 'Card voice figure article image president.', 2, '2015-01-09');
+INSERT INTO diaries (owner_fk, title, description, cnt_entries, created_date) VALUES (10, 'Ago however.', 'Yeah song instead return way check air.', 1, '2018-02-28');
