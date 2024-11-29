@@ -40,6 +40,7 @@ class DataGenerator:
     async def generate_owners(self):
         self.owners_cnt = self.MAX_COUNT
         with open(self.OWNERS_FILE, "w") as file:
+            file.write(SQLTruncateCommand("owners").get())
             for i in range(self.MAX_COUNT):
                 line = self.create_owner_attributes_line()
                 file.write(line)
@@ -60,6 +61,7 @@ class DataGenerator:
 
     async def generate_diaries(self):
         with open(self.DIARIES_FILE, "w") as file:
+            file.write(SQLTruncateCommand("diaries").get())
             diary_id = 1
             for owner_id in range(1, self.owners_cnt + 1):
                 cnt_per_owner = DataGenerator.get_number_of_diaries()
@@ -86,6 +88,7 @@ class DataGenerator:
 
     async def generate_moods(self):
         with open(self.MOODS_FILE, "w") as file:
+            file.write(SQLTruncateCommand("moods").get())
             for owner_id in range(1, self.owners_cnt + 1):
                 cnt_per_owner = DataGenerator.get_number_of_moods()
                 for j in range(cnt_per_owner):
@@ -112,6 +115,7 @@ class DataGenerator:
 
     async def generate_entries(self):
         with open(self.ENTRY_FILE, "w") as file:
+            file.write(SQLTruncateCommand("entries").get())
             for diary_id, cnt_entries in self.cnt_entries_per_diary.items():
                 for i in range(cnt_entries):
                     line = self.create_entry_attributes_line(diary_id)
@@ -184,6 +188,14 @@ class DataGenerator:
         line = line.get() if line else " "
         line += "\n"
         return line
+
+
+class SQLTruncateCommand:
+    def __init__(self, table_name):
+        self.table = table_name
+
+    def get(self):
+        return f"TRUNCATE TABLE {self.table} RESTART IDENTITY;\n"
 
 
 class SQLInsertCommand:
