@@ -31,13 +31,14 @@ class OwnerServiceTest {
     @InjectMocks
     private OwnerService service;
 
+    private final LocalDate birthDate = LocalDate.of(2000, 1, 1);
+
     @Test
     void testLoginOwnerExisting() {
         String login = "example";
         String password = "abc123";
-        Owner owner = new Owner("Ivan", LocalDate.of(2000, 1, 1), login, password);
-        OwnerInfoDTO expected = new OwnerInfoDTO(null,"Ivan", LocalDate.of(2000, 1, 1),
-                login, LocalDate.now());
+        Owner owner = new Owner("Ivan", birthDate, login, password);
+        OwnerInfoDTO expected = new OwnerInfoDTO(null,"Ivan", birthDate, login, LocalDate.now());
         when(encoder.matches(password, password)).thenReturn(true);
         when(ownerRepo.getByLogin(login)).thenReturn(Optional.of(owner));
 
@@ -56,15 +57,24 @@ class OwnerServiceTest {
     }
 
     @Test
+    void testLoginOwnerIncorrectPassword() {
+        String login = "example";
+        String password = "abc123";
+        Owner owner = new Owner("Ivan", birthDate, login, password);
+        when(encoder.matches(password, password)).thenReturn(false);
+        when(ownerRepo.getByLogin(login)).thenReturn(Optional.of(owner));
+
+        assertThrows(InvalidCredentialsException.class, () -> service.loginOwner(login, password));
+    }
+
+    @Test
     void testRegisterOwnerNonExistingLogin() {
         String login = "example";
         String password = "abc123";
-        OwnerCreateDTO createDto = new OwnerCreateDTO("Ivan",
-                LocalDate.of(2000, 1, 1), login, password);
-        Owner owner = new Owner("Ivan", LocalDate.of(2000, 1, 1), login, password);
-        OwnerInfoDTO expected = new OwnerInfoDTO(null,"Ivan", LocalDate.of(2000, 1, 1),
-                login, LocalDate.now());
-        when(encoder.encode(anyString())).thenReturn("encodedPassword");
+        OwnerCreateDTO createDto = new OwnerCreateDTO("Ivan", birthDate, login, password);
+        Owner owner = new Owner("Ivan", birthDate, login, password);
+        OwnerInfoDTO expected = new OwnerInfoDTO(null,"Ivan", birthDate, login, LocalDate.now());
+        when(encoder.encode(anyString())).thenReturn(anyString());
         when(ownerRepo.getByLogin(login)).thenReturn(Optional.empty());
         when(ownerRepo.save(Mockito.any(Owner.class))).thenReturn(owner);
 
@@ -78,10 +88,9 @@ class OwnerServiceTest {
     void testRegisterOwnerExistingLogin() {
         String login = "example";
         String password = "abc123";
-        OwnerCreateDTO createDto = new OwnerCreateDTO("Ivan",
-                LocalDate.of(2000, 1, 1), login, password);
-        Owner owner = new Owner("Ivan", LocalDate.of(2000, 1, 1), login, password);
-        when(encoder.encode(anyString())).thenReturn("encodedPassword");
+        OwnerCreateDTO createDto = new OwnerCreateDTO("Ivan", birthDate, login, password);
+        Owner owner = new Owner("Ivan", birthDate, login, password);
+        when(encoder.encode(anyString())).thenReturn(anyString());
         when(ownerRepo.getByLogin(login)).thenReturn(Optional.of(owner));
 
         assertThrows(OwnerAlreadyExistException.class, () -> service.registerOwner(createDto));
