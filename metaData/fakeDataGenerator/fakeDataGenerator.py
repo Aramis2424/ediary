@@ -12,6 +12,7 @@ class DataGenerator:
     DIARIES_FILE = DATA_FOLDER + "diaries.sql"
     MOODS_FILE = DATA_FOLDER + "moods.sql"
     ENTRY_FILE = DATA_FOLDER + "entry.sql"
+    IVAN_FILE = DATA_FOLDER + "ivan.sql"
 
     gender = ["male", "female"]
     faker = Faker("en_US")
@@ -21,6 +22,8 @@ class DataGenerator:
 
         self.owners_cnt = 0
         self.diaries_cnt = 0
+        self.moods_cnt = 0
+        self.entries_cnt = 0
 
         self.cnt_entries_per_diary = {}
 
@@ -35,7 +38,17 @@ class DataGenerator:
             self.generate_diaries()
         )
         await asyncio.gather(self.generate_entries())
+        self.generate_ivan()
         print("=== Generations successfully ===")
+
+    def generate_ivan(self, cnt_diaries=2, cnt_moods=3, cnt_entries=3):
+        generator = IvanGenerator(self.owners_cnt, self.diaries_cnt, cnt_diaries,
+                                  self.moods_cnt, cnt_moods, self.entries_cnt, cnt_entries)
+        sql_lines = generator.generate_all()
+        with open(self.IVAN_FILE, "w") as file:
+            for line in sql_lines:
+                file.write(line)
+        print("--- generate ivan successfully ---")
 
     async def generate_owners(self):
         self.owners_cnt = self.MAX_COUNT
@@ -94,6 +107,7 @@ class DataGenerator:
                 for j in range(cnt_per_owner):
                     line = self.create_mood_attributes_line(owner_id)
                     file.write(line)
+                self.moods_cnt += cnt_per_owner
         print("--- generate moods successfully ---")
 
     def create_mood_attributes_line(self, owner_id):
@@ -120,6 +134,7 @@ class DataGenerator:
                 for i in range(cnt_entries):
                     line = self.create_entry_attributes_line(diary_id)
                     file.write(line)
+                self.entries_cnt += cnt_entries
         print("--- generate entries successfully ---")
 
     def create_entry_attributes_line(self, diary_id):
@@ -234,6 +249,87 @@ class SQLInsertCommandBuilder:
         if not self.sql_command.table or not self.sql_command.columns or not self.sql_command.values:
             return None
         return self.sql_command
+
+
+class IvanGenerator:
+    faker = Faker("en_US")
+
+    def __init__(self, ivan_id, diary_id, diary_cnt, mood_id, mood_cnt, entry_id, entry_cnt):
+        self.ivan_id = ivan_id + 1
+        self.diary_id = diary_id + 1
+        self.mood_id = mood_id + 1
+        self.entry_id = entry_id + 1
+
+        self.diary_cnt = diary_cnt
+        self.mood_cnt = mood_cnt
+        self.entry_cnt = entry_cnt
+
+        self.sql_lines = []
+
+    def generate_all(self):
+        self.generate_account()
+        self.generate_diaries(self.ivan_id, self.diary_cnt, self.entry_cnt)
+        self.generate_moods(self.ivan_id, self.mood_cnt)
+        self.generate_entries(self.diary_id, self.entry_cnt)
+        return self.sql_lines
+
+    def generate_account(self):
+        name = "Ivan"
+        login = "ivan01"
+        password = DataGenerator.bcrypt_password("navi01")
+        birth_date = date(2000, 1, 1)
+        created_date = date(2020, 1, 1)
+
+        table = "owners"
+        columns = ["name", "birth_date", "login", "password", "created_date"]
+        values = [name, birth_date, login, password, created_date]
+        line = DataGenerator.create_insert_command_line(table, columns, values)
+        self.sql_lines.append(line)
+
+    def generate_diaries(self, owner_id, diary_cnt, entry_cnt):
+        for _ in range(diary_cnt):
+            title = self.faker.sentence(nb_words=2)
+            description = " ".join(self.faker.sentences(nb=1))
+            cnt_entries = entry_cnt
+            created_date = self.faker.date_between_dates(date(2020, 2, 1), date(2020, 2, 20))
+
+            table = "diaries"
+            columns = ["owner_fk", "title", "description", "cnt_entries", "created_date"]
+            values = [owner_id, title, description, cnt_entries, created_date]
+            line = DataGenerator.create_insert_command_line(table, columns, values)
+            self.sql_lines.append(line)
+
+    def generate_moods(self, owner_id, mood_cnt):
+        for _ in range(mood_cnt):
+            score_mood = randint(1, 10)
+            score_productivity = randint(1, 10)
+            created_date = self.faker.date_between_dates(date(2020, 3, 1), date(2020, 3, 20))
+
+            bedtime = self.faker.date_between_dates(date(2020, 2, 1), date(2020, 2, 20))
+            wake_up_time = bedtime + timedelta(hours=randint(1, 8))
+
+            bedtime = DataGenerator.get_formatted_datetime(bedtime)
+            wake_up_time = DataGenerator.get_formatted_datetime(wake_up_time)
+
+            table = "moods"
+            columns = ["owner_fk", "score_mood", "score_productivity", "bedtime", "wake_up_time", "created_date"]
+            values = [owner_id, score_mood, score_productivity, bedtime, wake_up_time, created_date]
+
+            line = DataGenerator.create_insert_command_line(table, columns, values)
+            self.sql_lines.append(line)
+
+    def generate_entries(self, diary_id, entries_cnt):
+        for _ in range(entries_cnt):
+            title = self.faker.sentence(nb_words=2)
+            content = " ".join(self.faker.sentences(nb=3))
+            created_date = self.faker.date_between_dates(date(2020, 3, 1), date(2020, 3, 20))
+
+            table = "entries"
+            columns = ["diary_fk", "title", "content", "created_date"]
+            values = [diary_id, title, content, created_date]
+
+            line = DataGenerator.create_insert_command_line(table, columns, values)
+            self.sql_lines.append(line)
 
 
 def main():
