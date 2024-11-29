@@ -1,0 +1,11 @@
+TRUNCATE TABLE owners RESTART IDENTITY CASCADE;
+INSERT INTO owners (name, birth_date, login, password, created_date) VALUES ('Philip', '2006-02-02', 'philip614', '$2b$12$DXNkCzxB.DUJVvIVaB75VuoReZNfwF/9dvRvpbETTlQkUG93V5.D6', '2012-02-25');
+INSERT INTO owners (name, birth_date, login, password, created_date) VALUES ('Donna', '1991-06-13', 'donna615', '$2b$12$YN4mqtkfcNTNUWB2AvwOAenb1UE9ZAo.FtHvJUq8.MCqWuEXGMbeW', '2013-12-10');
+INSERT INTO owners (name, birth_date, login, password, created_date) VALUES ('Ashley', '1977-12-06', 'ashley565', '$2b$12$rFrzp/wyDZxi87TOZbh8k.DodT6d9J7S49tfM.c30Ce/xh9lKN3r.', '2014-12-14');
+INSERT INTO owners (name, birth_date, login, password, created_date) VALUES ('Robert', '1979-02-18', 'robert891', '$2b$12$Qc6pCIPxkVWACc0vBKpym.Dqu544T6zvmWx/2e4w5X3h8sXxTNTG2', '2010-12-05');
+INSERT INTO owners (name, birth_date, login, password, created_date) VALUES ('Elizabeth', '1990-08-13', 'elizabeth942', '$2b$12$Dje0aNhwjgO.zYQMTYC5XuVSrzl2Ey1yk5ybN80ujKQDS8XeNSCUa', '2012-12-16');
+INSERT INTO owners (name, birth_date, login, password, created_date) VALUES ('Christina', '1974-05-24', 'christina677', '$2b$12$FQ7yrN9zFFoSQiWlNrXRfeDhr5qtphhExDbjTsw6j03qIE92sSpR2', '2012-03-22');
+INSERT INTO owners (name, birth_date, login, password, created_date) VALUES ('Derek', '2001-06-23', 'derek664', '$2b$12$vtwh3lT7Klx49/J0AdqNkuX4BqZ8GBGmpcAeHMP6lOyoPhaF1R3UO', '2013-01-08');
+INSERT INTO owners (name, birth_date, login, password, created_date) VALUES ('Annette', '1995-05-08', 'annette669', '$2b$12$fU9/0PxqbKr2cS7HpBE/zOn3BKtd2Air22p3unlyWmg5kqy/3rRR.', '2010-09-26');
+INSERT INTO owners (name, birth_date, login, password, created_date) VALUES ('Dwayne', '1975-05-21', 'dwayne707', '$2b$12$p1Wy9PCBVmEDyn4WWMxZSe2fVMZ1.dF/yZJjmNYnBVoL8IQ98LEzO', '2014-11-10');
+INSERT INTO owners (name, birth_date, login, password, created_date) VALUES ('Benjamin', '1997-08-21', 'benjamin773', '$2b$12$/eka9S1pIRfuO/J8cg968.Uq4cogZoE0C5XYgCHbdGpQh5ReyKLAS', '2013-10-14');
