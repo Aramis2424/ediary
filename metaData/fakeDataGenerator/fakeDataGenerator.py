@@ -210,7 +210,7 @@ class SQLTruncateCommand:
         self.table = table_name
 
     def get(self):
-        return f"TRUNCATE TABLE {self.table} RESTART IDENTITY;\n"
+        return f"TRUNCATE TABLE {self.table} RESTART IDENTITY CASCADE;\n"
 
 
 class SQLInsertCommand:
