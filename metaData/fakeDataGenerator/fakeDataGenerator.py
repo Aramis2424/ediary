@@ -3,6 +3,7 @@ from datetime import date, timedelta
 from faker import Faker
 from random import randint
 from pathlib import Path
+import bcrypt
 
 
 class DataGenerator:
@@ -48,7 +49,7 @@ class DataGenerator:
         name = self.faker.first_name()
         birth_date = self.faker.date_between_dates(date(1970, 1, 1), date(2010, 1, 1))
         login = DataGenerator.get_login_from_name(name)
-        password = self.faker.word() + str(randint(1, 199))
+        password = DataGenerator.bcrypt_password(self.faker.word() + str(randint(1, 199)))
         created_date = self.faker.date_between_dates(date(2010, 1, 1), date(2015, 1, 1))
 
         table = "owners"
@@ -131,6 +132,12 @@ class DataGenerator:
     @staticmethod
     def get_login_from_name(name):
         return name.lower() + str(randint(100, 999))
+
+    @staticmethod
+    def bcrypt_password(plain_password):
+        salt = bcrypt.gensalt()
+        hashed_password = bcrypt.hashpw(plain_password.encode('utf-8'), salt)
+        return hashed_password.decode('utf-8')
 
     @staticmethod
     def get_number_of_diaries():
