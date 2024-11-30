@@ -10,7 +10,6 @@ import org.srd.ediary.application.dto.EntryInfoDTO;
 import org.srd.ediary.application.dto.EntryUpdateDTO;
 import org.srd.ediary.application.exception.DiaryNotFoundException;
 import org.srd.ediary.application.exception.EntryNotFoundException;
-import org.srd.ediary.application.exception.OwnerNotFoundException;
 import org.srd.ediary.domain.model.Diary;
 import org.srd.ediary.domain.model.Entry;
 import org.srd.ediary.domain.model.Owner;

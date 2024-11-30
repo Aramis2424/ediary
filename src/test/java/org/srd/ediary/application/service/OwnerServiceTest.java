@@ -1,6 +1,5 @@
 package org.srd.ediary.application.service;
 
-import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -34,13 +33,13 @@ class OwnerServiceTest {
     private final LocalDate birthDate = LocalDate.of(2000, 1, 1);
 
     @Test
-    void testLoginOwnerExisting() {
+    void testLoginOwner_ExistingOwner() {
         String login = "example";
         String password = "abc123";
-        Owner owner = new Owner("Ivan", birthDate, login, password);
+        Owner gotOwner = new Owner("Ivan", birthDate, login, password);
         OwnerInfoDTO expected = new OwnerInfoDTO(null,"Ivan", birthDate, login, LocalDate.now());
         when(encoder.matches(password, password)).thenReturn(true);
-        when(ownerRepo.getByLogin(login)).thenReturn(Optional.of(owner));
+        when(ownerRepo.getByLogin(login)).thenReturn(Optional.of(gotOwner));
 
         OwnerInfoDTO actual = service.loginOwner(login, password);
 
@@ -48,7 +47,7 @@ class OwnerServiceTest {
     }
 
     @Test
-    void testLoginOwnerNonExisting() {
+    void testLoginOwner_NonExistingOwner() {
         String login = "example";
         String password = "abc123";
         when(ownerRepo.getByLogin(login)).thenReturn(Optional.empty());
@@ -57,41 +56,41 @@ class OwnerServiceTest {
     }
 
     @Test
-    void testLoginOwnerIncorrectPassword() {
+    void testLoginOwner_IncorrectPassword() {
         String login = "example";
         String password = "abc123";
-        Owner owner = new Owner("Ivan", birthDate, login, password);
+        Owner gotOwner = new Owner("Ivan", birthDate, login, password);
         when(encoder.matches(password, password)).thenReturn(false);
-        when(ownerRepo.getByLogin(login)).thenReturn(Optional.of(owner));
+        when(ownerRepo.getByLogin(login)).thenReturn(Optional.of(gotOwner));
 
         assertThrows(InvalidCredentialsException.class, () -> service.loginOwner(login, password));
     }
 
     @Test
-    void testRegisterOwnerNonExistingLogin() {
+    void testRegisterOwner_NonExistingLogin() {
         String login = "example";
         String password = "abc123";
         OwnerCreateDTO createDto = new OwnerCreateDTO("Ivan", birthDate, login, password);
-        Owner owner = new Owner("Ivan", birthDate, login, password);
+        Owner createdOwner = new Owner("Ivan", birthDate, login, password);
         OwnerInfoDTO expected = new OwnerInfoDTO(null,"Ivan", birthDate, login, LocalDate.now());
         when(encoder.encode(anyString())).thenReturn(anyString());
         when(ownerRepo.getByLogin(login)).thenReturn(Optional.empty());
-        when(ownerRepo.save(Mockito.any(Owner.class))).thenReturn(owner);
+        when(ownerRepo.save(Mockito.any(Owner.class))).thenReturn(createdOwner);
 
         OwnerInfoDTO actual = service.registerOwner(createDto);
 
-        verify(ownerRepo).save(Mockito.any(Owner.class));
+        verify(ownerRepo, times(1)).save(Mockito.any(Owner.class));
         assertEquals(expected, actual);
     }
 
     @Test
-    void testRegisterOwnerExistingLogin() {
+    void testRegisterOwner_AlreadyExistingLogin() {
         String login = "example";
         String password = "abc123";
         OwnerCreateDTO createDto = new OwnerCreateDTO("Ivan", birthDate, login, password);
-        Owner owner = new Owner("Ivan", birthDate, login, password);
+        Owner existingOwner = new Owner("Ivan", birthDate, login, password);
         when(encoder.encode(anyString())).thenReturn(anyString());
-        when(ownerRepo.getByLogin(login)).thenReturn(Optional.of(owner));
+        when(ownerRepo.getByLogin(login)).thenReturn(Optional.of(existingOwner));
 
         assertThrows(OwnerAlreadyExistException.class, () -> service.registerOwner(createDto));
 

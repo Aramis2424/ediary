@@ -5,7 +5,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.srd.ediary.application.dto.DiaryInfoDTO;
 import org.srd.ediary.application.dto.MoodCreateDTO;
 import org.srd.ediary.application.dto.MoodInfoDTO;
 import org.srd.ediary.application.dto.MoodUpdateDTO;
@@ -43,23 +42,23 @@ class MoodServiceTest {
 
     @Test
     void testGetMood_ExistingMood() {
-        final Long id = 1L;
+        final Long moodId = 1L;
         Mood gotMood = new Mood(owner, 7, 7, bedtime, wakeUpTime);
         MoodInfoDTO expected = new MoodInfoDTO(null, 7, 7,
                 bedtime, wakeUpTime, LocalDate.now());
-        when(moodRepo.getByID(id)).thenReturn(Optional.of(gotMood));
+        when(moodRepo.getByID(moodId)).thenReturn(Optional.of(gotMood));
 
-        MoodInfoDTO actual = service.getMood(id);
+        MoodInfoDTO actual = service.getMood(moodId);
 
         assertEquals(expected, actual);
     }
 
     @Test
     void testGetMood_NonExistingMood() {
-        final Long id = 1L;
-        when(moodRepo.getByID(id)).thenReturn(Optional.empty());
+        final Long moodId = 1L;
+        when(moodRepo.getByID(moodId)).thenReturn(Optional.empty());
 
-        assertThrows(MoodNotFoundException.class, () -> service.getMood(id));
+        assertThrows(MoodNotFoundException.class, () -> service.getMood(moodId));
     }
 
     @Test
