@@ -46,7 +46,7 @@ class OwnerRepositoryAdapterTest {
         Optional<Owner> gotOwner = repo.getByID(savedOwner.getId());
 
         assertTrue(gotOwner.isPresent());
-        assertEquals("Ivan", savedOwner.getName());
+        assertEquals("Ivan", gotOwner.get().getName());
     }
 
     @Test
@@ -67,7 +67,7 @@ class OwnerRepositoryAdapterTest {
         Optional<Owner> gotOwner = repo.getByLoginAndPassword("ivan01", "navi01");
 
         assertTrue(gotOwner.isPresent());
-        assertEquals("Ivan", savedOwner.getName());
+        assertEquals("Ivan", gotOwner.get().getName());
     }
 
     @Test
@@ -78,6 +78,6 @@ class OwnerRepositoryAdapterTest {
         Optional<Owner> gotOwner = repo.getByLogin("ivan01");
 
         assertTrue(gotOwner.isPresent());
-        assertEquals("Ivan", savedOwner.getName());
+        assertEquals("Ivan", gotOwner.get().getName());
     }
 }

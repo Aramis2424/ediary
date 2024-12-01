@@ -55,7 +55,7 @@ class MoodRepositoryAdapterTest {
 
         Optional<Mood> gotMood = repo.getByID(savedMood.getId());
 
-        assertNotNull(savedMood.getId());
+        assertTrue(gotMood.isPresent());
         assertEquals(7, savedMood.getScoreMood());
         assertEquals(8, savedMood.getScoreProductivity());
     }
@@ -75,15 +75,11 @@ class MoodRepositoryAdapterTest {
     void testGetAllByOwner() {
         Mood mood1 = new Mood(owner, 7, 8, bedtime, wakeUpTime);
         Mood mood2 = new Mood(owner, 5, 6, bedtime, wakeUpTime);
-        Mood savedMood1 = repo.save(mood1);
-        Mood savedMood2 = repo.save(mood2);
-
+        repo.save(mood1);
+        repo.save(mood2);
 
         List<Mood> moods = repo.getAllByOwner(owner.getId());
 
-        assertNotNull(savedMood1.getId());
-        assertNotNull(savedMood2.getId());
-        assertEquals(7, savedMood1.getScoreMood());
-        assertEquals(5, savedMood2.getScoreMood());
+        assertEquals(2, moods.size());
     }
 }
