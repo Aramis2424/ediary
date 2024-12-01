@@ -9,7 +9,6 @@ import org.srd.ediary.domain.model.Diary;
 import org.srd.ediary.domain.model.Owner;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -26,10 +25,6 @@ class DiaryRepositoryAdapterTest {
 
     private final LocalDate birthDate = LocalDate.of(2000, 1, 1);
     private Owner owner = new Owner("Ivan", birthDate, "ivan01", "navi01");
-    private final LocalDateTime bedtime = LocalDateTime
-            .of(2020, 1,1, 22,30);
-    private final LocalDateTime wakeUpTime = LocalDateTime
-            .of(2020, 1,2, 8,30);
 
     @BeforeEach
     void setUp() {

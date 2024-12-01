@@ -6,7 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.srd.ediary.domain.model.Owner;
-import org.srd.ediary.infrastructure.entity.OwnerEntity;
 import org.srd.ediary.infrastructure.exception.OwnerDeletionRestrictException;
 
 import java.time.LocalDate;
@@ -62,7 +61,7 @@ class OwnerRepositoryAdapterTest {
     @Test
     void testGetByLoginAndPassword() {
         Owner owner = new Owner("Ivan", birthDate, "ivan01", "navi01");
-        Owner savedOwner = repo.save(owner);
+        repo.save(owner);
 
         Optional<Owner> gotOwner = repo.getByLoginAndPassword("ivan01", "navi01");
 
@@ -73,7 +72,7 @@ class OwnerRepositoryAdapterTest {
     @Test
     void testGetByLogin() {
         Owner owner = new Owner("Ivan", birthDate, "ivan01", "navi01");
-        Owner savedOwner = repo.save(owner);
+        repo.save(owner);
 
         Optional<Owner> gotOwner = repo.getByLogin("ivan01");
 
