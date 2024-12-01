@@ -39,7 +39,7 @@ class OwnerRepositoryAdapterTest {
     }
 
     @Test
-    void getByID() {
+    void testGetByID() {
         Owner owner = new Owner("Ivan", birthDate, "ivan01", "navi01");
         Owner savedOwner = repo.save(owner);
 
@@ -50,7 +50,7 @@ class OwnerRepositoryAdapterTest {
     }
 
     @Test
-    void delete() {
+    void testDelete() {
         Owner owner = new Owner("Ivan", birthDate, "ivan01", "navi01");
         Owner savedOwner = repo.save(owner);
 
@@ -60,7 +60,7 @@ class OwnerRepositoryAdapterTest {
     }
 
     @Test
-    void getByLoginAndPassword() {
+    void testGetByLoginAndPassword() {
         Owner owner = new Owner("Ivan", birthDate, "ivan01", "navi01");
         Owner savedOwner = repo.save(owner);
 
@@ -71,7 +71,7 @@ class OwnerRepositoryAdapterTest {
     }
 
     @Test
-    void getByLogin() {
+    void testGetByLogin() {
         Owner owner = new Owner("Ivan", birthDate, "ivan01", "navi01");
         Owner savedOwner = repo.save(owner);
 
