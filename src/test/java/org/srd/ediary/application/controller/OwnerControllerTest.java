@@ -35,8 +35,6 @@ class OwnerControllerTest {
     @Autowired
     private MockMvc mockMvc;
     @MockBean
-    private Authentication authentication;
-    @MockBean
     private JwtFilter jwtFilter;
     @MockBean
     private OwnerService ownerService;
@@ -55,7 +53,6 @@ class OwnerControllerTest {
         JacksonTester.initFields(this, objectMapper);
         mockMvc = MockMvcBuilders
                 .standaloneSetup(new OwnerController(ownerService))
-                //.setCustomArgumentResolvers(putAuthenticationPrincipal)
                 .build();
     }
 
