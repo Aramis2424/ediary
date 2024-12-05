@@ -6,6 +6,7 @@ import org.springframework.stereotype.Repository;
 import org.srd.ediary.domain.model.Owner;
 import org.srd.ediary.domain.repository.OwnerRepository;
 import org.srd.ediary.infrastructure.entity.OwnerEntity;
+import org.srd.ediary.infrastructure.exception.OwnerDeletionRestrictException;
 import org.srd.ediary.infrastructure.mapper.OwnerEntityMapper;
 
 import java.util.Optional;
@@ -34,7 +35,7 @@ public class OwnerRepositoryAdapter implements OwnerRepository {
 
     @Override
     public void delete(Long id) {
-        repo.deleteById(id);
+        throw new OwnerDeletionRestrictException();
     }
 
     @Override
