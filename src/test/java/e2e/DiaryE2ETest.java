@@ -18,6 +18,8 @@ import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.DynamicPropertyRegistry;
+import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
@@ -89,12 +91,12 @@ public class DiaryE2ETest {
         }
     }
 
-    @BeforeAll
-    static void setUpContainer() throws IOException {
+    @DynamicPropertySource
+    static void registerProperties(DynamicPropertyRegistry registry) {
         postgresContainer.start();
-        System.setProperty("DB_URL", postgresContainer.getJdbcUrl());
-        System.setProperty("DB_USERNAME", postgresContainer.getUsername());
-        System.setProperty("DB_PASSWORD", postgresContainer.getPassword());
+        registry.add("spring.datasource.url", postgresContainer::getJdbcUrl);
+        registry.add("spring.datasource.username", postgresContainer::getUsername);
+        registry.add("spring.datasource.password", postgresContainer::getPassword);
     }
 
     @BeforeEach
