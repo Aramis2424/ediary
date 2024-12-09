@@ -3,6 +3,8 @@ package e2e;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.jayway.jsonpath.JsonPath;
+import integration.security.context.WithMockOwnerDetails;
+import jakarta.annotation.PostConstruct;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -12,49 +14,61 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.json.JacksonTester;
 import org.springframework.http.MediaType;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.test.context.jdbc.Sql;
-import org.springframework.test.web.reactive.server.WebTestClient;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.srd.ediary.EdiaryApplication;
+import org.srd.ediary.application.dto.DiaryCreateDTO;
+import org.srd.ediary.application.dto.DiaryUpdateDTO;
 import org.srd.ediary.application.security.dto.TokenRequest;
-import org.srd.ediary.domain.model.Owner;
+import org.srd.ediary.domain.model.Diary;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import org.testcontainers.utility.DockerImageName;
 
+import javax.sql.DataSource;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.time.LocalDate;
+import java.util.Optional;
 
+import static java.lang.Thread.sleep;
 import static org.hamcrest.Matchers.containsString;
 import static org.junit.jupiter.api.Assertions.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
 @SpringBootTest(classes = EdiaryApplication.class)
 @AutoConfigureMockMvc
 @Testcontainers
 @ActiveProfiles("e2e_test")
-@Sql(scripts = "/db/init.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
 public class DiaryE2ETest {
     @Autowired
     private MockMvc mockMvc;
     @Autowired
     private JdbcTemplate jdbcTemplate;
+    private static boolean isDataLoaded = false;
 
     private final PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
     private JacksonTester<TokenRequest> requestJson;
+    private JacksonTester<DiaryCreateDTO> creationJson;
+    private JacksonTester<DiaryUpdateDTO> updateJson;
 
+    private final Long ownerId = 11L;
+    private final Long diaryId = 14L;
     private final String login = "ivan01";
     private final String password = "navi01";
-    private final LocalDate birthDate = LocalDate.of(2000, 1, 1);
     private final TokenRequest tokenRequest = new TokenRequest(login, password);
     private String token;
 
@@ -65,8 +79,18 @@ public class DiaryE2ETest {
             .withUsername("test_user")
             .withPassword("test_password");
 
+    @PostConstruct
+    void loadTestData() throws IOException {
+        if (!isDataLoaded) {
+            String sql = Files.readString(Path.of("src/test/resources/db/init.sql"));
+            jdbcTemplate.execute(sql);
+            System.out.println("Test data initialized.");
+            isDataLoaded = true;
+        }
+    }
+
     @BeforeAll
-    static void setUpContainer() {
+    static void setUpContainer() throws IOException {
         postgresContainer.start();
         System.setProperty("DB_URL", postgresContainer.getJdbcUrl());
         System.setProperty("DB_USERNAME", postgresContainer.getUsername());
@@ -81,11 +105,9 @@ public class DiaryE2ETest {
         JacksonTester.initFields(this, objectMapper);
     }
 
-    @BeforeEach
     @Test
     void checkLoadingData() {
         Integer count = jdbcTemplate.queryForObject("SELECT COUNT(*) FROM owners", Integer.class);
-        System.out.println("Number of owners: " + count);
         assertNotNull(count);
         assertTrue(count > 0);
     }
@@ -105,15 +127,171 @@ public class DiaryE2ETest {
     }
 
     @Test
-    void testGetDiaryById() throws Exception {
+    void getToken_Invalid() throws Exception{
+        TokenRequest invalidTokenRequest = new TokenRequest("err", "err");
+        mockMvc.perform(post("/token/create")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .content(requestJson.write(invalidTokenRequest).getJson())
+                )
+                .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    void testGetOwner() throws Exception {
         mockMvc.perform(get("/")
-                        .param("id", "123")
+                        .param("id", "-1")
                         .param("name", "Ivan")
-                .header("Authorization", "Bearer " + token)
+                        .header("Authorization", "Bearer " + token)
                 )
                 .andExpect(status().isOk())
                 .andExpect(content()
-                        .string(containsString("Ivan"))
+                        .string(containsString("ivan01"))
                 );
+    }
+
+    @Test
+    void testGetDiaryById_Valid() throws Exception {
+        mockMvc.perform(get("/diaries/" + diaryId)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .content(String.valueOf(diaryId))
+                        .header("Authorization", "Bearer " + token)
+                )
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.title").value("Direction."));
+    }
+
+    @Test
+    void testGetDiaryById_InvalidToken() throws Exception {
+        mockMvc.perform(get("/diaries/" + diaryId)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .content(String.valueOf(diaryId))
+                        .header("Authorization", "Bearer " + "abc")
+                )
+                .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    void testGetDiaryById_Unauthorized() throws Exception {
+        mockMvc.perform(get("/diaries/" + diaryId)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .content(String.valueOf(diaryId))
+                )
+                .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    void testGetDiaryById_Forbidden() throws Exception {
+        Long alienDiaryId = 13L;
+
+        mockMvc.perform(get("/diaries/" + alienDiaryId)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .content(String.valueOf(alienDiaryId))
+                        .header("Authorization", "Bearer " + token)
+                )
+                .andExpect(status().isForbidden());
+    }
+
+    @Test
+    void testGetDiariesByOwner_WithAccess() throws Exception{
+        mockMvc.perform(get("/diaries/owner/" + ownerId)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .content(String.valueOf(ownerId))
+                        .header("Authorization", "Bearer " + token)
+                )
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.length()").value(2));
+    }
+
+    @Test
+    void testGetDiariesByOwner_WithNoAccess() throws Exception{
+        Long alienOwnerId = 1L;
+        mockMvc.perform(get("/diaries/owner/" + alienOwnerId)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .content(String.valueOf(alienOwnerId))
+                        .header("Authorization", "Bearer " + token)
+                )
+                .andExpect(status().isForbidden());
+    }
+
+    @Test
+    void testCreateDiary_WithAccess() throws Exception {
+        DiaryCreateDTO input = new DiaryCreateDTO(ownerId, "d1", "of1");
+
+        mockMvc.perform(post("/diaries")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .characterEncoding("UTF-8")
+                        .accept(MediaType.APPLICATION_JSON)
+                        .content(creationJson.write(input).getJson())
+                        .header("Authorization", "Bearer " + token)
+                )
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.title").value("d1"))
+                .andExpect(jsonPath("$.description").value("of1"));
+    }
+
+    @Test
+    void testCreateDiary_WithNoAccess() throws Exception {
+        Long alienOwnerId = 1L;
+        DiaryCreateDTO input = new DiaryCreateDTO(alienOwnerId, "d1", "of1");
+
+        mockMvc.perform(post("/diaries")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .characterEncoding("UTF-8")
+                        .accept(MediaType.APPLICATION_JSON)
+                        .content(creationJson.write(input).getJson())
+                        .header("Authorization", "Bearer " + token)
+                )
+                .andExpect(status().isForbidden());
+    }
+
+    @Test
+    void testUpdateDiary_WithAccess() throws Exception {
+        DiaryUpdateDTO input = new DiaryUpdateDTO("Direction.", "of1");
+
+        mockMvc.perform(put("/diaries/" + diaryId)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .characterEncoding("UTF-8")
+                        .accept(MediaType.APPLICATION_JSON)
+                        .content(updateJson.write(input).getJson())
+                        .header("Authorization", "Bearer " + token)
+                )
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.title").value("Direction."))
+                .andExpect(jsonPath("$.description").value("of1"));
+    }
+
+    @Test
+    void testUpdateDiary_WithNoAccess() throws Exception {
+        long alienDiaryId = 1L;
+        DiaryUpdateDTO input = new DiaryUpdateDTO("d1", "of1");
+
+        mockMvc.perform(put("/diaries/" + alienDiaryId)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .characterEncoding("UTF-8")
+                        .accept(MediaType.APPLICATION_JSON)
+                        .content(updateJson.write(input).getJson())
+                        .header("Authorization", "Bearer " + token)
+                )
+                .andExpect(status().isForbidden());
+    }
+
+    @Test
+    void testDeleteDiary_WithNoAccess() throws Exception {
+        Long alienDiaryId = 1L;
+        mockMvc.perform(delete("/diaries/" + alienDiaryId)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .characterEncoding("UTF-8")
+                        .accept(MediaType.APPLICATION_JSON)
+                        .content(String.valueOf(alienDiaryId))
+                        .header("Authorization", "Bearer " + token)
+                )
+                .andExpect(status().isForbidden());
     }
 }
