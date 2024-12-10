@@ -2,6 +2,7 @@ plugins {
 	id 'java'
 	id 'org.springframework.boot' version '3.3.4'
 	id 'io.spring.dependency-management' version '1.1.6'
+	//id 'io.qameta.allure' version '2.11.2'
 	id 'jacoco'
 }
 
@@ -18,11 +19,18 @@ configurations {
 	compileOnly {
 		extendsFrom annotationProcessor
 	}
+	developmentOnly
+	runtimeClasspath {
+		extendsFrom developmentOnly
+	}
 }
 
 repositories {
 	mavenCentral()
 }
+
+def allureVersion = "2.25.0"
+def allurePath = "D:\\allure\\allure-2.32.0\\bin\\allure.bat"
 
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
@@ -44,17 +52,18 @@ dependencies {
 	annotationProcessor 'org.mapstruct:mapstruct-processor:1.4.2.Final'
 
 	implementation 'org.postgresql:postgresql'
+	testImplementation 'com.h2database:h2'
 
 	implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
 	runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.5'
 	runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.11.5'
-}
 
-configurations {
-	developmentOnly
-	runtimeClasspath {
-		extendsFrom developmentOnly
-	}
+	testImplementation platform("io.qameta.allure:allure-bom:$allureVersion")
+	testImplementation "io.qameta.allure:allure-junit5"
+
+	testImplementation 'org.testcontainers:testcontainers'
+	testImplementation 'org.testcontainers:postgresql'
+	testImplementation 'org.testcontainers:junit-jupiter'
 }
 
 tasks.named('test') {
@@ -67,7 +76,46 @@ test {
 	jvmArgs '-Xshare:off'
 }
 
-
 jacocoTestReport {
 	dependsOn test
+	afterEvaluate {
+		classDirectories.setFrom(files(classDirectories.files.collect {
+			fileTree(dir: it, exclude: ['**/generated/**', '**/allure/**'])
+		}))
+	}
+}
+
+tasks.register('alreport') {
+	group = 'Verification'
+	description = 'Genarates and run allure report saving history'
+
+	dependsOn copyAllureHistory
+	doLast {
+		exec {
+			commandLine allurePath, 'generate', '--clean', "build/allure-results",
+					'-o', "build/allure-report"
+		}
+		exec {
+			commandLine allurePath, 'open', "build/allure-report"
+		}
+	}
+}
+
+tasks.register('copyAllureHistory') {
+	doFirst {
+		def reportDir = file("build/allure-report/history")
+		def resultsDir = file("build/allure-results/history")
+		if (reportDir.exists()) {
+			copy {
+				from reportDir
+				into resultsDir
+			}
+		}
+	}
+}
+
+tasks.withType(Test).configureEach {
+	jvmArgs '-Dorg.aspectj.weaver.showWeaveInfo=false',
+			'-Dorg.aspectj.weaver.avoidAjcoreFiles=true',
+			'-Dorg.aspectj.weaver.Dump.exception=false'
 }
