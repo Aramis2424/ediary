@@ -15,6 +15,7 @@ class MenuController {
             when (ioUtil.input()) {
                 "24" -> executor.launchHelloWorldController()
                 "0" -> executor.exitApp()
+                "1" -> executor.launchOwnerController()
                 else -> ioUtil.outputInvalidChoice()
             }
         }
@@ -23,6 +24,7 @@ class MenuController {
 
 class MenuExec {
     private val helloWorldController = HelloWorldController()
+    private val ownerController = OwnerController()
 
     fun exitApp() {
         println("Пока-пока!")
@@ -31,5 +33,9 @@ class MenuExec {
 
     suspend fun launchHelloWorldController() {
         helloWorldController.start()
+    }
+
+    suspend fun launchOwnerController() {
+        ownerController.entrance()
     }
 }
