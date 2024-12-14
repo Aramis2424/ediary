@@ -24,3 +24,10 @@ data class OwnerCreateDTO(val name: String,
                           val birthDate: LocalDate,
                           val login: String,
                           val password: String)
+
+@Serializable
+data class TokenResponse(val token: String)
+
+@Serializable
+data class TokenRequest(val username: String, val password: String)
+
