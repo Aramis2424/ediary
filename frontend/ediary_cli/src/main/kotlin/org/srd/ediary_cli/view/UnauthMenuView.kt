@@ -1,6 +1,6 @@
 package org.srd.ediary_cli.view
 
-class MenuView {
+class UnauthMenuView {
     private val helloWorldCommand = 24
     private val exitCommand = 0
     private val ownerCommand = 1

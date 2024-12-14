@@ -1,11 +1,11 @@
 package org.srd.ediary_cli.controller
 
 import org.srd.ediary_cli.util.IOUtil
-import org.srd.ediary_cli.view.MenuView
+import org.srd.ediary_cli.view.UnauthMenuView
 
 class MenuController {
     private val executor = MenuExec()
-    private val view = MenuView()
+    private val view = UnauthMenuView()
     private val ioUtil = IOUtil()
 
     suspend fun start() {
