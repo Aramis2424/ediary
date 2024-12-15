@@ -3,6 +3,8 @@ package org.srd.ediary_cli.controller
 import io.ktor.client.call.*
 import io.ktor.client.request.*
 import io.ktor.http.*
+import org.srd.ediary_cli.model.OwnerCreateDTO
+import org.srd.ediary_cli.model.OwnerInfoDTO
 import org.srd.ediary_cli.model.TokenRequest
 import org.srd.ediary_cli.model.TokenResponse
 import org.srd.ediary_cli.service.HttpService
@@ -14,7 +16,8 @@ class OwnerController {
     private val executor = OwnerExec()
     private val view = OwnerView()
     private val ioUtil = IOUtil()
-    private val localStorage = LocalStorage
+
+    private val authMenuController = AuthMenuController()
 
     suspend fun entrance() {
         while (true) {
@@ -27,11 +30,18 @@ class OwnerController {
                         println("Неверные данные. Пожалуйста повторите попытку\n")
                         continue
                     }
-                    localStorage.token = token.token
-                    println("Вход выполнен успешно") // TODO в случае неверных данных возвращается bat cre...
-                    // TODO передать управление контроллеру diary
+                    LocalStorage.token = token.token
+                    println("Вход выполнен успешно")
+
+                    authMenuController.start()
                 }
-                "2" -> executor.registerRequest()
+                "2" -> {
+                    if (executor.registerRequest() == null) {
+                        println("Пользователь с таким логином уже существует. Повторите попытку\n")
+                    } else {
+                        println("Вы успешно зарегистрированы. Теперь можете войти")
+                    }
+                }
                 "0" -> return
                 else -> ioUtil.outputInvalidChoice()
             }
@@ -47,20 +57,43 @@ class OwnerExec {
         val login = ioUtil.inputString("Введите логин: ")
         val password = ioUtil.inputString("Введите пароль: ")
         val loginDto = TokenRequest(login, password)
+
+        LocalStorage.currentOwnerName = login
         return sendLoginRequest(loginDto)
     }
 
     private suspend fun sendLoginRequest(loginDto: TokenRequest): TokenResponse? {
-        return client.post("${HttpService.BASE_URL}/token/create") {
+        val res = client.post("${HttpService.BASE_URL}/token/create") {
             contentType(ContentType.Application.Json)
             setBody(loginDto)
-        }.body()
+        }
+        return try {
+            res.body()
+        } catch (ex : Exception) {
+            null
+        }
     }
 
-    fun registerRequest() {
+    suspend fun registerRequest() : OwnerInfoDTO? {
         val name = ioUtil.inputString("Введите Ваше имя: ")
         val login = ioUtil.inputString("Придумайте логин: ")
-        val password = ioUtil.inputString("Придумайте пароль пароль: ")
+        val password = ioUtil.inputString("Придумайте пароль: ")
+        val birthDate = ioUtil.inputLocalDate("Введите дату рождения: ")
+
+        val newOwner = OwnerCreateDTO(name, birthDate, login, password)
+        return sendRegisterRequest(newOwner)
     }
 
+    private suspend fun sendRegisterRequest(registerDTO: OwnerCreateDTO): OwnerInfoDTO? {
+        val res = client.post("${HttpService.BASE_URL}/owner/register") {
+            contentType(ContentType.Application.Json)
+            setBody(registerDTO)
+        }
+        return try {
+            res.body()
+        } catch (ex : Exception) {
+            null
+        }
+
+    }
 }
