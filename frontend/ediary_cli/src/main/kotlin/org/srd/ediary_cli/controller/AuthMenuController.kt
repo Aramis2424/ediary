@@ -22,10 +22,8 @@ class AuthMenuController {
 }
 
 class AuthMenuExec {
-    private val ownerName = LocalStorage.currentOwnerName
-
     fun exitApp() {
-        println("Пока-пока, $ownerName!")
+        println("Пока-пока, ${LocalStorage.currentOwnerName}!")
         kotlin.system.exitProcess(0)
     }
 }
