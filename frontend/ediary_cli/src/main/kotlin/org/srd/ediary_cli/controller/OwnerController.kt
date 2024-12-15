@@ -3,10 +3,7 @@ package org.srd.ediary_cli.controller
 import io.ktor.client.call.*
 import io.ktor.client.request.*
 import io.ktor.http.*
-import org.srd.ediary_cli.model.OwnerCreateDTO
-import org.srd.ediary_cli.model.OwnerInfoDTO
-import org.srd.ediary_cli.model.TokenRequest
-import org.srd.ediary_cli.model.TokenResponse
+import org.srd.ediary_cli.model.*
 import org.srd.ediary_cli.service.HttpService
 import org.srd.ediary_cli.util.IOUtil
 import org.srd.ediary_cli.util.LocalStorage
@@ -57,8 +54,23 @@ class OwnerExec {
         val password = ioUtil.inputString("Введите пароль: ")
         val loginDto = TokenRequest(login, password)
 
-        LocalStorage.currentOwnerName = login
+        val ownerInfoRequest = OwnerLoginDTO(login, password)
+        val ownerInfo = extractOwnerInfo(ownerInfoRequest)
+        LocalStorage.currentOwner = ownerInfo
+
         return sendLoginRequest(loginDto)
+    }
+
+    private suspend fun extractOwnerInfo(loginDto: OwnerLoginDTO): OwnerInfoDTO? {
+        val res = client.post("${HttpService.BASE_URL}/owner/login") {
+            contentType(ContentType.Application.Json)
+            setBody(loginDto)
+        }
+        return try {
+            res.body()
+        } catch (ex : Exception) {
+            null
+        }
     }
 
     private suspend fun sendLoginRequest(loginDto: TokenRequest): TokenResponse? {
