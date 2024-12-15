@@ -1,5 +1,12 @@
 package org.srd.ediary_cli.util
 
+import kotlinx.datetime.LocalDate
+import kotlinx.datetime.LocalDateTime
+import kotlinx.datetime.toKotlinLocalDateTime
+import java.time.LocalDateTime as JavaLocalDateTime
+import java.time.format.DateTimeFormatter
+import java.time.format.DateTimeParseException
+
 class IOUtil {
     fun input(): String? {
         print("Ввод: ")
@@ -26,16 +33,85 @@ class IOUtil {
 
     fun inputLocalDate(msg: String?): String {
         print(msg ?: "")
-        TODO()
+        println("Формат даты: гггг-мм-дд")
+
+        val res : String
+        while(true) {
+            val input = readlnOrNull()
+            val date = parseDate(input)
+            if (date == null) {
+                println("Неверный формат даты. Повторите ввод")
+                continue
+            }
+            res = date.toString()
+            break
+        }
+        return res
     }
 
     fun inputLocalDateTime(msg: String?): String {
         print(msg ?: "")
-        TODO()
+        println("Формат даты и времени: гггг-мм-ддTчч:мм")
+        println("Пример: 2020-12-30T22:00")
+
+        val res : String
+        while(true) {
+            val input = readlnOrNull()
+            val date = parseDateTime(input)
+            if (date == null) {
+                println("Неверный формат даты. Повторите ввод")
+                continue
+            }
+            res = date.toString()
+            break
+        }
+        return res
     }
 
-    fun inputNumber(msg: String?): String {
+    fun inputNumber(msg: String?): Int {
         print(msg ?: "")
-        TODO()
+
+        val res : Int
+        while(true) {
+            val input = readlnOrNull()
+            val number = parseNumber(input)
+            if (number == null) {
+                println("Вы ввели не число. Повторите ввод")
+                continue
+            }
+            res = number
+            break
+        }
+        return res
+    }
+
+    private fun parseNumber(input: String?): Int? {
+        return try {
+            input?.toInt()
+        } catch (e: NumberFormatException) {
+            null
+        }
+    }
+
+    private fun parseDate(input: String?): LocalDate? {
+        return try {
+            input?.let {
+                LocalDate.parse(it)
+            }
+        } catch (e: DateTimeParseException) {
+            null
+        }
+    }
+
+    private fun parseDateTime(input: String?): LocalDateTime? {
+        return try {
+            input?.let {
+                val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm")
+                val javaDateTime = JavaLocalDateTime.parse(it, formatter)
+                javaDateTime.toKotlinLocalDateTime()
+            }
+        } catch (e: DateTimeParseException) {
+            null
+        }
     }
 }
