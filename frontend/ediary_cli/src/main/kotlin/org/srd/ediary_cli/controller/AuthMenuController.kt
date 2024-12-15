@@ -15,6 +15,7 @@ class AuthMenuController {
 
             when (ioUtil.input()) {
                 "0" -> executor.exitApp()
+                "2" -> executor.launchMoodController()
                 else -> ioUtil.outputInvalidChoice()
             }
         }
@@ -22,8 +23,14 @@ class AuthMenuController {
 }
 
 class AuthMenuExec {
+    private val moodController = MoodController()
+
     fun exitApp() {
         println("Пока-пока, ${LocalStorage.currentOwnerName}!")
         kotlin.system.exitProcess(0)
+    }
+
+    suspend fun launchMoodController() {
+        moodController.start()
     }
 }

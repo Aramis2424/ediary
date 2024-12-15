@@ -17,8 +17,6 @@ class OwnerController {
     private val view = OwnerView()
     private val ioUtil = IOUtil()
 
-    private val authMenuController = AuthMenuController()
-
     suspend fun entrance() {
         while (true) {
             view.getEntranceView()
@@ -33,7 +31,7 @@ class OwnerController {
                     LocalStorage.token = token.token
                     println("Вход выполнен успешно")
 
-                    authMenuController.start()
+                    executor.launchAuthMenuController()
                 }
                 "2" -> {
                     if (executor.registerRequest() == null) {
@@ -52,6 +50,7 @@ class OwnerController {
 class OwnerExec {
     private val ioUtil = IOUtil()
     private val client = HttpService.client
+    private val authMenuController = AuthMenuController()
 
     suspend fun loginRequest(): TokenResponse? {
         val login = ioUtil.inputString("Введите логин: ")
@@ -95,5 +94,9 @@ class OwnerExec {
             null
         }
 
+    }
+
+    suspend fun launchAuthMenuController() {
+        authMenuController.start()
     }
 }
