@@ -3,6 +3,7 @@ package org.srd.ediary_cli.util
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.toKotlinLocalDateTime
+import java.lang.Exception
 import java.time.LocalDateTime as JavaLocalDateTime
 import java.time.format.DateTimeFormatter
 import java.time.format.DateTimeParseException
@@ -31,11 +32,11 @@ class IOUtil {
         return res
     }
 
-    fun inputLocalDate(msg: String?): String {
-        print(msg ?: "")
+    fun inputLocalDate(msg: String?): LocalDate {
         println("Формат даты: гггг-мм-дд")
+        print(msg ?: "")
 
-        val res : String
+        val res : LocalDate
         while(true) {
             val input = readlnOrNull()
             val date = parseDate(input)
@@ -43,18 +44,18 @@ class IOUtil {
                 println("Неверный формат даты. Повторите ввод")
                 continue
             }
-            res = date.toString()
+            res = date
             break
         }
         return res
     }
 
-    fun inputLocalDateTime(msg: String?): String {
-        print(msg ?: "")
+    fun inputLocalDateTime(msg: String?): LocalDateTime {
         println("Формат даты и времени: гггг-мм-ддTчч:мм")
         println("Пример: 2020-12-30T22:00")
+        print(msg ?: "")
 
-        val res : String
+        val res : LocalDateTime
         while(true) {
             val input = readlnOrNull()
             val date = parseDateTime(input)
@@ -62,7 +63,7 @@ class IOUtil {
                 println("Неверный формат даты. Повторите ввод")
                 continue
             }
-            res = date.toString()
+            res = date
             break
         }
         return res
@@ -98,7 +99,7 @@ class IOUtil {
             input?.let {
                 LocalDate.parse(it)
             }
-        } catch (e: DateTimeParseException) {
+        } catch (e: Exception) {
             null
         }
     }
@@ -110,7 +111,7 @@ class IOUtil {
                 val javaDateTime = JavaLocalDateTime.parse(it, formatter)
                 javaDateTime.toKotlinLocalDateTime()
             }
-        } catch (e: DateTimeParseException) {
+        } catch (e: Exception) {
             null
         }
     }
