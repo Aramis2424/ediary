@@ -15,6 +15,7 @@ class AuthMenuController {
 
             when (ioUtil.input()) {
                 "0" -> executor.exitApp()
+                "1" -> executor.launchDiaryController()
                 "2" -> executor.launchMoodController()
                 else -> ioUtil.outputInvalidChoice()
             }
@@ -23,6 +24,7 @@ class AuthMenuController {
 }
 
 class AuthMenuExec {
+    private val diaryController = DiaryController()
     private val moodController = MoodController()
 
     fun exitApp() {
@@ -32,5 +34,9 @@ class AuthMenuExec {
 
     suspend fun launchMoodController() {
         moodController.start()
+    }
+
+    suspend fun launchDiaryController() {
+        diaryController.start()
     }
 }
