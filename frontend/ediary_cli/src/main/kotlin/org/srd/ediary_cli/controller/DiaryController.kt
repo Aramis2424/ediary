@@ -125,7 +125,7 @@ private class DiaryExec {
         return true
     }
 
-    fun launchEntryController(diaryId: Long) {
+    suspend fun launchEntryController(diaryId: Long) {
         val entryController = EntryController(diaryId)
         entryController.start()
     }
