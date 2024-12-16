@@ -31,6 +31,12 @@ class DiaryController {
             when (ioUtil.input()) {
                 "0" -> return
                 "1" -> {
+                    val diary = executor.getDiaryRequest()
+                    if (diary == null) {
+                        println("Что-то пошло не так")
+                    } else {
+                        executor.launchEntryController(diary.id)
+                    }
                 }
                 "2" -> {
                     val diary = executor.createDiaryRequest()
@@ -117,5 +123,29 @@ private class DiaryExec {
             return false
         }
         return true
+    }
+
+    fun launchEntryController(diaryId: Long) {
+        val entryController = EntryController(diaryId)
+        entryController.start()
+    }
+
+    suspend fun getDiaryRequest(): DiaryInfoDTO? {
+        val diaryId = ioUtil.inputNumber("Укажите id дневника, который хотите открыть: ")
+        return sendGetDiaryRequest(diaryId)
+    }
+
+    private suspend fun sendGetDiaryRequest(diaryId: Int): DiaryInfoDTO? {
+        val res = client.get("${HttpService.BASE_URL}/diaries/$diaryId") {
+            contentType(ContentType.Application.Json)
+            headers {
+                append(HttpHeaders.Authorization, "Bearer ${LocalStorage.token}")
+            }
+        }
+        return try {
+            res.body()
+        } catch (ex : Exception) {
+            null
+        }
     }
 }
