@@ -15,14 +15,3 @@ services:
 
 volumes:
   ediary-volume:
-  
-  
-  docker run 
-  --name ediary-postgres 
-  -e POSTGRES_USER=roman2424 
-  -e POSTGRES_PASSWORD=2424 
-  -e POSTGRES_DB=ediary_db 
-  -p 5432:5432 
-  -v ediary-volume:/var/lib/postgresql/data 
-  -d 
-  postgres
