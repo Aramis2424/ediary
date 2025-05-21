@@ -42,6 +42,8 @@ public class SecurityConfig {
         http.authorizeHttpRequests(req -> {
             req.requestMatchers("/token/*").permitAll();
             req.requestMatchers("/hello").permitAll();
+			req.requestMatchers("/owner/register").permitAll();
+			req.requestMatchers("/owner/login").permitAll();
             req.anyRequest().authenticated();
         });
 

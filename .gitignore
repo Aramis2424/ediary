@@ -3,6 +3,7 @@ metaData/fakeDataGenerator/data/
 
 # secrets properties file
 secrets.properties
+.env
 
 # Compiled class file
 *.class
