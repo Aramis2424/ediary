@@ -1,0 +1,5 @@
+.bg-lemon {
+  background-image: url('./images/bg_lemon.png');
+  background-size: cover;
+  background-position: center;
+}
