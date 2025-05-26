@@ -2,7 +2,7 @@
 </script>
 
 <template>
-   <div class="h-screen flex flex-col items-center justify-between p-4 relative bg-lemon">
+   <div class="h-screen overflow-auto flex flex-col items-center justify-between p-4 relative bg-lemon space-y-10">
     <h1 class="font-czizh text-white bg-[#B4B4B4] bg-opacity-10 text-6xl absolute top-4 left-1/2 -translate-x-1/2">
       Ваши мысли!
     </h1>
