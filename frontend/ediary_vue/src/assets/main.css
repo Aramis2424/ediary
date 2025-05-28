@@ -38,6 +38,14 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.hide-scrollbar {
+  -ms-overflow-style: none; 
+  scrollbar-width: none;    
+}
+
 #app {
   max-width: 1940px;
   margin: 0 auto;
