@@ -1,11 +1,11 @@
 <template>
 
-  <!-- <div class="h-screen flex">
-    <div class="w-[90vw] h-full mx-auto">
-      <MarkdownEditor class="w-full h-full" />
+  <!-- <div class="h-screen flex justify-center content-center items-center">
+    <div class="w-[90vw] h-full flex items-center">
+      <MarkdownEditor class="w-full" />
     </div>
   </div> -->
-  <v-md-editor v-model="content" />
+  <v-md-editor v-model="content" height="90vh"/>
 </template>
 
 <script setup lang="ts">
