@@ -4,7 +4,7 @@
       "@/*": [
         "./src/*" // set path `@/*` as alias of `src/*`
       ]
-    },
+    }
   },
   "files": [],
   "references": [
