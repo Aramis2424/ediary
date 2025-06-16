@@ -51,7 +51,7 @@
         </div>
         <button
           type="submit"
-          class="baseBtn p-3 w-full"
+          class="baseBtn p-3 w-full text-xl"
         >
           Зарегистрироваться
         </button>
@@ -66,6 +66,9 @@
 
 <script setup lang="ts">
 import { ref } from 'vue';
+import { useRouter } from 'vue-router';
+
+const router = useRouter();
 
 const name = ref('');
 const login = ref('');
@@ -79,6 +82,7 @@ function handleRegister() {
   }
 
   console.log('Регистрация:', login.value, password.value);
+  router.push('/home');
   // TODO: логика регистрации
 }
 </script>

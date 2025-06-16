@@ -2,7 +2,7 @@
   <div class="min-h-screen flex items-center justify-center bg-gray-100 bg-lemon">
     <div class="w-full max-w-md bg-white p-8 rounded-2xl text-[#5A3A2B] font-semibold shadow opacity-95">
       <h2 class="text-3xl text-center mb-3"> Вход </h2>
-      <form @submit.prevent="handleRegister" class="space-y-8">
+      <form @submit.prevent="handleLogin" class="space-y-8">
         <div class="space-y-3">
             <div class="space-y-4">
                 <p class="text-xl text-[#5A3A2B] -mb-3"> Логин </p>
@@ -32,7 +32,7 @@
       </form>
       <p class="text-base text-center">
         Нет аккаунта?
-        <router-link to="/login" class="text-[#E67E22] font-bold hover:underline"> Регистрация </router-link>
+        <router-link to="/register" class="text-[#E67E22] font-bold hover:underline"> Регистрация </router-link>
       </p>
     </div>
   </div>
@@ -40,12 +40,16 @@
 
 <script setup lang="ts">
 import { ref } from 'vue';
+import { useRouter } from 'vue-router';
+
+const router = useRouter();
 
 const login = ref('');
 const password = ref('');
 
-function handleRegister() {
+function handleLogin() {
   console.log('Регистрация:', login.value, password.value);
+  router.push('/home');
   // TODO: логика регистрации
 }
 </script>
