@@ -3,3 +3,9 @@
   background-size: cover;
   background-position: center;
 }
+
+.bg-fire {
+  background-image: url('./images/bg_fire.png');
+  background-size: cover;
+  background-position: center;
+}
