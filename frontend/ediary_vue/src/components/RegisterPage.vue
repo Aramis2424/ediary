@@ -67,21 +67,30 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
+import { useOwnerStore } from '../stores/owner';
 
 const router = useRouter();
+const ownerStore = useOwnerStore();
 
 const name = ref('');
 const login = ref('');
 const password = ref('');
 const confirmPassword = ref('');
 
-function handleRegister() {
+async function handleRegister() {
   if (password.value !== confirmPassword.value) {
     alert('Пароли не совпадают!');
     return;
   }
-
   console.log('Регистрация:', login.value, password.value);
+
+  const fakeData = {
+    id: 1,
+    name: 'Роман',
+    token: 'abccba'
+  }
+  ownerStore.login(fakeData);
+
   router.push('/home');
   // TODO: логика регистрации
 }
