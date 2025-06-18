@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useRouter } from 'vue-router'
 import { ref, onMounted } from 'vue'
-import EntryCard from './EntryCard.vue';
+import EntryCard from '@/components/EntryCard.vue';
 
 const router = useRouter()
 const entries = ref<{ id: number; title: string; date: string; mood: number, work: number }[]>([])
