@@ -2,7 +2,7 @@ import { http, HttpResponse } from 'msw'
 import { owners } from './data'
 
 export const handlers = [
-  http.get('/api/userы/:id', ({ params }) => {
+  http.get('/api/owners/:id', ({ params }) => {
     const user = owners.find(v => v.id === Number(params.id))
     if (!user) {
       return HttpResponse.json({ message: 'User not found' }, { status: 404 })

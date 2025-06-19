@@ -53,7 +53,7 @@ async function handleLogin() {
   console.log('Регистрация:', login.value, password.value);
 
   const fakeData = {
-    id: 1,
+    id: 11,
     name: 'Роман',
     token: 'abccba'
   }
