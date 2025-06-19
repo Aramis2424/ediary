@@ -1,10 +1,10 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import LoginPage from '../components/LoginPage.vue'
-import RegisterPage from '../components/RegisterPage.vue'
-import Home from '../components/Home.vue'
-import MoodGraph from '../components/MoodGraph.vue'
-import EntriesMenu from '../components/EntriesMenu.vue'
-import MarkdownEditor from '../components/MarkdownEditor.vue'
+import LoginPage from '@/components/LoginPage.vue'
+import RegisterPage from '@/components/RegisterPage.vue'
+import Home from '@/components/Home.vue'
+import MoodGraph from '@/components/MoodGraph.vue'
+import EntriesMenu from '@/components/EntriesMenu.vue'
+import MarkdownEditor from '@/components/MarkdownEditor.vue'
 
 const routes = [
   { path: '/', redirect: '/login' },

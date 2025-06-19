@@ -39,10 +39,6 @@ const overlaySmallerBars = {
       const barA = metaA.data[i];
       const barB = metaB.data[i];
       const drawFirst = dataA[i] < dataB[i] ? barA : barB;
-      if (dataA[i] > 4) {
-        //console.log("HELLO");
-        drawFirst._dataset.backgroundColor="red"
-      }
       drawFirst.draw(ctx);
     }
   },

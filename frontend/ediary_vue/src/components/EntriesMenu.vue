@@ -12,15 +12,14 @@ onMounted(() => {
     { id: 2, title: "Отдых", date: "2020-01-07", mood: 7, work: 9 },
     { id: 3, title: "Начал за здравие ...", date: "2020-01-08", mood: 10, work: 4 },
     { id: 4, title: "7 часов ...", date: "2020-01-09", mood: 3, work: 2 },
-    { id: 1, title: "Работал за двоих", date: "2020-01-10", mood: 1, work: 10 },
-    { id: 5, title: "Отстучал пальцы", date: "2020-01-11", mood: 8, work: 8 },
-    { id: 6, title: "Пол дня из жизни", date: "2020-01-12", mood: 7, work: 4 },
-    { id: 6, title: "Работа и работа", date: "2020-01-15", mood: 6, work: 9 },
+    { id: 5, title: "Работал за двоих", date: "2020-01-10", mood: 1, work: 10 },
+    { id: 6, title: "Отстучал пальцы", date: "2020-01-11", mood: 8, work: 8 },
+    { id: 7, title: "Пол дня из жизни", date: "2020-01-12", mood: 7, work: 4 },
+    { id: 8, title: "Работа и работа", date: "2020-01-15", mood: 6, work: 9 },
   ]
 })
 
 function gotoEntry(id: number) {
-  //router.push({ name: 'entry', params: { id } })
   router.push(`entry/${id}`)
 }
 </script>

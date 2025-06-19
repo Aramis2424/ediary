@@ -6,6 +6,7 @@ const router = useRouter();
 const owner = useOwnerStore();
 
 const gotoEntriesMenu = () => {router.push('/menu')}
+const gotoMoodGraph = () => {router.push('/graph')}
 </script>
 
 <template>
@@ -20,7 +21,7 @@ const gotoEntriesMenu = () => {router.push('/menu')}
         <button @click="gotoEntriesMenu()" class="w-[30vw] h-16 baseBtn text-black text-2xl md:text-3xl lg:text-4xl font-czizh">
           Личный дневник
         </button>
-        <button class="w-[30vw] h-16 baseBtn text-black text-2xl md:text-3xl lg:text-4xl font-czizh">
+        <button @click="gotoMoodGraph()" class="w-[30vw] h-16 baseBtn text-black text-2xl md:text-3xl lg:text-4xl font-czizh">
           Настроения
         </button>
       </div>
