@@ -105,7 +105,7 @@ class DataGenerator:
         password = DataGenerator.bcrypt_password(self.faker.word() + str(randint(1, 199)))
         created_date = self.faker.date_between_dates(date(2010, 1, 1), date(2015, 1, 1))
 
-        attributes = ["owner_id", "name", "birth_date", "login", "password", "created_date"]
+        attributes = ["id", "name", "birthDate", "login", "password", "createdDate"]
         values = [owner_id, name, birth_date, login, password, created_date]
 
         json_line_maker = JsonLineMaker()
@@ -149,7 +149,7 @@ class DataGenerator:
 
         self.cnt_entries_per_diary[diary_id] = cnt_entries
 
-        attributes = ["diary_id", "owner_fk", "title", "description", "cnt_entries", "created_date"]
+        attributes = ["id", "ownerId", "title", "description", "cntEntries", "createdDate"]
         values = [diary_id, owner_id, title, description, cnt_entries, created_date]
 
         json_line_maker = JsonLineMaker()
@@ -199,8 +199,8 @@ class DataGenerator:
         bedtime = DataGenerator.get_formatted_datetime(bedtime)
         wake_up_time = DataGenerator.get_formatted_datetime(wake_up_time)
 
-        attributes = ["mood_id", "owner_fk", "score_mood",
-                      "score_productivity", "bedtime", "wake_up_time", "created_date"]
+        attributes = ["id", "ownerId", "scoreMood",
+                      "scoreProductivity", "bedtime", "wakeUpTime", "createdDate"]
         values = [mood_id, owner_id, score_mood, score_productivity, bedtime, wake_up_time, created_date]
 
         json_line_maker = JsonLineMaker()
@@ -237,7 +237,7 @@ class DataGenerator:
         content = " ".join(self.faker.sentences(nb=3))
         created_date = self.faker.date_between_dates(date(2020, 1, 1), date(2024, 1, 1))
 
-        attributes = ["entry_id", "diary_fk", "title", "content", "created_date"]
+        attributes = ["id", "diaryId", "title", "content", "createdDate"]
         values = [entry_id, diary_id, title, content, created_date]
 
         json_line_maker = JsonLineMaker()
@@ -406,7 +406,7 @@ class IvanGenerator:
         line = DataGenerator.create_insert_command_line(table, columns, values)
         self.sql_lines.append(line)
 
-        attributes = ["owner_id", "name", "birth_date", "login", "password", "created_date"]
+        attributes = ["id", "name", "birthDate", "login", "password", "createdDate"]
         json_values = [owner_id, name, birth_date, login, password, created_date]
         json_line_maker = JsonLineMaker()
         self.json_lines.append([json_line_maker.set_attributes(attributes).set_values(json_values).build() + "\n"])
@@ -426,7 +426,7 @@ class IvanGenerator:
             line = DataGenerator.create_insert_command_line(table, columns, values)
             self.sql_lines.append(line)
 
-            attributes = ["diary_id", "owner_fk", "title", "description", "cnt_entries", "created_date"]
+            attributes = ["id", "ownerId", "title", "description", "cntEntries", "createdDate"]
             json_values = [i + 1 + 3 * owner_id, owner_id, title, description, cnt_entries, created_date]
             json_lines.append(json_line_maker.set_attributes(attributes).set_values(json_values).build() + "\n")
         self.json_lines.append(json_lines)
@@ -452,8 +452,8 @@ class IvanGenerator:
             line = DataGenerator.create_insert_command_line(table, columns, values)
             self.sql_lines.append(line)
 
-            attributes = ["mood_id", "owner_fk", "score_mood",
-                          "score_productivity", "bedtime", "wake_up_time", "created_date"]
+            attributes = ["id", "ownerId", "scoreMood",
+                          "scoreProductivity", "bedtime", "wakeUpTime", "createdDate"]
             json_values = [i + 1 + 4 * owner_id, owner_id, score_mood,
                            score_productivity, bedtime, wake_up_time, created_date]
             json_lines.append(json_line_maker.set_attributes(attributes).set_values(json_values).build() + "\n")
@@ -474,7 +474,7 @@ class IvanGenerator:
             line = DataGenerator.create_insert_command_line(table, columns, values)
             self.sql_lines.append(line)
 
-            attributes = ["entry_id", "diary_fk", "title", "content", "created_date"]
+            attributes = ["id", "diaryId", "title", "content", "createdDate"]
             json_values = [i + 1 + 4 * diary_id, diary_id, title, content, created_date]
 
             json_lines.append(json_line_maker.set_attributes(attributes).set_values(json_values).build() + "\n")
