@@ -2,7 +2,7 @@ export interface EntryInfoDTO {
     id: number;
     title: string;
     content: string;
-    createdDate: Date;
+    createdDate: string;
 }
 
 export interface EntryCreateDTO {

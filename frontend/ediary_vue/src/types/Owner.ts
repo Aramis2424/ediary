@@ -6,14 +6,14 @@ export interface OwnerLoginDTO {
 export interface OwnerInfoDTO {
     id: number;
     name: string;
-    birthDate: Date;
+    birthDate: string;
     login: string;
-    createdDate: Date;
+    createdDate: string;
 }
 
 export interface OwnerCreateDTO {
     name: string;
-    birthDate: Date;
+    birthDate: string;
     login: string;
     password: string;
 }

@@ -3,7 +3,7 @@ export interface DiaryInfoDTO {
     title: string;
     description: string;
     cntEntry: number;
-    createdDate: Date;
+    createdDate: string;
 }
 
 export interface DiaryCreateDTO {
