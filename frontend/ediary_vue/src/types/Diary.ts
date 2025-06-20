@@ -2,7 +2,7 @@ export interface DiaryInfoDTO {
     id: number;
     title: string;
     description: string;
-    cntEntry: number;
+    cntEntries: number;
     createdDate: string;
 }
 

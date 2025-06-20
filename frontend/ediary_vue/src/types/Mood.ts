@@ -19,5 +19,5 @@ export interface MoodInfoDTO {
     scoreProductivity: number;
     bedtime: string;
     wakeUpTime: string;
-    createdAt: string;
+    createdDate: string;
 }
