@@ -18,4 +18,5 @@ export const useOwnerStore = defineStore('owner', {
       this.token = ''
     },
   },
+  persist: true,
 })
