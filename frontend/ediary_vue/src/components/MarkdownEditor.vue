@@ -14,7 +14,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, onMounted, type Ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router'
 
 import VMdEditor from '@kangc/v-md-editor';
@@ -24,6 +24,8 @@ import ruRU from '@kangc/v-md-editor/lib/lang/ru-RU';
 import githubTheme from '@kangc/v-md-editor/lib/theme/github.js';
 
 import Prism from 'prismjs';
+import { api } from '@/api/axios';
+import type { EntryInfoDTO } from '@/types/Entry';
 
 VMdEditor.use(githubTheme, { Prism });
 VMdEditor.lang.use('ru-RU', ruRU)
@@ -32,7 +34,12 @@ const route = useRoute()
 const router = useRouter()
 const entryId = route.params.id
 
-const content = ref<string>(`Ваши *мысли* ... (${entryId})`);
+const content: Ref<string> = ref('')
+
+onMounted(async () => {
+  const entryInfo = await api.get<EntryInfoDTO>(`/entries/${entryId}`)
+  content.value = `${entryInfo.data.content}`;
+})
 
 const gotoMenu = () => {router.push('/menu')}
 </script>
