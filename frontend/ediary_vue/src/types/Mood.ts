@@ -1,3 +1,13 @@
+export interface Mood {
+    id: number;
+    ownerId: number;
+    scoreMood: number;
+    scoreProductivity: number;
+    bedtime: string;
+    wakeUpTime: string;
+    createdDate: string;
+}
+
 export interface MoodCreateDTO {
     ownerId: number;
     scoreMood: number;

@@ -1,3 +1,12 @@
+export interface Owner {
+    id: number;
+    name: string;
+    birthDate: string;
+    login: string;
+    password: string;
+    createdDate: string;
+}
+
 export interface OwnerLoginDTO {
     login: string;
     password: string;
