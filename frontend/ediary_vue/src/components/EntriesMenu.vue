@@ -22,13 +22,17 @@ onMounted(() => {
 function gotoEntry(id: number) {
   router.push(`entry/${id}`)
 }
+
+const gotoHome = () => {router.push('/home')}
 </script>
 
 <template>
-<div class="h-screen flex justify-center items-center bg-fire">
+<div class="h-screen w-full flex justify-between items-center px-2 bg-fire">
+  <button class="sideBtnL" @click="gotoHome"> Назад </button>
   <div class="h-[90vh] w-full max-w-5xl flex flex-wrap gap-5 justify-center content-start p-4 overflow-y-scroll hide-scrollbar">
     <EntryCard v-for="entry in entries" :key="entry.id" :entry="entry" @clicked="gotoEntry(entry.id)" />
   </div>
+  <button class="sideBtnR"> Поиск записей </button>
 </div>
 </template>
 

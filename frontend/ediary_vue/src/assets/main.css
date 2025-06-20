@@ -9,7 +9,7 @@
      rounded-3xl transition;
 }
 .sideBtn {
-    @apply h-[90vh] w-8 p-4
+    @apply h-[90vh] w-8 p-5
     text-black text-3xl font-czizh
      flex items-center justify-center
      baseBtn
