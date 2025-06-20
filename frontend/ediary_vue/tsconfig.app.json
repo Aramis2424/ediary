@@ -18,6 +18,7 @@
     "noImplicitAny": true,
     "strictNullChecks": true,
     "exactOptionalPropertyTypes": true,
+    "strictPropertyInitialization": true
   },
   "include": ["src/**/*.ts", "src/**/*.tsx", "src/**/*.vue"]
 }
