@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed, type ComputedRef } from 'vue';
+import type { EntryCard } from '@/types/EntryCard';
 
 function getDayOfWeek(dateString: string) {
     const daysOfWeek = [
@@ -34,22 +35,16 @@ const scoreColors: Record<number, string> = {
 };
 
 const props = defineProps<{
-  entry: {
-    id: number,
-    title: string,
-    date: string,
-    mood: number,
-    work: number
-  }
+  entry: EntryCard
  }>()
 
 defineEmits(['clicked'])
 
 const moodColor: ComputedRef<string> = computed(() => {
-  return scoreColors[props.entry.mood] || 'bg-gray-100';
+  return scoreColors[props.entry.scoreMood] || 'bg-gray-100';
 });
 const workColor: ComputedRef<string> = computed(() => {
-  return scoreColors[props.entry.work] || 'bg-gray-100';
+  return scoreColors[props.entry.scoreProductivity] || 'bg-gray-100';
 });
 
 </script>
@@ -59,18 +54,18 @@ const workColor: ComputedRef<string> = computed(() => {
     <p class="absolute top-0 left-1/2 -translate-x-1/2 text-center font-czizh text-3xl underline"> {{ entry.title }} </p>
 
     <div class="absolute top-1/2 right-0 -translate-x-3 translate-y-px">
-        <p class="text-lg -mb-1"> {{ entry.date }} </p>
-        <p class="text-lg"> {{ getDayOfWeek(entry.date) }} </p>
+        <p class="text-lg -mb-1"> {{ entry.createdDate }} </p>
+        <p class="text-lg"> {{ getDayOfWeek(entry.createdDate) }} </p>
     </div>
 
     <div class="absolute top-2/3 pl-3">
         <div class="flex items-center space-x-2">
             <div :class="['w-4 h-4 rounded-full', moodColor]"></div>
-            <span class="text-sm font-medium">{{ 'настроние: ' + entry.mood }}</span>
+            <span class="text-sm font-medium">{{ 'настроние: ' + entry.scoreMood }}</span>
         </div>
         <div class="flex items-center space-x-2">
             <div :class="['w-4 h-4 rounded-full', workColor]"></div>
-            <span class="text-sm font-medium">{{ 'день: ' + entry.work }}</span>
+            <span class="text-sm font-medium">{{ 'день: ' + entry.scoreProductivity }}</span>
         </div>
     </div>
   </div>
