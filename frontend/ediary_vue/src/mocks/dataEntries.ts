@@ -21,10 +21,10 @@ export const entries: Entry[] = [
     { "id":18, "diaryId":12, "title":"Current.", "content":"Around eat dinner itself whose power firm. Tax cell himself hundred remember reason. Structure less raise recognize win live.", "createdDate":"2023-03-09" },
     { "id":19, "diaryId":12, "title":"Home side.", "content":"Direction but door lay. Century care PM leg thought. Over his attention seven.", "createdDate":"2021-05-09" },
     { "id":20, "diaryId":12, "title":"Food.", "content":"Own candidate pass painting Congress. Everyone strong wide skill visit physical finally. Air event wife voice glass somebody.", "createdDate":"2023-03-24" },
-    { "id":21, "diaryId":13, "title":"For.", "content":"Serious radio kitchen down weight improve art risk. View him prepare answer. Bit some artist behind.", "createdDate":"2022-01-10" },
-    { "id":61, "diaryId":15, "title":"Continue skin.", "content":"Far throw popular article reason list particularly. Realize under rate point time executive budget. Stuff moment example similar.", "createdDate":"2020-03-02" },
-    { "id":62, "diaryId":15, "title":"Pm.", "content":"Argue possible maybe bed. Court future reality. South be affect arrive clearly.", "createdDate":"2020-03-08" },
-    { "id":63, "diaryId":15, "title":"Wife term.", "content":"Wife meeting fight break deal skill. Against interest ball executive card west. Could home population choose.", "createdDate":"2020-03-10" }
+    { "id":21, "diaryId":34, "title":"For.", "content":"Serious radio kitchen down weight improve art risk. View him prepare answer. Bit some artist behind.", "createdDate":"2022-01-10" },
+    { "id":61, "diaryId":34, "title":"Continue skin.", "content":"Far throw popular article reason list particularly. Realize under rate point time executive budget. Stuff moment example similar.", "createdDate":"2020-03-02" },
+    { "id":62, "diaryId":34, "title":"Pm.", "content":"Argue possible maybe bed. Court future reality. South be affect arrive clearly.", "createdDate":"2020-03-08" },
+    { "id":63, "diaryId":34, "title":"Wife term.", "content":"Wife meeting fight break deal skill. Against interest ball executive card west. Could home population choose.", "createdDate":"2020-03-10" }
 ]
 
 export function toInfoDto(obj: Entry): EntryInfoDTO {

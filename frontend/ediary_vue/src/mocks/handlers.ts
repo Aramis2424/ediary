@@ -4,7 +4,7 @@ import { owners } from './dataOwners'
 import { entries, toInfoDto } from './dataEntries'
 import type { Entry } from '@/types/Entry'
 
-import { entryCards } from './dataEntryCards'
+import { getCards } from './dataEntryCards'
 import type { EntryCard } from '@/types/EntryCard'
 
 export const handlers = [
@@ -34,7 +34,7 @@ export const handlers = [
   }),
 
   http.get('/api/entryCards/:id', ({ params }) => {
-    const cards: EntryCard[] | undefined = entryCards.filter(v => v.diaryId === Number(params.id))
+    const cards: EntryCard[] | undefined = getCards().filter(v => v.diaryId === Number(params.id))
     if (!cards) {
       return HttpResponse.json({ message: 'Cards not found' }, { status: 404 })
     }
