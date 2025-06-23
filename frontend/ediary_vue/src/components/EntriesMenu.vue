@@ -12,7 +12,7 @@ const owner = useOwnerStore();
 const entries = ref<EntryCardDto[]>([])
 
 onMounted(async () => {
-  const cards = await api.get<EntryCardDto[]>(`/entryCards/${owner.id}`)
+  const cards = await api.get<EntryCardDto[]>(`/entryCards/${owner.diaryId}`)
   entries.value = cards.data;
 })
 

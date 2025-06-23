@@ -5,6 +5,7 @@ export const useOwnerStore = defineStore('owner', {
     id: 0,
     name: '',
     token: '',
+    diaryId: 34,
   }),
   actions: {
     login(owner: { id: number; name: string; token: string; }) {

@@ -34,7 +34,7 @@ export const handlers = [
   }),
 
   http.get('/api/entryCards/:id', ({ params }) => {
-    const cards: EntryCard[] | undefined = entryCards.filter(v => v.ownerId === Number(params.id))
+    const cards: EntryCard[] | undefined = entryCards.filter(v => v.diaryId === Number(params.id))
     if (!cards) {
       return HttpResponse.json({ message: 'Cards not found' }, { status: 404 })
     }

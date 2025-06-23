@@ -1,5 +1,5 @@
 export interface EntryCard {
-    ownerId: number;
+    diaryId: number;
     entryId: number;
     title: string;
     scoreMood: number;
