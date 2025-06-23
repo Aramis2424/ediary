@@ -32,7 +32,7 @@ export function toInfoDto(obj: Entry): EntryInfoDTO {
 }
 
 export function toCreateDto(obj: Entry): EntryCreateDTO {
-    return { diaryId: obj.diaryId, title: obj.title, content: obj.content }
+    return { diaryId: String(obj.diaryId), title: obj.title, content: obj.content }
 }
 
 export function toUpdateDto(obj: Entry): EntryUpdateDTO {

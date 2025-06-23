@@ -14,7 +14,7 @@ export interface EntryInfoDTO {
 }
 
 export interface EntryCreateDTO {
-    diaryId: number;
+    diaryId: string;
     title: string;
     content: string;
 }
