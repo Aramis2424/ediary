@@ -32,6 +32,14 @@ export const handlers = [
     Object.assign(entry, patch)
     return HttpResponse.json(entry)
   }),
+  http.delete('/api/entries/:id', ({ params }) => {
+    const filtered = entries.filter(v => v.id !== Number(params.id))
+
+    entries.length = 0;
+    entries.push(...filtered);
+
+    return HttpResponse.json({ success: true })
+  }),
 
   http.get('/api/entryCards/:id', ({ params }) => {
     const cards: EntryCard[] | undefined = getCards().filter(v => v.diaryId === Number(params.id))

@@ -9,7 +9,7 @@
       </div>
       <div class="h-[90vh] flex flex-col gap-y-1">
         <button @click="save" class="sideBtnR"> Сохранить </button>
-        <button class="sideBtnR"> Удалить </button>
+        <button @click="remove" class="sideBtnR"> Удалить </button>
       </div>
     </div>
   </div>
@@ -50,6 +50,11 @@ onMounted(async () => {
 function save() {
   const updatedEntry: EntryUpdateDTO = { title: title.value, content: content.value}
   api.patch<EntryUpdateDTO>(`/entries/${entryId}`, updatedEntry)
+}
+
+function remove(): void {
+  api.delete(`/entries/${entryId}`)
+  gotoMenu();
 }
 
 const gotoMenu = () => {router.push('/menu')}
