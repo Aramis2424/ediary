@@ -23,6 +23,12 @@
     writing-mode: vertical-lr;
 }
 
+.baseBacking {
+  @apply
+  fixed inset-1 bg-gray-900 bg-opacity-60 
+  rounded-lg flex items-center justify-center z-50
+}
+
 :root {
   font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
