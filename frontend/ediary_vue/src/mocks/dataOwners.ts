@@ -11,7 +11,7 @@ export const owners: Owner[] = [
     { "id":8, "name":"Julia", "birthDate":"1970-02-05", "login":"julia273", "password":"$2b$12$D17FdJ8qmF6Jveb8VSfDBOtc3gfQYiMCMSxXHDdlkxhY9uVwQ6NAy", "createdDate":"2012-07-28" },
     { "id":9, "name":"Joshua", "birthDate":"1980-02-21", "login":"joshua516", "password":"$2b$12$ui5owXmkaclj6gq3NrnaoeJiEj4/SL2jqM9GllEtEmY0m8DM1EYMW", "createdDate":"2012-01-27" },
     { "id":10, "name":"George", "birthDate":"1970-04-03", "login":"george374", "password":"$2b$12$L80edk7FQorGAyHD/KaS0.wWwXn8bdooCIhx5mBVr93cF7NqwsjxO", "createdDate":"2013-04-16" },
-    { "id":11, "name":"Ivan", "birthDate":"2000-01-01", "login":"ivan01", "password":"$2b$12$UYSjBnLxbhGVkayUVlItCO1q4GPCJdwzYQyS6JOEATTlyUL.KWFF2", "createdDate":"2020-01-01" }
+    { "id":11, "name":"Ivan", "birthDate":"2000-01-01", "login":"ivan01", "password":"navi01", "createdDate":"2020-01-01" }
 ]
 
 export function toLoginDto(obj: Owner): OwnerLoginDTO {

@@ -1,5 +1,7 @@
 import { http, HttpResponse } from 'msw'
+
 import { owners } from './dataOwners'
+import type { OwnerLoginDTO, OwnerCreateDTO, TokenRequest } from '@/types/Owner'
 
 import { entries, toInfoDto } from './dataEntries'
 import type { Entry, EntryCreateDTO } from '@/types/Entry'
@@ -10,13 +12,38 @@ import type { EntryCard } from '@/types/EntryCard'
 import { diaries, toInfoDto as toDiaryInfoDto } from './dataDiaries'
 import type { Diary } from '@/types/Diary'
 
+const token = "token123"
+
 export const handlers = [
-  http.get('/api/owners/:id', ({ params }) => {
-    const user = owners.find(v => v.id === Number(params.id))
+  http.post('/api/owner/login', async ({ request }) => {    
+    const { login, password } = await request.json() as OwnerLoginDTO
+    const user = owners.find(v => v.login === login && v.password === password)
     if (!user) {
       return HttpResponse.json({ message: 'User not found' }, { status: 404 })
     }
     return HttpResponse.json(user)
+  }),
+  http.post('/api/owner/register', async ({ request }) => {
+    const newOwner = await request.json() as OwnerCreateDTO
+    const user = owners.find(v => v.login === newOwner.login)
+    if (user) {
+      return HttpResponse.json({ message: 'User already exists' }, { status: 405 })
+    }
+    const today = new Date();
+    const formattedDate = today.toISOString().split('T')[0];
+    const nextId: number = owners.reduce((prevId, curEntry) => {
+      return curEntry.id > prevId ? curEntry.id : prevId
+    }, 0) + 1 
+    owners.push({id: nextId, createdDate: formattedDate, ...newOwner})
+    return HttpResponse.json(user)
+  }),
+  http.post('/api/token/create', async ({ request }) => {
+    const { login, password } = await request.json() as TokenRequest
+    const user = owners.find(v => v.login === login && v.password === password)
+    if (!user) {
+      return HttpResponse.json({ message: 'Invalid credentials' }, { status: 401 })
+    }
+    return HttpResponse.json({token: token})
   }),
 
   http.get('/api/entries/:id', ({ params }) => {

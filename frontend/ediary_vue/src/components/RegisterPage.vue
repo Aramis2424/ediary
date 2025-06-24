@@ -67,14 +67,11 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
-import { useOwnerStore } from '../stores/owner';
-import type { OwnerInfoDTO } from '@/types/Owner';
+import type { OwnerCreateDTO } from '@/types/Owner';
+import { useAuthStore } from '@/stores/auth';
 
 const router = useRouter();
-const ownerStore = useOwnerStore();
-
-const today = new Date();
-const formattedDate = today.toISOString().split('T')[0];
+const auth = useAuthStore();
 
 const name = ref('');
 const login = ref('');
@@ -87,18 +84,18 @@ async function handleRegister() {
     alert('Пароли не совпадают!');
     return;
   }
-  console.log('Регистрация:', login.value, password.value);
 
-  const fakeData: OwnerInfoDTO = {
-    id: 11,
+  const newOwner: OwnerCreateDTO = {
     name: name.value,
     birthDate: birthdate.value,
     login: login.value,
-    createdDate: formattedDate
+    password: password.value,
   }
-  ownerStore.logIn(fakeData);
-
-  router.push('/home');
-  // TODO: логика регистрации
+  try {
+    await auth.register(newOwner)
+    router.push('/home');
+  } catch {
+    alert('Такой логин уже существует')
+  }
 }
 </script>
