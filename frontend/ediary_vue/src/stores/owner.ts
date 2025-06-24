@@ -1,21 +1,42 @@
 import { defineStore } from 'pinia'
+import type { OwnerInfoDTO, TokenResponse } from '@/types/Owner';
 
 export const useOwnerStore = defineStore('owner', {
-  state: () => ({
+  state: (): OwnerInfoDTO => ({
     id: 0,
     name: '',
-    token: '',
-    diaryId: 34,
+    birthDate: '',
+    login: '',
+    createdDate: '',
   }),
+  getters: {
+    isLoggedIn: (state) => !!state.id,
+  },
   actions: {
-    login(owner: { id: number; name: string; token: string; }) {
+    logIn(owner: OwnerInfoDTO) {
       this.id = owner.id
       this.name = owner.name
-      this.token = owner.token
+      this.birthDate = owner.birthDate
+      this.login = owner.login
+      this.createdDate = owner.createdDate
     },
-    logout() {
+    logOut() {
       this.id = 0
       this.name = ''
+    },
+  },
+  persist: true,
+})
+
+export const useTokenStore = defineStore('token', {
+  state: (): TokenResponse => ({
+    token: '',
+  }),
+  actions: {
+    logIn(response: TokenResponse) {
+      this.token = response.token
+    },
+    logOut() {
       this.token = ''
     },
   },
