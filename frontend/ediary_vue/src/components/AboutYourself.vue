@@ -1,6 +1,6 @@
 <template>
 <div class="baseBacking">
-    <div class="bg-white rounded-xl p-2 w-1/6 h-1/6 shadow-xl relative flex flex-col justify-evenly content-start items-start">
+    <div class="bg-white rounded-xl p-2 w-1/6 min-h-1/6 shadow-xl relative flex flex-col justify-evenly content-start items-start">
         <h2 class="text-xl font-semibold mb-4">О себе</h2>
         <p> Имя: {{ ownerName }} </p>
         <p> Дата рождения: {{ ownerBirthdate }} </p>
