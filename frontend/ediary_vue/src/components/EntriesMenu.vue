@@ -4,6 +4,7 @@ import { ref, onMounted } from 'vue'
 import { api } from '@/api/axios';
 import { useDiaryStore } from '../stores/diaries';
 import EntryCard from '@/components/EntryCard.vue';
+import EntriesSearching from './EntriesSearching.vue';
 import NewEntryCard from './NewEntryCard.vue';
 import type { Entry, EntryCreateDTO } from '@/types/Entry';
 import type { EntryCard as EntryCardDto } from '@/types/EntryCard';
@@ -13,6 +14,7 @@ const router = useRouter();
 const diary = useDiaryStore();
 
 const entries = ref<EntryCardDto[]>([])
+const showSearching = ref(false);
 
 onMounted(async () => {
   const cards = await api.get<EntryCardDto[]>(`/entryCards/${diary.id}`)
@@ -40,8 +42,10 @@ const gotoHome = () => {router.push('/home')}
     <NewEntryCard @clicked="createEntry" />
     <EntryCard v-for="entry in entries" :key="entry.entryId" :entry="entry" @clicked="gotoEntry(entry.entryId)" />
   </div>
-  <button class="sideBtnR"> Поиск записей </button>
+  <button @click="showSearching = true" class="sideBtnR"> Поиск записей </button>
 </div>
+
+<EntriesSearching v-if="showSearching" @clicked="showSearching = false"/> 
 </template>
 
 <style scoped>
