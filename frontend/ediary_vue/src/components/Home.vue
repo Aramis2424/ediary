@@ -6,9 +6,11 @@ import { onMounted, ref, type Ref } from 'vue';
 import { api } from '@/api/axios';
 import type { OwnerInfoDTO } from '@/types/Owner';
 import Settings from './Settings.vue';
+import AboutYourself from './AboutYourself.vue';
 import type { DiaryInfoDTO } from '@/types/Diary';
 
 const showSettings = ref(false);
+const showAboutYourself = ref(false);
 const router = useRouter();
 const owner = useOwnerStore();
 const diaryStore = useDiaryStore()
@@ -20,6 +22,9 @@ const ownerName: Ref<string> = ref('');
 onMounted(async () => {
   const ownerInfo = await api.get<OwnerInfoDTO>(`/owners/${owner.id}`)
   ownerName.value = ownerInfo.data.name
+  owner.name = ownerInfo.data.name
+  owner.birthDate = ownerInfo.data.birthDate
+  owner.login = ownerInfo.data.login
 
   const diaryInfo = await api.get<DiaryInfoDTO>(`/diaries/${owner.id}`)
   diaryStore.logIn(diaryInfo.data)
@@ -32,7 +37,7 @@ onMounted(async () => {
       Ваши мысли, {{ ownerName }}!
     </h1>
     <div class="flex flex-1 w-full items-center justify-between">
-      <button class="sideBtnL"> О себе </button>
+      <button @click="showAboutYourself = true" class="sideBtnL"> О себе </button>
 
       <div class="flex flex-col items-center justify-center gap-4 h-full w-full max-w-md">
         <button @click="gotoEntriesMenu()" class="w-[30vw] h-16 baseBtn text-black text-2xl md:text-3xl lg:text-4xl font-czizh">
@@ -48,6 +53,7 @@ onMounted(async () => {
   </div>
 
   <Settings v-if="showSettings" @clicked="showSettings = false"/> 
+  <AboutYourself v-if="showAboutYourself" @clicked="showAboutYourself = false"/> 
 
 </template>
 
