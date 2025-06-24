@@ -43,7 +43,7 @@
             <div class="space-y-4">
                 <p class="text-xl text-[#5A3A2B] -mb-3"> Дата рождения </p>
                 <input
-                v-model="confirmPassword"
+                v-model="birthdate"
                 type="date"
                 class="w-full h-[7vh] max-h-14 p-3 rounded-2xl border-[#F4A261] border-2 focus:outline-none focus:ring-1 focus:ring-[#e09455]"
                 />
@@ -68,12 +68,17 @@
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { useOwnerStore } from '../stores/owner';
+import type { OwnerInfoDTO } from '@/types/Owner';
 
 const router = useRouter();
 const ownerStore = useOwnerStore();
 
+const today = new Date();
+const formattedDate = today.toISOString().split('T')[0];
+
 const name = ref('');
 const login = ref('');
+const birthdate = ref('')
 const password = ref('');
 const confirmPassword = ref('');
 
@@ -84,12 +89,14 @@ async function handleRegister() {
   }
   console.log('Регистрация:', login.value, password.value);
 
-  const fakeData = {
-    id: 1,
-    name: 'Роман',
-    token: 'abccba'
+  const fakeData: OwnerInfoDTO = {
+    id: 11,
+    name: name.value,
+    birthDate: birthdate.value,
+    login: login.value,
+    createdDate: formattedDate
   }
-  ownerStore.login(fakeData);
+  ownerStore.logIn(fakeData);
 
   router.push('/home');
   // TODO: логика регистрации

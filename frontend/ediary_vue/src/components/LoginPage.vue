@@ -41,10 +41,11 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
-import { useOwnerStore } from '../stores/owner';
+import { useTokenStore } from '../stores/owner';
+import type { TokenResponse } from '@/types/Owner';
 
 const router = useRouter();
-const ownerStore = useOwnerStore();
+const ownerStore = useTokenStore();
 
 const login = ref('');
 const password = ref('');
@@ -52,12 +53,10 @@ const password = ref('');
 async function handleLogin() {
   console.log('Регистрация:', login.value, password.value);
 
-  const fakeData = {
-    id: 11,
-    name: 'Роман',
+  const fakeData: TokenResponse = {
     token: 'abccba'
   }
-  ownerStore.login(fakeData);
+  ownerStore.logIn(fakeData);
 
   router.push('/home');
   // TODO: логика регистрации
