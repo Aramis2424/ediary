@@ -4,7 +4,9 @@ import { useOwnerStore } from '../stores/owner';
 import { onMounted, ref, type Ref } from 'vue';
 import axios from 'axios';
 import type { OwnerInfoDTO } from '@/types/Owner';
+import Settings from './Settings.vue';
 
+const showSettings = ref(false);
 const router = useRouter();
 const owner = useOwnerStore();
 
@@ -35,9 +37,12 @@ onMounted(async () => {
         </button>
       </div>
 
-      <button class="sideBtnR" style="letter-spacing: 2px;"> Настройки </button>
+      <button @click="showSettings = true" class="sideBtnR" style="letter-spacing: 2px;"> Настройки </button>
     </div>
   </div>
+
+  <Settings v-if="showSettings" @clicked="showSettings = false"/> 
+
 </template>
 
 <style scoped>
