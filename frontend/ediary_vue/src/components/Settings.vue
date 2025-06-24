@@ -13,10 +13,13 @@
 </template>
 
 <script setup lang="ts">
-    const emit = defineEmits(["clicked"])
-
-    function logout(): void {
-        console.log("User was logouted");
-        emit('clicked');
-    }
+import router from '@/router';
+import { useAuthStore } from '@/stores/auth';
+const emit = defineEmits(["clicked"])
+const auth = useAuthStore()
+function logout(): void {
+    auth.logout();
+    router.push('/login')
+    emit('clicked');
+}
 </script>
