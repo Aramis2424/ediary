@@ -1,22 +1,28 @@
 <script setup lang="ts">
 import { useRouter } from 'vue-router';
 import { useOwnerStore } from '../stores/owner';
+import { useDiaryStore } from '@/stores/diaries';
 import { onMounted, ref, type Ref } from 'vue';
-import axios from 'axios';
+import { api } from '@/api/axios';
 import type { OwnerInfoDTO } from '@/types/Owner';
 import Settings from './Settings.vue';
+import type { DiaryInfoDTO } from '@/types/Diary';
 
 const showSettings = ref(false);
 const router = useRouter();
 const owner = useOwnerStore();
+const diaryStore = useDiaryStore()
 
 const gotoEntriesMenu = () => {router.push('/menu')}
 const gotoMoodGraph = () => {router.push('/graph')}
 
 const ownerName: Ref<string> = ref('');
 onMounted(async () => {
-  const ownerInfo = await axios.get<OwnerInfoDTO>(`/api/owners/${owner.id}`)
+  const ownerInfo = await api.get<OwnerInfoDTO>(`/owners/${owner.id}`)
   ownerName.value = ownerInfo.data.name
+
+  const diaryInfo = await api.get<DiaryInfoDTO>(`/diaries/${owner.id}`)
+  diaryStore.logIn(diaryInfo.data)
 })
 </script>
 

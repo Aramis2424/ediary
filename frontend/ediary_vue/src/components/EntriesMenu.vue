@@ -2,7 +2,7 @@
 import { useRouter } from 'vue-router'
 import { ref, onMounted } from 'vue'
 import { api } from '@/api/axios';
-import { useOwnerStore } from '../stores/owner';
+import { useDiaryStore } from '../stores/diaries';
 import EntryCard from '@/components/EntryCard.vue';
 import NewEntryCard from './NewEntryCard.vue';
 import type { Entry, EntryCreateDTO } from '@/types/Entry';
@@ -10,18 +10,18 @@ import type { EntryCard as EntryCardDto } from '@/types/EntryCard';
 import type { AxiosResponse } from 'axios';
 
 const router = useRouter();
-const owner = useOwnerStore();
+const diary = useDiaryStore();
 
 const entries = ref<EntryCardDto[]>([])
 
 onMounted(async () => {
-  const cards = await api.get<EntryCardDto[]>(`/entryCards/${owner.diaryId}`)
+  const cards = await api.get<EntryCardDto[]>(`/entryCards/${diary.id}`)
   entries.value = cards.data;
 })
 
 async function createEntry(): Promise<void> {
   const newEntry: EntryCreateDTO = {
-    diaryId: String(owner.diaryId),
+    diaryId: String(diary.id),
     title: "Новый день",
     content: ""
   }

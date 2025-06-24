@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia'
 import type { DiaryInfoDTO } from '@/types/Diary';
 
-export const useOwnerStore = defineStore('diary', {
+export const useDiaryStore = defineStore('diary', {
   state: (): DiaryInfoDTO => ({
     id: 0,
     title: '',
@@ -11,10 +11,10 @@ export const useOwnerStore = defineStore('diary', {
   }),
   actions: {
     logIn(diary: DiaryInfoDTO) {
-      this.id = 0
+      this.id = diary.id
       this.title = diary.title
       this. description = diary.description
-      this.cntEntries = 0
+      this.cntEntries = diary.cntEntries
       this.createdDate = ''
     },
     logOut() {

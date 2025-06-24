@@ -7,6 +7,9 @@ import type { Entry, EntryCreateDTO } from '@/types/Entry'
 import { getCards } from './dataEntryCards'
 import type { EntryCard } from '@/types/EntryCard'
 
+import { diaries, toInfoDto as toDiaryInfoDto } from './dataDiaries'
+import type { Diary } from '@/types/Diary'
+
 export const handlers = [
   http.get('/api/owners/:id', ({ params }) => {
     const user = owners.find(v => v.id === Number(params.id))
@@ -61,5 +64,13 @@ export const handlers = [
       return HttpResponse.json({ message: 'Cards not found' }, { status: 404 })
     }
     return HttpResponse.json(cards)
+  }),
+
+  http.get('/api/diaries/:ownerId', ({ params }) => {
+    const diary: Diary | undefined = diaries.find(v => v.ownerId === Number(params.ownerId))
+    if (!diary) {
+      return HttpResponse.json({ message: 'Diary not found' }, { status: 404 })
+    }
+    return HttpResponse.json(toDiaryInfoDto(diary))
   }),
 ]
