@@ -15,14 +15,14 @@
 
 <script setup lang="ts">
 import { ref, type Ref } from 'vue';
-import { useOwnerStore } from '../stores/owner';
+import { useAuthStore } from '@/stores/auth';
 
 const emit = defineEmits(["clicked"])
 
-const owner = useOwnerStore();
-const ownerName: Ref<string> = ref(owner.name);
-const ownerBirthdate: Ref<string> = ref(owner.birthDate);
-const ownerLogin: Ref<string> = ref(owner.login);
-const ownerCreateDate: Ref<string> = ref(owner.createdDate);
+const owner = useAuthStore().user;
+const ownerName: Ref<string> = ref(owner?.name ?? "");
+const ownerBirthdate: Ref<string> = ref(owner?.birthDate ?? "");
+const ownerLogin: Ref<string> = ref(owner?.login ?? "");
+const ownerCreateDate: Ref<string> = ref(owner?.createdDate ?? "");
 
 </script>
