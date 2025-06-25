@@ -27,7 +27,7 @@ export const useAuthStore = defineStore('auth', {
         localStorage.setItem('token', this.token)
 
         await this.fetchUser(reqToken)
-      } catch (error) {
+      } catch {
         throw new Error('Login failed')
       }
     },
@@ -45,7 +45,7 @@ export const useAuthStore = defineStore('auth', {
       try {
         const response = await api.post<OwnerLoginDTO, AxiosResponse<OwnerInfoDTO>>('/owner/login', loginDto)
         this.user = response.data
-      } catch (error) {
+      } catch {
         this.logout()
       }
     },

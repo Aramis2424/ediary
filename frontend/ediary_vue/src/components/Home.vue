@@ -24,7 +24,7 @@ onMounted(async () => {
   ownerName.value = owner.user?.name ?? "Error"
   try {
     diaryInfo = await api.get<DiaryInfoDTO>(`/diaries/${owner.user?.id ?? 0}`)
-  } catch (error: any) {
+  } catch {
     const newDiary: DiaryCreateDTO = {
       ownerId: owner.user!.id,
       title: "New diary",
