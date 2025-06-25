@@ -10,7 +10,7 @@ import { getCards } from './dataEntryCards'
 import type { EntryCard } from '@/types/EntryCard'
 
 import { diaries, toInfoDto as toDiaryInfoDto } from './dataDiaries'
-import type { Diary } from '@/types/Diary'
+import type { Diary, DiaryCreateDTO } from '@/types/Diary'
 
 const token = "token123"
 
@@ -99,5 +99,19 @@ export const handlers = [
       return HttpResponse.json({ message: 'Diary not found' }, { status: 404 })
     }
     return HttpResponse.json(toDiaryInfoDto(diary))
+  }),
+  http.post('/api/diaries', async ({ request }) => {
+    const body = await request.json() as DiaryCreateDTO
+    if (!body)
+      return HttpResponse.json({ message: 'Diary was not created' }, { status: 402 })
+    const today = new Date();
+    const formattedDate = today.toISOString().split('T')[0];
+    const nextId: number = diaries.reduce((prevId, curEntry) => {
+      return curEntry.id > prevId ? curEntry.id : prevId
+    }, 0) + 1    
+    const newDiary: Diary = { id: nextId, ownerId: Number(body.ownerId), 
+      title: body.title, description: body.description, cntEntries: 0, createdDate: formattedDate}
+    diaries.push(newDiary)
+    return HttpResponse.json(newDiary, { status: 201 })
   }),
 ]

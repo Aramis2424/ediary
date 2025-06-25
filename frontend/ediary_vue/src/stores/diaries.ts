@@ -25,5 +25,5 @@ export const useDiaryStore = defineStore('diary', {
         this.createdDate = ''
     },
   },
-  persist: true,
+  // persist: true,
 })

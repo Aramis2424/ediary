@@ -5,8 +5,9 @@ import { onMounted, ref, type Ref } from 'vue';
 import { api } from '@/api/axios';
 import Settings from './Settings.vue';
 import AboutYourself from './AboutYourself.vue';
-import type { DiaryInfoDTO } from '@/types/Diary';
+import type { DiaryCreateDTO, DiaryInfoDTO } from '@/types/Diary';
 import { useAuthStore } from '@/stores/auth';
+import type { AxiosResponse } from 'axios';
 
 const showSettings = ref(false);
 const showAboutYourself = ref(false);
@@ -18,10 +19,21 @@ const gotoEntriesMenu = () => {router.push('/menu')}
 const gotoMoodGraph = () => {router.push('/graph')}
 
 const ownerName: Ref<string> = ref('');
+let diaryInfo: AxiosResponse<DiaryInfoDTO> | null = null
 onMounted(async () => {
   ownerName.value = owner.user?.name ?? "Error"
-  const diaryInfo = await api.get<DiaryInfoDTO>(`/diaries/${owner.user?.id ?? 0}`)
-  diaryStore.logIn(diaryInfo.data)
+  try {
+    diaryInfo = await api.get<DiaryInfoDTO>(`/diaries/${owner.user?.id ?? 0}`)
+  } catch (error: any) {
+    const newDiary: DiaryCreateDTO = {
+      ownerId: owner.user!.id,
+      title: "New diary",
+      description: "Description for new diary"
+    }
+    diaryInfo = await api.post<DiaryCreateDTO, 
+        AxiosResponse<DiaryInfoDTO>>(`/diaries/`, newDiary)
+  }
+  diaryStore.logIn(diaryInfo!.data)
 })
 </script>
 
