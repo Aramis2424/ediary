@@ -12,6 +12,9 @@ import type { EntryCard } from '@/types/EntryCard'
 import { diaries, toInfoDto as toDiaryInfoDto } from './dataDiaries'
 import type { Diary, DiaryCreateDTO } from '@/types/Diary'
 
+import { moods } from './dataMoods'
+import type { Mood, MoodCreateDTO } from '@/types/Mood'
+
 const token = "token123"
 
 export const handlers = [
@@ -113,5 +116,21 @@ export const handlers = [
       title: body.title, description: body.description, cntEntries: 0, createdDate: formattedDate}
     diaries.push(newDiary)
     return HttpResponse.json(newDiary, { status: 201 })
+  }),
+
+  http.post('/api/moods', async ({ request }) => {
+    const body = await request.json() as MoodCreateDTO
+    if (!body)
+      return HttpResponse.json({ message: 'Mood was not created' }, { status: 402 })
+    const today = new Date();
+    const formattedDate = today.toISOString().split('T')[0];
+    const nextId: number = moods.reduce((prevId, curEntry) => {
+      return curEntry.id > prevId ? curEntry.id : prevId
+    }, 0) + 1    
+    const newMood: Mood = { id: nextId, ownerId: Number(body.ownerId), 
+      scoreMood: body.scoreMood, scoreProductivity: body.scoreProductivity, bedtime: body.bedtime, 
+      wakeUpTime: body.wakeUpTime, createdDate: formattedDate}
+    moods.push(newMood)
+    return HttpResponse.json(newMood, { status: 201 })
   }),
 ]

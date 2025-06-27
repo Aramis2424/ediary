@@ -4,6 +4,7 @@ import { ref } from 'vue'
 import { useAuthStore } from '@/stores/auth'
 import { api } from '@/api/axios'
 
+const emit = defineEmits(['clicked'])
 const owner = useAuthStore()
 
 const dayRating = ref<number | null>(null)
@@ -11,7 +12,7 @@ const moodRating = ref<number | null>(null)
 const sleepTime = ref('')
 const wakeTime = ref('')
 
-const handleSubmit = () => {
+const handleSubmit = async () => {
   if (dayRating.value === null || moodRating.value === null) {
     alert('Пожалуйста, укажите оценки дня и настроения')
     return
@@ -28,7 +29,8 @@ const handleSubmit = () => {
     bedtime: sleepTime.value,
     wakeUpTime: wakeTime.value,
   }
-  api.post('moods/', result);
+  await api.post('moods/', result);
+  emit('clicked')
 }
 </script>
 
