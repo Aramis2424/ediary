@@ -29,6 +29,11 @@
   rounded-lg flex items-center justify-center z-50
 }
 
+.moodBacking {
+  @apply
+  fixed inset-0.5 bg-opacity-60 
+}
+
 :root {
   font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
