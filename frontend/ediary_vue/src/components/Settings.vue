@@ -2,6 +2,9 @@
 <div class="baseBacking">
     <div class="bg-white rounded-xl p-2 w-1/6 h-1/6 shadow-xl relative flex flex-col justify-evenly content-center items-center">
         <h2 class="text-xl font-semibold mb-4">Настройки</h2>
+        <a :href="mailtoLink" class="baseBtn w-1/2 text-center">
+            Сообщить о баге
+        </a>
         <button @click="logout" class="baseBtn w-1/2">
             Выйти
         </button>
@@ -22,4 +25,5 @@ function logout(): void {
     router.push('/login')
     emit('clicked');
 }
+const mailtoLink = `mailto:korovroman2424@yandex.ru?subject=Баг%20в%20приложении%20ediary`
 </script>
