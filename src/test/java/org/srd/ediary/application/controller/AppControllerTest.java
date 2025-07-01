@@ -44,7 +44,7 @@ class AppControllerTest {
 
     @Test
     void testGetUser() throws Exception {
-        mockMvc.perform(get("/")
+        mockMvc.perform(get("/api/v1/")
                         .param("id", "123")
                         .param("name", "Ivan")
                         .principal(authentication))
@@ -56,7 +56,7 @@ class AppControllerTest {
 
     @Test
     void testSayHello() throws Exception {
-        mockMvc.perform(get("/hello")
+        mockMvc.perform(get("/api/v1/hello")
                         .accept(MediaType.TEXT_PLAIN_VALUE))
                 .andDo(print())
                 .andExpect(status().isOk())

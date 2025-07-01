@@ -57,7 +57,7 @@ class EntryControllerTest {
         Long entryId = 1L;
         when(entryService.getEntry(entryId)).thenReturn(output);
 
-        mockMvc.perform(get("/entries/" + entryId)
+        mockMvc.perform(get("/api/v1/entries/" + entryId)
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
                 .content(String.valueOf(entryId))
@@ -72,7 +72,7 @@ class EntryControllerTest {
         Long entryId = 1L;
         when(entryService.getEntry(entryId)).thenThrow(EntryNotFoundException.class);
 
-        mockMvc.perform(get("/entries/" + entryId)
+        mockMvc.perform(get("/api/v1/entries/" + entryId)
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
                         .content(String.valueOf(entryId))
@@ -85,7 +85,7 @@ class EntryControllerTest {
         Long diaryId = 3L;
         when(entryService.getAllEntriesByDiary(diaryId)).thenReturn(outputList);
 
-        mockMvc.perform(get("/entries/diary/" + diaryId)
+        mockMvc.perform(get("/api/v1/diaries/" + diaryId + "/entries")
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
                 .content(String.valueOf(diaryId))
@@ -101,7 +101,7 @@ class EntryControllerTest {
         Long diaryId = 3L;
         when(entryService.getAllEntriesByDiary(diaryId)).thenThrow(DiaryNotFoundException.class);
 
-        mockMvc.perform(get("/entries/diary/" + diaryId)
+        mockMvc.perform(get("/api/v1/diaries/" + diaryId + "/entries")
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
                         .content(String.valueOf(diaryId))
@@ -114,7 +114,7 @@ class EntryControllerTest {
         EntryCreateDTO input = new EntryCreateDTO(1L, "day1", "Good day");
         when(entryService.create(input)).thenReturn(output);
 
-        mockMvc.perform(post("/entries/")
+        mockMvc.perform(post("/api/v1/entries/")
                 .contentType(MediaType.APPLICATION_JSON)
                 .characterEncoding("UTF-8")
                 .accept(MediaType.APPLICATION_JSON)
@@ -130,7 +130,7 @@ class EntryControllerTest {
         EntryCreateDTO input = new EntryCreateDTO(1L, "day1", "Good day");
         when(entryService.create(input)).thenThrow(EntryNotFoundException.class);
 
-        mockMvc.perform(post("/entries/")
+        mockMvc.perform(post("/api/v1/entries/")
                         .contentType(MediaType.APPLICATION_JSON)
                         .characterEncoding("UTF-8")
                         .accept(MediaType.APPLICATION_JSON)
@@ -145,7 +145,7 @@ class EntryControllerTest {
         EntryUpdateDTO input = new EntryUpdateDTO("day1", "Good day");
         when(entryService.update(entryId, input)).thenReturn(output);
 
-        mockMvc.perform(put("/entries/" + entryId)
+        mockMvc.perform(put("/api/v1/entries/" + entryId)
                 .contentType(MediaType.APPLICATION_JSON)
                 .characterEncoding("UTF-8")
                 .accept(MediaType.APPLICATION_JSON)
@@ -162,7 +162,7 @@ class EntryControllerTest {
         EntryUpdateDTO input = new EntryUpdateDTO("day1", "Good day");
         when(entryService.update(entryId, input)).thenThrow(EntryNotFoundException.class);
 
-        mockMvc.perform(put("/entries/" + entryId)
+        mockMvc.perform(put("/api/v1/entries/" + entryId)
                         .contentType(MediaType.APPLICATION_JSON)
                         .characterEncoding("UTF-8")
                         .accept(MediaType.APPLICATION_JSON)
@@ -176,7 +176,7 @@ class EntryControllerTest {
         Long entryId = 1L;
         doNothing().when(entryService).delete(entryId);
 
-        mockMvc.perform(delete("/entries/" + entryId)
+        mockMvc.perform(delete("/api/v1/entries/" + entryId)
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
                 .content(String.valueOf(entryId))

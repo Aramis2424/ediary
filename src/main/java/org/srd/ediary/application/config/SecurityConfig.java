@@ -40,10 +40,10 @@ public class SecurityConfig {
         http.csrf(AbstractHttpConfigurer::disable);
 
         http.authorizeHttpRequests(req -> {
-            req.requestMatchers("/token/*").permitAll();
-            req.requestMatchers("/hello").permitAll();
-			req.requestMatchers("/owner/register").permitAll();
-			req.requestMatchers("/owner/login").permitAll();
+            req.requestMatchers("/api/v1/token/*").permitAll();
+            req.requestMatchers("/api/v1/hello").permitAll();
+			req.requestMatchers("/api/v1/owners").permitAll();
+            req.requestMatchers("/swagger-ui/**").permitAll();
             req.anyRequest().authenticated();
         });
 

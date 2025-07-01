@@ -65,7 +65,7 @@ class MoodControllerTest {
         Long moodId = 1L;
         when(moodService.getMood(moodId)).thenReturn(output);
 
-        mockMvc.perform(get("/moods/" + moodId)
+        mockMvc.perform(get("/api/v1/moods/" + moodId)
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
                 .content(String.valueOf(moodId))
@@ -80,7 +80,7 @@ class MoodControllerTest {
         Long moodId = 1L;
         when(moodService.getMood(moodId)).thenThrow(MoodNotFoundException.class);
 
-        mockMvc.perform(get("/moods/" + moodId)
+        mockMvc.perform(get("/api/v1/moods/" + moodId)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(String.valueOf(moodId))
                 )
@@ -92,7 +92,7 @@ class MoodControllerTest {
         Long ownerId = 5L;
         when(moodService.getMoodsByOwner(ownerId)).thenReturn(listOutput);
 
-        mockMvc.perform(get("/moods/owner/" + ownerId)
+        mockMvc.perform(get("/api/v1/owners/" + ownerId + "/moods")
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
                         .content(String.valueOf(ownerId))
@@ -108,7 +108,7 @@ class MoodControllerTest {
         Long ownerId = 5L;
         when(moodService.getMoodsByOwner(ownerId)).thenThrow(OwnerNotFoundException.class);
 
-        mockMvc.perform(get("/moods/owner/" + ownerId)
+        mockMvc.perform(get("/api/v1/owners/" + ownerId + "/moods")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(String.valueOf(ownerId))
                 )
@@ -120,7 +120,7 @@ class MoodControllerTest {
         MoodCreateDTO input = new MoodCreateDTO(5L, 7, 8, bedtime, wakeUpTime);
         when(moodService.create(input)).thenReturn(output);
 
-        mockMvc.perform(post("/moods/")
+        mockMvc.perform(post("/api/v1/moods/")
                 .contentType(MediaType.APPLICATION_JSON)
                 .characterEncoding("UTF-8")
                 .accept(MediaType.APPLICATION_JSON)
@@ -136,7 +136,7 @@ class MoodControllerTest {
         MoodCreateDTO input = new MoodCreateDTO(6L, 7, 8, bedtime, wakeUpTime);
         when(moodService.create(input)).thenThrow(OwnerNotFoundException.class);
 
-        mockMvc.perform(post("/moods/")
+        mockMvc.perform(post("/api/v1/moods/")
                         .contentType(MediaType.APPLICATION_JSON)
                         .characterEncoding("UTF-8")
                         .accept(MediaType.APPLICATION_JSON)
@@ -151,7 +151,7 @@ class MoodControllerTest {
         MoodUpdateDTO input = new MoodUpdateDTO(7, 8, bedtime, wakeUpTime);
         when(moodService.update(moodId, input)).thenReturn(output);
 
-        mockMvc.perform(put("/moods/" + moodId)
+        mockMvc.perform(put("/api/v1/moods/" + moodId)
                         .contentType(MediaType.APPLICATION_JSON)
                         .characterEncoding("UTF-8")
                         .accept(MediaType.APPLICATION_JSON)
@@ -168,7 +168,7 @@ class MoodControllerTest {
         MoodUpdateDTO input = new MoodUpdateDTO(7, 8, bedtime, wakeUpTime);
         when(moodService.update(moodId, input)).thenThrow(MoodNotFoundException.class);
 
-        mockMvc.perform(put("/moods/" + moodId)
+        mockMvc.perform(put("/api/v1/moods/" + moodId)
                         .contentType(MediaType.APPLICATION_JSON)
                         .characterEncoding("UTF-8")
                         .accept(MediaType.APPLICATION_JSON)
@@ -182,7 +182,7 @@ class MoodControllerTest {
         Long moodId = 1L;
         doNothing().when(moodService).delete(moodId);
 
-        mockMvc.perform(delete("/moods/" + moodId)
+        mockMvc.perform(delete("/api/v1/moods/" + moodId)
                         .contentType(MediaType.APPLICATION_JSON)
                         .characterEncoding("UTF-8")
                         .accept(MediaType.APPLICATION_JSON)

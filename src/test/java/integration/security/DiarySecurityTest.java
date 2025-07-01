@@ -70,7 +70,7 @@ public class DiarySecurityTest {
         when(diaryRepo.getByID(diaryId)).thenReturn(Optional.of(diaryFromRepo));
         when(diaryAccess.isAllowed(diaryId, validOwnerId)).thenReturn(true);
 
-        mockMvc.perform(get("/diaries/" + diaryId)
+        mockMvc.perform(get("/api/v1/diaries/" + diaryId)
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
                         .content(String.valueOf(diaryId))
@@ -89,7 +89,7 @@ public class DiarySecurityTest {
         when(diaryRepo.getByID(diaryId)).thenReturn(Optional.of(diaryFromRepo));
         when(diaryAccess.isAllowed(diaryId, invalidOwnerId)).thenReturn(false);
 
-        mockMvc.perform(get("/diaries/" + diaryId)
+        mockMvc.perform(get("/api/v1/diaries/" + diaryId)
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
                         .content(String.valueOf(diaryId))
@@ -104,7 +104,7 @@ public class DiarySecurityTest {
     void testGetDiary_Unauthorized() throws Exception{
         Long diaryId = 1L;
 
-        mockMvc.perform(get("/diaries/" + diaryId)
+        mockMvc.perform(get("/api/v1/diaries/" + diaryId)
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
                         .content(String.valueOf(diaryId))
@@ -118,7 +118,7 @@ public class DiarySecurityTest {
         Long ownerId = validOwnerId;
         when(diaryRepo.getAllByOwner(ownerId)).thenReturn(listDiaryFromRepo);
 
-        mockMvc.perform(get("/diaries/owner/" + ownerId)
+        mockMvc.perform(get("/api/v1/owners/" + ownerId + "/diaries")
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
                         .content(String.valueOf(ownerId))
@@ -135,7 +135,7 @@ public class DiarySecurityTest {
         Long ownerId = invalidOwnerId;
         when(diaryRepo.getAllByOwner(ownerId)).thenReturn(listDiaryFromRepo);
 
-        mockMvc.perform(get("/diaries/owner/" + ownerId)
+        mockMvc.perform(get("/api/v1/owners/" + ownerId + "/diaries")
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
                         .content(String.valueOf(ownerId))
@@ -150,7 +150,7 @@ public class DiarySecurityTest {
         DiaryCreateDTO input = new DiaryCreateDTO(ownerId, "d1", "of1");
         when(diaryRepo.save(any(Diary.class))).thenReturn(diaryFromRepo);
 
-        mockMvc.perform(post("/diaries")
+        mockMvc.perform(post("/api/v1/diaries")
                         .contentType(MediaType.APPLICATION_JSON)
                         .characterEncoding("UTF-8")
                         .accept(MediaType.APPLICATION_JSON)
@@ -170,7 +170,7 @@ public class DiarySecurityTest {
         DiaryCreateDTO input = new DiaryCreateDTO(ownerId, "d1", "of1");
         when(diaryRepo.save(any(Diary.class))).thenReturn(diaryFromRepo);
 
-        mockMvc.perform(post("/diaries")
+        mockMvc.perform(post("/api/v1/diaries")
                         .contentType(MediaType.APPLICATION_JSON)
                         .characterEncoding("UTF-8")
                         .accept(MediaType.APPLICATION_JSON)
@@ -190,7 +190,7 @@ public class DiarySecurityTest {
         when(diaryRepo.save(any(Diary.class))).thenReturn(diaryFromRepo);
         when(diaryAccess.isAllowed(diaryId, validOwnerId)).thenReturn(true);
 
-        mockMvc.perform(put("/diaries/" + diaryId)
+        mockMvc.perform(put("/api/v1/diaries/" + diaryId)
                         .contentType(MediaType.APPLICATION_JSON)
                         .characterEncoding("UTF-8")
                         .accept(MediaType.APPLICATION_JSON)
@@ -212,7 +212,7 @@ public class DiarySecurityTest {
         when(diaryRepo.save(any(Diary.class))).thenReturn(diaryFromRepo);
         when(diaryAccess.isAllowed(diaryId, invalidOwnerId)).thenReturn(false);
 
-        mockMvc.perform(put("/diaries/" + diaryId)
+        mockMvc.perform(put("/api/v1/diaries/" + diaryId)
                         .contentType(MediaType.APPLICATION_JSON)
                         .characterEncoding("UTF-8")
                         .accept(MediaType.APPLICATION_JSON)
@@ -231,7 +231,7 @@ public class DiarySecurityTest {
         doNothing().when(diaryRepo).delete(diaryId);
         when(diaryAccess.isAllowed(diaryId, validOwnerId)).thenReturn(true);
 
-        mockMvc.perform(delete("/diaries/" + diaryId)
+        mockMvc.perform(delete("/api/v1/diaries/" + diaryId)
                         .contentType(MediaType.APPLICATION_JSON)
                         .characterEncoding("UTF-8")
                         .accept(MediaType.APPLICATION_JSON)
@@ -249,7 +249,7 @@ public class DiarySecurityTest {
         doNothing().when(diaryRepo).delete(diaryId);
         when(diaryAccess.isAllowed(diaryId, invalidOwnerId)).thenReturn(false);
 
-        mockMvc.perform(delete("/diaries/" + diaryId)
+        mockMvc.perform(delete("/api/v1/diaries/" + diaryId)
                         .contentType(MediaType.APPLICATION_JSON)
                         .characterEncoding("UTF-8")
                         .accept(MediaType.APPLICATION_JSON)
