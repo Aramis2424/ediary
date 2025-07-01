@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import org.srd.ediary.application.security.OwnerDetails;
 
 @RestController
-@RequestMapping("/")
+@RequestMapping("/api/v1")
 @RequiredArgsConstructor
 @Tag(name = "App", description = "Base test-app operations")
 public class AppController {
