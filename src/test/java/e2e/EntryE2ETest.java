@@ -113,7 +113,7 @@ public class EntryE2ETest {
     @BeforeEach
     @Test
     void getToken() throws Exception{
-        MvcResult result = mockMvc.perform(post("/token/create")
+        MvcResult result = mockMvc.perform(post("/api/v1/token/create")
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
                         .content(requestJson.write(tokenRequest).getJson())
@@ -126,7 +126,7 @@ public class EntryE2ETest {
 
     @Test
     void testGetEntry_WithAccess() throws Exception{
-        mockMvc.perform(get("/entries/" + entryId)
+        mockMvc.perform(get("/api/v1/entries/" + entryId)
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
                         .content(String.valueOf(entryId))
@@ -140,7 +140,7 @@ public class EntryE2ETest {
     void testGetEntry_WithNoAccess() throws Exception{
         Long alienEntryId = 1L;
 
-        mockMvc.perform(get("/entries/" + alienEntryId)
+        mockMvc.perform(get("/api/v1/entries/" + alienEntryId)
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
                         .content(String.valueOf(alienEntryId))
@@ -151,7 +151,7 @@ public class EntryE2ETest {
 
     @Test
     void testGetEntry_Unauthorized() throws Exception{
-        mockMvc.perform(get("/entries/" + entryId)
+        mockMvc.perform(get("/api/v1/entries/" + entryId)
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
                         .content(String.valueOf(entryId))
@@ -161,7 +161,7 @@ public class EntryE2ETest {
 
     @Test
     void testGetEntriesByDiary_WithAccess() throws Exception{
-        mockMvc.perform(get("/entries/diary/" + diaryId)
+        mockMvc.perform(get("/api/v1/diaries/" + diaryId + "/entries")
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
                         .content(String.valueOf(diaryId))
@@ -175,7 +175,7 @@ public class EntryE2ETest {
     void testGetEntriesByDiary_WithNoAccess() throws Exception{
         Long alienDiaryId = 1L;
 
-        mockMvc.perform(get("/entries/diary/" + alienDiaryId)
+        mockMvc.perform(get("/api/v1/diaries/" + alienDiaryId + "/entries")
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
                         .content(String.valueOf(alienDiaryId))
@@ -188,7 +188,7 @@ public class EntryE2ETest {
     void testCreateEntry_WithAccess() throws Exception {
         EntryCreateDTO input = new EntryCreateDTO(diaryId, "day1", "good1");
 
-        mockMvc.perform(post("/entries")
+        mockMvc.perform(post("/api/v1/entries")
                         .contentType(MediaType.APPLICATION_JSON)
                         .characterEncoding("UTF-8")
                         .accept(MediaType.APPLICATION_JSON)
@@ -204,7 +204,7 @@ public class EntryE2ETest {
     void testCreateEntry_WithNoAccess() throws Exception {
         Long alienDiaryId = 1L;
         EntryCreateDTO input = new EntryCreateDTO(alienDiaryId, "day1", "good1");
-        mockMvc.perform(post("/entries")
+        mockMvc.perform(post("/api/v1/entries")
                         .contentType(MediaType.APPLICATION_JSON)
                         .characterEncoding("UTF-8")
                         .accept(MediaType.APPLICATION_JSON)
@@ -218,7 +218,7 @@ public class EntryE2ETest {
     void testUpdateEntry_WithAccess() throws Exception {
         EntryUpdateDTO input = new EntryUpdateDTO("Mr lawyer.", "good1");
 
-        mockMvc.perform(put("/entries/" + entryId)
+        mockMvc.perform(put("/api/v1/entries/" + entryId)
                         .contentType(MediaType.APPLICATION_JSON)
                         .characterEncoding("UTF-8")
                         .accept(MediaType.APPLICATION_JSON)
@@ -234,7 +234,7 @@ public class EntryE2ETest {
         long alienEntryId = 1L;
         EntryUpdateDTO input = new EntryUpdateDTO("day1", "good1");
 
-        mockMvc.perform(put("/entries/" + alienEntryId)
+        mockMvc.perform(put("/api/v1/entries/" + alienEntryId)
                         .contentType(MediaType.APPLICATION_JSON)
                         .characterEncoding("UTF-8")
                         .accept(MediaType.APPLICATION_JSON)
@@ -247,7 +247,7 @@ public class EntryE2ETest {
     @Test
     @Transactional
     void testDeleteEntry_WithAccess() throws Exception {
-        mockMvc.perform(delete("/entries/" + entryId)
+        mockMvc.perform(delete("/api/v1/entries/" + entryId)
                         .contentType(MediaType.APPLICATION_JSON)
                         .characterEncoding("UTF-8")
                         .accept(MediaType.APPLICATION_JSON)
@@ -261,7 +261,7 @@ public class EntryE2ETest {
     void testDeleteEntry_WithNoAccess() throws Exception {
         Long alienEntryId = 1L;
 
-        mockMvc.perform(delete("/entries/" + alienEntryId)
+        mockMvc.perform(delete("/api/v1/entries/" + alienEntryId)
                         .contentType(MediaType.APPLICATION_JSON)
                         .characterEncoding("UTF-8")
                         .accept(MediaType.APPLICATION_JSON)
