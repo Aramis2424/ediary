@@ -3,6 +3,7 @@ package org.srd.ediary.application.service;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,6 +24,15 @@ import java.util.Optional;
 public class OwnerService {
     private final PasswordEncoder passwordEncoder;
     private final OwnerRepository ownerRepo;
+
+    @PreAuthorize("#ownerId.equals(authentication.principal.id)")
+    public OwnerInfoDTO fetchOwner(Long ownerId) {
+        Optional<Owner> optionalOwner = ownerRepo.getByID(ownerId);
+        if (optionalOwner.isEmpty()) {
+            throw new InvalidCredentialsException("Authorised error");
+        }
+        return OwnerMapper.INSTANCE.OwnerToOwnerInfoDto(optionalOwner.get());
+    }
 
     public OwnerInfoDTO loginOwner(String login, String password) {
         Optional<Owner> optionalOwner = ownerRepo.getByLogin(login);
