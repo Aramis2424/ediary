@@ -60,7 +60,7 @@ public class TokenGenerationTest {
     void testCreateToken_ValidUser() throws Exception {
         when(ownerRepo.getByLogin(login)).thenReturn(Optional.of(owner));
 
-        mockMvc.perform(post("/token/create")
+        mockMvc.perform(post("/api/v1/token/create")
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
                 .content(requestJson.write(tokenRequest).getJson())
@@ -72,7 +72,7 @@ public class TokenGenerationTest {
     void testCreateToken_InvalidUser() throws Exception {
         when(ownerRepo.getByLogin(login)).thenReturn(Optional.empty());
 
-        mockMvc.perform(post("/token/create")
+        mockMvc.perform(post("/api/v1/token/create")
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
                         .content(requestJson.write(tokenRequest).getJson())
