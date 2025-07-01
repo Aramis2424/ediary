@@ -1,5 +1,7 @@
 package org.srd.ediary.application.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,30 +16,36 @@ import java.util.List;
 @RestController
 @RequestMapping("/moods")
 @RequiredArgsConstructor
+@Tag(name = "mood", description = "Access to moods")
 public class MoodController {
     private final MoodService service;
 
     @GetMapping("/{moodId}")
+    @Operation(summary = "Get mood by id")
     public ResponseEntity<MoodInfoDTO> getMood(@PathVariable Long moodId) {
         return new ResponseEntity<>(service.getMood(moodId), HttpStatus.OK);
     }
 
     @GetMapping("/owner/{ownerId}")
+    @Operation(summary = "Get all owner`s moods")
     public ResponseEntity<List<MoodInfoDTO>> getMoodByOwner(@PathVariable Long ownerId) {
         return new ResponseEntity<>(service.getMoodsByOwner(ownerId), HttpStatus.OK);
     }
 
     @PostMapping
+    @Operation(summary = "Create mood for owner")
     public ResponseEntity<MoodInfoDTO> createMood(@RequestBody MoodCreateDTO mood) {
         return new ResponseEntity<>(service.create(mood), HttpStatus.OK);
     }
 
     @PutMapping("/{moodId}")
+    @Operation(summary = "Update mood by id")
     public ResponseEntity<MoodInfoDTO> updateMood(@PathVariable Long moodId, @RequestBody MoodUpdateDTO mood) {
         return new ResponseEntity<>(service.update(moodId, mood), HttpStatus.OK);
     }
 
     @DeleteMapping("/{moodId}")
+    @Operation(summary = "Delete mood by id")
     public HttpStatus deleteMood(@PathVariable Long moodId) {
         service.delete(moodId);
         return HttpStatus.OK;
