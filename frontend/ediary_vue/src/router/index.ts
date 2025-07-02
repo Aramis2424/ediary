@@ -25,8 +25,8 @@ const router = createRouter({
 router.beforeEach(async (to, _from, next) => {
   const auth = useAuthStore()
 
-  if (auth.token && !auth.user && to.path !== '/login' && to.path !== '/register') {
-    return next('/login')
+  if (auth.token && !auth.user) {
+    auth.fetchUser()
   }
 
   const isPublic = to.meta.public === true

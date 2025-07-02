@@ -1,7 +1,7 @@
 import { http, HttpResponse } from 'msw'
 
 import { owners } from './dataOwners'
-import type { OwnerLoginDTO, OwnerCreateDTO, TokenRequest } from '@/types/Owner'
+import type { OwnerCreateDTO, TokenRequest } from '@/types/Owner'
 
 import { entries, toInfoDto } from './dataEntries'
 import type { Entry, EntryCreateDTO } from '@/types/Entry'
@@ -15,12 +15,15 @@ import type { Diary, DiaryCreateDTO } from '@/types/Diary'
 import { moods } from './dataMoods'
 import type { Mood, MoodCreateDTO } from '@/types/Mood'
 
-const token = "token123"
-
 export const handlers = [
-  http.post('/api/owner/login', async ({ request }) => {    
-    const { login, password } = await request.json() as OwnerLoginDTO
-    const user = owners.find(v => v.login === login && v.password === password)
+  http.post('/api/owners/me', async ({ request }) => {
+    const authHeader = request.headers.get('Authorization')
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      return HttpResponse.json({ message: 'Unauthorized' }, { status: 401 })
+    }
+    const token = authHeader.split(' ')[1]
+    const login = token
+    const user = owners.find(v => v.login === login)
     if (!user) {
       return HttpResponse.json({ message: 'User not found' }, { status: 404 })
     }
@@ -46,7 +49,7 @@ export const handlers = [
     if (!user) {
       return HttpResponse.json({ message: 'Invalid credentials' }, { status: 401 })
     }
-    return HttpResponse.json({token: token})
+    return HttpResponse.json({token: user.login})
   }),
 
   http.get('/api/entries/:id', ({ params }) => {
