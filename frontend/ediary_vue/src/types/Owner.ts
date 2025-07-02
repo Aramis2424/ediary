@@ -7,11 +7,6 @@ export interface Owner {
     createdDate: string;
 }
 
-export interface OwnerLoginDTO {
-    login: string;
-    password: string;
-}
-
 export interface OwnerInfoDTO {
     id: number;
     name: string;
