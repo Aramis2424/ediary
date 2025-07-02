@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useRouter } from 'vue-router';
 import { useDiaryStore } from '@/stores/diaries';
-import { onMounted, ref, type Ref } from 'vue';
+import { ref, watch, type Ref } from 'vue';
 import { api } from '@/api/axios';
 import Settings from './Settings.vue';
 import AboutYourself from './AboutYourself.vue';
@@ -20,24 +20,29 @@ const gotoMoodGraph = () => {router.push('/graph')}
 
 const ownerName: Ref<string> = ref('');
 let diaryInfo: AxiosResponse<DiaryInfoDTO> | null = null
-onMounted(async () => {
-  if (!owner.user?.name) {
-    await owner.fetchUser()
-  }
-  ownerName.value = owner.user?.name ?? "Error"
-  try {
-    diaryInfo = await api.get<DiaryInfoDTO>(`/diaries/${owner.user?.id ?? 0}`)
-  } catch {
-    const newDiary: DiaryCreateDTO = {
-      ownerId: owner.user!.id,
-      title: "New diary",
-      description: "Description for new diary"
+
+watch(
+  () => owner.user,
+  async (newOwner) => {
+    if (!newOwner)
+      return
+    ownerName.value = newOwner.name
+    try {
+      diaryInfo = await api.get<DiaryInfoDTO>(`/owners/${newOwner.id}/diaries`)
+    } catch {
+      const newDiary: DiaryCreateDTO = {
+        ownerId: newOwner.id,
+        title: "New diary",
+        description: "Description for new diary"
+      }
+      diaryInfo = await api.post<DiaryCreateDTO, 
+          AxiosResponse<DiaryInfoDTO>>(`/diaries/`, newDiary)
     }
-    diaryInfo = await api.post<DiaryCreateDTO, 
-        AxiosResponse<DiaryInfoDTO>>(`/diaries/`, newDiary)
-  }
-  diaryStore.logIn(diaryInfo!.data)
-})
+    diaryStore.logIn(diaryInfo!.data)
+    },
+  { immediate: true }
+)
+
 </script>
 
 <template>
