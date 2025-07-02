@@ -33,7 +33,7 @@ export const useAuthStore = defineStore('auth', {
     },
 
     async register(reqRegister: OwnerCreateDTO) {
-      await api.post('/owners/', reqRegister)
+      await api.post('/owners', reqRegister)
       await this.login({
         login: reqRegister.login, 
         password: reqRegister.password})
