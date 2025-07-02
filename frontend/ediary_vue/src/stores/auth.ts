@@ -33,7 +33,7 @@ export const useAuthStore = defineStore('auth', {
     },
 
     async register(reqRegister: OwnerCreateDTO) {
-      await api.post('/owner/register', reqRegister)
+      await api.post('/owners/', reqRegister)
       await this.login({
         login: reqRegister.login, 
         password: reqRegister.password})
@@ -43,7 +43,7 @@ export const useAuthStore = defineStore('auth', {
       if (!this.token) 
         return
       try {
-        const response = await api.post<null, AxiosResponse<OwnerInfoDTO>>('/owners/me')
+        const response = await api.get<null, AxiosResponse<OwnerInfoDTO>>('/owners/me')
         this.user = response.data
       } catch {
         this.logout()
