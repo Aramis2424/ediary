@@ -8,6 +8,7 @@ import AboutYourself from './AboutYourself.vue';
 import type { DiaryCreateDTO, DiaryInfoDTO } from '@/types/Diary';
 import { useAuthStore } from '@/stores/auth';
 import type { AxiosResponse } from 'axios';
+import { fetchDiary, saveDiary } from '@/services/diaryService';
 
 const showSettings = ref(false);
 const showAboutYourself = ref(false);
@@ -19,7 +20,7 @@ const gotoEntriesMenu = () => {router.push('/menu')}
 const gotoMoodGraph = () => {router.push('/graph')}
 
 const ownerName: Ref<string> = ref('');
-let diaryInfo: AxiosResponse<DiaryInfoDTO> | null = null
+let diaryInfo: DiaryInfoDTO | null = null
 
 watch(
   () => owner.user,
@@ -28,17 +29,11 @@ watch(
       return
     ownerName.value = newOwner.name
     try {
-      diaryInfo = await api.get<DiaryInfoDTO>(`/owners/${newOwner.id}/diaries`)
+      diaryInfo = await fetchDiary(newOwner.id)
     } catch {
-      const newDiary: DiaryCreateDTO = {
-        ownerId: newOwner.id,
-        title: "New diary",
-        description: "Description for new diary"
-      }
-      diaryInfo = await api.post<DiaryCreateDTO, 
-          AxiosResponse<DiaryInfoDTO>>(`/diaries/`, newDiary)
+      diaryInfo = await saveDiary(newOwner.id)
     }
-    diaryStore.logIn(diaryInfo!.data)
+    diaryStore.logIn(diaryInfo)
     },
   { immediate: true }
 )

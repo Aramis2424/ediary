@@ -29,7 +29,7 @@ export const handlers = [
     }
     return HttpResponse.json(user)
   }),
-  http.post('/api/v1/owners/', async ({ request }) => {
+  http.post('/api/v1/owners', async ({ request }) => {
     const newOwner = await request.json() as OwnerCreateDTO
     const user = owners.find(v => v.login === newOwner.login)
     if (user) {
@@ -100,11 +100,12 @@ export const handlers = [
   }),
 
   http.get('/api/v1/owners/:ownerId/diaries', ({ params }) => {
-    const diary: Diary | undefined = diaries.find(v => v.ownerId === Number(params.ownerId))
-    if (!diary) {
-      return HttpResponse.json({ message: 'Diary not found' }, { status: 404 })
+    const requiredDiaries: Diary[] | undefined = diaries.filter(v => v.ownerId === Number(params.ownerId))
+    if (!requiredDiaries) {
+      return HttpResponse.json({ message: 'Diaries not found' }, { status: 404 })
     }
-    return HttpResponse.json(toDiaryInfoDto(diary))
+    const requiredDtoDiaries = requiredDiaries.map(it => toDiaryInfoDto(it))
+    return HttpResponse.json(requiredDtoDiaries)
   }),
   http.post('/api/v1/diaries', async ({ request }) => {
     const body = await request.json() as DiaryCreateDTO
