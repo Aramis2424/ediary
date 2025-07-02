@@ -1,15 +1,15 @@
 <script setup lang="ts">
 import { useRouter } from 'vue-router'
 import { ref, onMounted } from 'vue'
-import { api } from '@/api/axios';
-import { useDiaryStore } from '../stores/diaries';
+import { useDiaryStore } from '@/stores/diaries';
 import EntryCard from '@/components/EntryCard.vue';
-import EntriesSearching from './EntriesSearching.vue';
+import EntriesSearching from '@/views/EntriesSearching.vue';
 import NewEntryCard from '@/components/NewEntryCard.vue';
-import SurveyMood from './SurveyMood.vue';
-import type { Entry, EntryCreateDTO } from '@/types/Entry';
+import SurveyMood from '@/views/SurveyMood.vue';
+import type { EntryInfoDTO } from '@/types/Entry';
 import type { EntryCard as EntryCardDto } from '@/types/EntryCard';
-import type { AxiosResponse } from 'axios';
+import { saveEntry } from '@/services/entryService';
+import { api } from '@/api/axios';
 
 const router = useRouter();
 const diary = useDiaryStore();
@@ -24,13 +24,8 @@ onMounted(async () => {
 })
 
 async function createEntry(): Promise<void> {
-  const newEntry: EntryCreateDTO = {
-    diaryId: String(diary.id),
-    title: "Новый день",
-    content: ""
-  }
-  const res = await api.post<EntryCreateDTO, AxiosResponse<Entry>>('entries/', newEntry)
-  gotoEntry(res.data.id);
+  const createdEntry: EntryInfoDTO = await saveEntry(diary.id)
+  gotoEntry(createdEntry.id);
 }
 
 async function createMood() {
