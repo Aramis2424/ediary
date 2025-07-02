@@ -5,7 +5,7 @@ import { api } from '@/api/axios';
 import { useDiaryStore } from '../stores/diaries';
 import EntryCard from '@/components/EntryCard.vue';
 import EntriesSearching from './EntriesSearching.vue';
-import NewEntryCard from './NewEntryCard.vue';
+import NewEntryCard from '@/components/NewEntryCard.vue';
 import SurveyMood from './SurveyMood.vue';
 import type { Entry, EntryCreateDTO } from '@/types/Entry';
 import type { EntryCard as EntryCardDto } from '@/types/EntryCard';

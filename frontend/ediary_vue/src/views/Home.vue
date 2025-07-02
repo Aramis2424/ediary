@@ -21,6 +21,9 @@ const gotoMoodGraph = () => {router.push('/graph')}
 const ownerName: Ref<string> = ref('');
 let diaryInfo: AxiosResponse<DiaryInfoDTO> | null = null
 onMounted(async () => {
+  if (!owner.user?.name) {
+    await owner.fetchUser()
+  }
   ownerName.value = owner.user?.name ?? "Error"
   try {
     diaryInfo = await api.get<DiaryInfoDTO>(`/diaries/${owner.user?.id ?? 0}`)
