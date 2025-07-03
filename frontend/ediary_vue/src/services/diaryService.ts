@@ -2,11 +2,18 @@ import { createDiary, getDiaries } from '@/api/diaryApi';
 import type { DiaryInfoDTO, DiaryCreateDTO } from '@/types/Diary';
 
 export const fetchDiary = async (ownerId: number): Promise<DiaryInfoDTO> => {
-    const diaries: DiaryInfoDTO[] = await getDiaries(ownerId);
-    if (!Array.isArray(diaries) || diaries.length === 0) {
-        throw new Error("No diaries found for this owner");
+    try {
+        const diaries: DiaryInfoDTO[] = await getDiaries(ownerId);
+        return diaries[0];
+    } catch (error: any) {
+        if (error.response?.status === 404) {
+            throw new Error("Diary not found");
+        } else if (error.response?.status === 403) {
+            throw new Error("Access denied");
+        } else {
+        throw error;
+        }
     }
-    return diaries[0];
 };
 
 export const saveDiary = async (ownerId: number): Promise<DiaryInfoDTO> => {
