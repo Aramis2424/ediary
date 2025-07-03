@@ -27,21 +27,22 @@ export const handlers = [
     if (!user) {
       return HttpResponse.json({ message: 'User not found' }, { status: 404 })
     }
-    return HttpResponse.json(user)
+    return HttpResponse.json(user, { status: 200 })
   }),
   http.post('/api/v1/owners', async ({ request }) => {
     const newOwner = await request.json() as OwnerCreateDTO
     const user = owners.find(v => v.login === newOwner.login)
     if (user) {
-      return HttpResponse.json({ message: 'User already exists' }, { status: 405 })
+      return HttpResponse.json({ message: 'User already exists' }, { status: 409 })
     }
     const today = new Date();
     const formattedDate = today.toISOString().split('T')[0];
     const nextId: number = owners.reduce((prevId, curEntry) => {
-      return curEntry.id > prevId ? curEntry.id : prevId
-    }, 0) + 1 
-    owners.push({id: nextId, createdDate: formattedDate, ...newOwner})
-    return HttpResponse.json(user)
+        return curEntry.id > prevId ? curEntry.id : prevId
+      }, 0) + 1
+    const createdOwner = {id: nextId, createdDate: formattedDate, ...newOwner};
+    owners.push(createdOwner)
+    return HttpResponse.json(createdOwner, { status: 201 })
   }),
   http.post('/api/v1/token/create', async ({ request }) => {
     const { login, password } = await request.json() as TokenRequest
@@ -49,7 +50,7 @@ export const handlers = [
     if (!user) {
       return HttpResponse.json({ message: 'Invalid credentials' }, { status: 401 })
     }
-    return HttpResponse.json({token: user.login})
+    return HttpResponse.json({token: user.login}, { status: 200 })
   }),
 
   http.get('/api/v1/entries/:id', ({ params }) => {

@@ -1,7 +1,6 @@
 import { defineStore } from 'pinia'
 import type { OwnerInfoDTO, OwnerCreateDTO, TokenRequest, TokenResponse } from '@/types/Owner'
-import { api } from '@/api/axios'
-import type { AxiosResponse } from 'axios'
+import { createOwner, fetchOwner, getToken } from '@/api/ownerService'
 
 interface AuthState {
   user: OwnerInfoDTO | null
@@ -21,30 +20,33 @@ export const useAuthStore = defineStore('auth', {
   actions: {
     async login(reqToken: TokenRequest) {
       try {
-        const response = await api.post<TokenRequest, AxiosResponse<TokenResponse>>('/token/create', reqToken)
-        this.token = response.data.token
-        
-        localStorage.setItem('token', this.token)
+        const response: TokenResponse = await getToken(reqToken)
+        this.token = response.token
 
+        localStorage.setItem('token', this.token)
         await this.fetchUser()
-      } catch {
-        throw new Error('Login failed')
+      } catch (error: any) {
+        throw new Error(`Login failed: ${error}`)
       }
     },
 
     async register(reqRegister: OwnerCreateDTO) {
-      await api.post('/owners', reqRegister)
-      await this.login({
-        login: reqRegister.login, 
-        password: reqRegister.password})
+      try {
+        await createOwner(reqRegister);
+        await this.login({
+          login: reqRegister.login, 
+          password: reqRegister.password})
+      } catch (error: any) {
+        throw new Error(`Register failed: ${error}`)
+      }
     },
 
     async fetchUser() {
       if (!this.token) 
         return
       try {
-        const response = await api.get<null, AxiosResponse<OwnerInfoDTO>>('/owners/me')
-        this.user = response.data
+        const response = await fetchOwner()
+        this.user = response
       } catch {
         this.logout()
       }
