@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import type { MoodCreateDTO } from '@/types/Mood'
 import { ref } from 'vue'
 import { useAuthStore } from '@/stores/auth'
-import { api } from '@/api/axios'
+import { createMood } from '@/services/moodService'
+import type { MoodCreateDTO } from '@/types/Mood'
 
 const emit = defineEmits(['clicked'])
 const owner = useAuthStore()
@@ -17,20 +17,25 @@ const handleSubmit = async () => {
     alert('Пожалуйста, укажите оценки дня и настроения')
     return
   }
-  if (sleepTime.value === null || wakeTime.value === null) {
+  if (sleepTime.value === '' || wakeTime.value === '') {
     alert('Пожалуйста, укажите время сна и пробуждения')
     return
   }
 
-  const result: MoodCreateDTO = {
+  const newMood: MoodCreateDTO = {
     ownerId: owner.user?.id ?? 0,
     scoreProductivity: dayRating.value,
     scoreMood: moodRating.value,
     bedtime: sleepTime.value,
     wakeUpTime: wakeTime.value,
   }
-  await api.post('moods/', result);
-  emit('clicked')
+
+  try {
+    await createMood(newMood)
+    emit('clicked')
+  } catch {
+    console.error("Error while creating entry");
+  }
 }
 </script>
 
