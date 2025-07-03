@@ -92,8 +92,8 @@ export const handlers = [
     return HttpResponse.json({ success: true }, { status: 204 })
   }),
 
-  http.get('/api/v1/entryCards/:id', ({ params }) => {
-    const cards: EntryCard[] | undefined = getCards().filter(v => v.diaryId === Number(params.id))
+  http.get('/api/v1/diaries/:diaryId/entry-cards', ({ params }) => {
+    const cards: EntryCard[] | undefined = getCards().filter(v => v.diaryId === Number(params.diaryId))
     if (!cards) {
       return HttpResponse.json({ message: 'Cards not found' }, { status: 404 })
     }

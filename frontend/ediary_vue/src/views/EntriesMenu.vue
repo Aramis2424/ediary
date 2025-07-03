@@ -7,20 +7,24 @@ import EntriesSearching from '@/views/EntriesSearching.vue';
 import NewEntryCard from '@/components/NewEntryCard.vue';
 import SurveyMood from '@/views/SurveyMood.vue';
 import type { EntryInfoDTO } from '@/types/Entry';
-import type { EntryCard as EntryCardDto } from '@/types/EntryCard';
+import type { EntryCard as EntryCardType } from '@/types/EntryCard';
 import { createEntry } from '@/services/entryService';
-import { api } from '@/api/axios';
+import { fetchEntryCards } from '@/services/entryCardService';
 
 const router = useRouter();
 const diary = useDiaryStore();
 
-const entries = ref<EntryCardDto[]>([])
+const entries = ref<EntryCardType[]>([])
 const showSearching = ref(false); 
 const showSurveyMood = ref(false);
 
 onMounted(async () => {
-  const cards = await api.get<EntryCardDto[]>(`/entryCards/${diary.id}`)
-  entries.value = cards.data;
+  try {
+    const cards = await fetchEntryCards(diary.id)
+    entries.value = cards;
+  } catch {
+    console.error("Error while fetching entry cards");
+  }
 })
 
 async function createNewEntry(): Promise<void> {
