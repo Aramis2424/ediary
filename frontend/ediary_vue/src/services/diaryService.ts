@@ -1,4 +1,4 @@
-import { createDiary, getDiaries } from '@/api/diaryApi';
+import { postDiary, getDiaries } from '@/api/diaryApi';
 import type { DiaryInfoDTO, DiaryCreateDTO } from '@/types/Diary';
 
 export const fetchDiary = async (ownerId: number): Promise<DiaryInfoDTO> => {
@@ -16,11 +16,11 @@ export const fetchDiary = async (ownerId: number): Promise<DiaryInfoDTO> => {
     }
 };
 
-export const saveDiary = async (ownerId: number): Promise<DiaryInfoDTO> => {
+export const createDiary = async (ownerId: number): Promise<DiaryInfoDTO> => {
     const newDiary: DiaryCreateDTO = {
         ownerId: ownerId,
         title: "New diary",
         description: "Description for new diary"
       }
-    return await createDiary(newDiary);
+    return await postDiary(newDiary);
 };

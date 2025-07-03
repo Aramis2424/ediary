@@ -6,7 +6,7 @@ import Settings from '@/views/Settings.vue';
 import AboutYourself from '@/views/AboutYourself.vue';
 import type { DiaryInfoDTO } from '@/types/Diary';
 import { useAuthStore } from '@/stores/auth';
-import { fetchDiary, saveDiary } from '@/services/diaryService';
+import { fetchDiary, createDiary } from '@/services/diaryService';
 
 const router = useRouter();
 const owner = useAuthStore();
@@ -27,7 +27,7 @@ watch(
     try {
       diaryInfo = await fetchDiary(ownerInfo.id)
     } catch {
-      diaryInfo = await saveDiary(ownerInfo.id)
+      diaryInfo = await createDiary(ownerInfo.id)
     }
     diaryStore.logIn(diaryInfo)
     },

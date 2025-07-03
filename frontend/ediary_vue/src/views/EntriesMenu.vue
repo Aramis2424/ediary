@@ -8,7 +8,7 @@ import NewEntryCard from '@/components/NewEntryCard.vue';
 import SurveyMood from '@/views/SurveyMood.vue';
 import type { EntryInfoDTO } from '@/types/Entry';
 import type { EntryCard as EntryCardDto } from '@/types/EntryCard';
-import { saveEntry } from '@/services/entryService';
+import { createEntry } from '@/services/entryService';
 import { api } from '@/api/axios';
 
 const router = useRouter();
@@ -23,8 +23,8 @@ onMounted(async () => {
   entries.value = cards.data;
 })
 
-async function createEntry(): Promise<void> {
-  const createdEntry: EntryInfoDTO = await saveEntry(diary.id)
+async function createNewEntry(): Promise<void> {
+  const createdEntry: EntryInfoDTO = await createEntry(diary.id)
   gotoEntry(createdEntry.id);
 }
 
@@ -47,7 +47,7 @@ const gotoHome = () => {router.push('/home')}
 </div>
 
 <EntriesSearching v-if="showSearching" @clicked="showSearching = false"/> 
-<SurveyMood v-if="showSurveyMood" @clicked="createEntry"/>
+<SurveyMood v-if="showSurveyMood" @clicked="createNewEntry"/>
 </template>
 
 <style scoped>
