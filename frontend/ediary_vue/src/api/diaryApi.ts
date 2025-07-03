@@ -9,6 +9,6 @@ export const getDiaries = async (ownerId: number): Promise<DiaryInfoDTO[]> => {
 
 export const createDiary = async (newDiary: DiaryCreateDTO): Promise<DiaryInfoDTO> => {
   const res = await api.post<DiaryInfoDTO, AxiosResponse<DiaryInfoDTO>, DiaryCreateDTO>(
-                '/entries', newDiary)
+                '/diaries', newDiary)
   return res.data;
 };

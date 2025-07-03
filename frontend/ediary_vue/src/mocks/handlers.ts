@@ -101,7 +101,7 @@ export const handlers = [
 
   http.get('/api/v1/owners/:ownerId/diaries', ({ params }) => {
     const requiredDiaries: Diary[] | undefined = diaries.filter(v => v.ownerId === Number(params.ownerId))
-    if (!requiredDiaries) {
+    if (!Array.isArray(requiredDiaries) || requiredDiaries.length === 0) {
       return HttpResponse.json({ message: 'Diaries not found' }, { status: 404 })
     }
     const requiredDtoDiaries = requiredDiaries.map(it => toDiaryInfoDto(it))
