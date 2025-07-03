@@ -2,42 +2,40 @@
 import { useRouter } from 'vue-router';
 import { useDiaryStore } from '@/stores/diaries';
 import { ref, watch, type Ref } from 'vue';
-import { api } from '@/api/axios';
-import Settings from './Settings.vue';
-import AboutYourself from './AboutYourself.vue';
-import type { DiaryCreateDTO, DiaryInfoDTO } from '@/types/Diary';
+import Settings from '@/views/Settings.vue';
+import AboutYourself from '@/views/AboutYourself.vue';
+import type { DiaryInfoDTO } from '@/types/Diary';
 import { useAuthStore } from '@/stores/auth';
-import type { AxiosResponse } from 'axios';
 import { fetchDiary, saveDiary } from '@/services/diaryService';
 
-const showSettings = ref(false);
-const showAboutYourself = ref(false);
 const router = useRouter();
 const owner = useAuthStore();
 const diaryStore = useDiaryStore()
 
-const gotoEntriesMenu = () => {router.push('/menu')}
-const gotoMoodGraph = () => {router.push('/graph')}
+const showSettings = ref(false);
+const showAboutYourself = ref(false);
 
 const ownerName: Ref<string> = ref('');
 let diaryInfo: DiaryInfoDTO | null = null
 
 watch(
   () => owner.user,
-  async (newOwner) => {
-    if (!newOwner)
+  async (ownerInfo) => {
+    if (!ownerInfo)
       return
-    ownerName.value = newOwner.name
+    ownerName.value = ownerInfo.name
     try {
-      diaryInfo = await fetchDiary(newOwner.id)
+      diaryInfo = await fetchDiary(ownerInfo.id)
     } catch {
-      diaryInfo = await saveDiary(newOwner.id)
+      diaryInfo = await saveDiary(ownerInfo.id)
     }
     diaryStore.logIn(diaryInfo)
     },
   { immediate: true }
 )
 
+const gotoEntriesMenu = () => {router.push('/menu')}
+const gotoMoodGraph = () => {router.push('/graph')}
 </script>
 
 <template>
