@@ -24,8 +24,12 @@ onMounted(async () => {
 })
 
 async function createNewEntry(): Promise<void> {
-  const createdEntry: EntryInfoDTO = await createEntry(diary.id)
-  gotoEntry(createdEntry.id);
+  try {
+    const createdEntry: EntryInfoDTO = await createEntry(diary.id)
+    gotoEntry(createdEntry.id);
+  } catch {
+    console.error("Error while creating entry");
+  }
 }
 
 async function createMood() {

@@ -3,8 +3,11 @@ import type { DiaryInfoDTO, DiaryCreateDTO } from '@/types/Diary';
 
 export const fetchDiary = async (ownerId: number): Promise<DiaryInfoDTO> => {
     try {
-        const diaries: DiaryInfoDTO[] = await getDiaries(ownerId);
-        return diaries[0];
+        const res = await getDiaries(ownerId);
+        if (!res.data || res.status !== 200) {
+            throw new Error('Cannot fetch diary');
+        }
+        return res.data[0];
     } catch (error: any) {
         if (error.response?.status === 404) {
             throw new Error("Diary not found");
@@ -21,6 +24,14 @@ export const createDiary = async (ownerId: number): Promise<DiaryInfoDTO> => {
         ownerId: ownerId,
         title: "New diary",
         description: "Description for new diary"
-      }
-    return await postDiary(newDiary);
+    }
+    try {
+        const res = await postDiary(newDiary);
+        if (!res.data || res.status !== 201) {
+            throw new Error('Cannot create diary');
+        }
+        return res.data;
+    } catch (error: any) {
+        throw error;
+    }
 };
