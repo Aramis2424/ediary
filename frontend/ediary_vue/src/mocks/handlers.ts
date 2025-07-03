@@ -73,7 +73,7 @@ export const handlers = [
     entries.push(newEntry)
     return HttpResponse.json(newEntry, { status: 201 })
   }),
-  http.patch('/api/v1/entries/:id', async ({ params, request  }) => {
+  http.put('/api/v1/entries/:id', async ({ params, request  }) => {
     const entry: Entry | undefined = entries.find(v => v.id === Number(params.id))
     if (!entry) {
       return HttpResponse.json({ message: 'Entry not found' }, { status: 404 })
@@ -88,7 +88,7 @@ export const handlers = [
     entries.length = 0;
     entries.push(...filtered);
 
-    return HttpResponse.json({ success: true })
+    return HttpResponse.json({ success: true }, { status: 204 })
   }),
 
   http.get('/api/v1/entryCards/:id', ({ params }) => {

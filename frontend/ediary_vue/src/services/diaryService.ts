@@ -14,7 +14,7 @@ export const fetchDiary = async (ownerId: number): Promise<DiaryInfoDTO> => {
         } else if (error.response?.status === 403) {
             throw new Error("Access denied");
         } else {
-        throw error;
+            throw error;
         }
     }
 };

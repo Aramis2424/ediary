@@ -25,11 +25,10 @@ import '@kangc/v-md-editor/lib/style/base-editor.css';
 import '@kangc/v-md-editor/lib/theme/style/github.css';
 import ruRU from '@kangc/v-md-editor/lib/lang/ru-RU';
 import githubTheme from '@kangc/v-md-editor/lib/theme/github.js';
-
 import Prism from 'prismjs';
-import { api } from '@/api/axios';
 
 import type { EntryInfoDTO, EntryUpdateDTO } from '@/types/Entry';
+import { fetchEntry, removeEntry, updateEntry } from '@/services/entryService';
 
 VMdEditor.use(githubTheme, { Prism });
 VMdEditor.lang.use('ru-RU', ruRU)
@@ -42,19 +41,35 @@ const content: Ref<string> = ref('')
 const title: Ref<string> = ref('')
 
 onMounted(async () => {
-  const entryInfo = await api.get<EntryInfoDTO>(`/entries/${entryId}`)
-  content.value = `${entryInfo.data.content}`;
-  title.value = `${entryInfo.data.title}`;
+  await fetch();
 })
 
-function save() {
-  const updatedEntry: EntryUpdateDTO = { title: title.value, content: content.value}
-  api.patch<EntryUpdateDTO>(`/entries/${entryId}`, updatedEntry)
+async function fetch(): Promise<void> {
+  try {
+    const entryInfo: EntryInfoDTO = await fetchEntry(Number(entryId));
+    content.value = `${entryInfo.content}`;
+    title.value = `${entryInfo.title}`;
+  } catch{
+    console.error("Error while fetching entry");
+  }
 }
 
-function remove(): void {
-  api.delete(`/entries/${entryId}`)
-  gotoMenu();
+async function save(): Promise<void> {
+  const updatedEntry: EntryUpdateDTO = { title: title.value, content: content.value}
+  try {
+    await updateEntry(Number(entryId), updatedEntry);
+  } catch {
+    console.error("Error while removing entry");
+  }
+}
+
+async function remove(): Promise<void> {
+  try {
+    await removeEntry(Number(entryId));
+    gotoMenu();
+  } catch{
+    console.error("Error while removing entry");
+  }
 }
 
 const gotoMenu = () => {router.push('/menu')}
