@@ -1,4 +1,4 @@
-import { postOwnerLogin, postOwnerRegister, getOwner } from './ownerApi';
+import { postOwnerLogin, postOwnerRegister, getOwner } from '../api/ownerApi';
 import type { OwnerInfoDTO, OwnerCreateDTO, TokenRequest, TokenResponse } from '@/types/Owner';
 
 export const fetchOwner = async (): Promise<OwnerInfoDTO> => {

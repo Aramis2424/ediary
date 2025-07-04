@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
 import type { OwnerInfoDTO, OwnerCreateDTO, TokenRequest, TokenResponse } from '@/types/Owner'
-import { createOwner, fetchOwner, getToken } from '@/api/ownerService'
+import { createOwner, fetchOwner, getToken } from '@/services/ownerService'
 
 interface AuthState {
   user: OwnerInfoDTO | null
