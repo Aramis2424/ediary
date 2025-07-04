@@ -47,8 +47,9 @@ export const useAuthStore = defineStore('auth', {
       try {
         const response = await fetchOwner()
         this.user = response
-      } catch {
+      } catch (error: any) {
         this.logout()
+        throw error
       }
     },
 

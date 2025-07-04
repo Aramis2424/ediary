@@ -26,7 +26,11 @@ router.beforeEach(async (to, _from, next) => {
   const auth = useAuthStore()
 
   if (auth.token && !auth.user) {
-    auth.fetchUser()
+    try {
+    await auth.fetchUser()    
+    } catch {
+      return next('/login')
+    }
   }
 
   const isPublic = to.meta.public === true
