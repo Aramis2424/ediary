@@ -3,6 +3,8 @@ import { ref } from 'vue'
 import { useAuthStore } from '@/stores/auth'
 import { createMood } from '@/services/moodService'
 import type { MoodCreateDTO } from '@/types/Mood'
+import SurveyBaseInput from '@/components/SurveyBaseInput.vue'
+import SurveySelectInput from '@/components/SurveySelectInput.vue'
 
 const emit = defineEmits(['clicked'])
 const owner = useAuthStore()
@@ -45,55 +47,17 @@ const handleSubmit = async () => {
                 shadow space-y-6 flex flex-col content-start">
       <h1 class="text-2xl font-semibold text-center">Опросник дня</h1>
 
-      <!-- Вопрос 1 -->
-      <div>
-        <label class="block font-normal mb-1">1. Как прошёл ваш день?</label>
-        <select v-model.number="dayRating" class="inputField">
-          <option disabled value="">Выберите оценку</option>
-          <option v-for="n in 10" :key="n" :value="n">{{ n }}</option>
-        </select>
-      </div>
+      <SurveySelectInput label="1. Как прошёл ваш день?" v-model="dayRating" />
+      <SurveySelectInput label="2. Какое у вас настроение?" v-model="moodRating" />
+      <SurveyBaseInput v-model="sleepTime" type="time" label="3. Во сколько вы уснули вчера?" />
+      <SurveyBaseInput v-model="wakeTime" type="time" label="4. Во сколько Вы проснулись сегодня?" />
 
-      <!-- Вопрос 2 -->
-      <div>
-        <label class="block font-normal mb-1">2. Какое у вас настроение?</label>
-        <select v-model.number="moodRating" class="inputField">
-          <option disabled value="">Выберите оценку</option>
-          <option v-for="n in 10" :key="n" :value="n">{{ n }}</option>
-        </select>
-      </div>
-
-      <!-- Вопрос 3 -->
-      <div>
-        <label class="block font-normal mb-1">3. Во сколько вы уснули вчера?</label>
-        <input v-model="sleepTime" type="time" class="inputField" />
-      </div>
-
-      <!-- Вопрос 4 -->
-      <div>
-        <label class="block font-normal mb-1">4. Во сколько проснулись сегодня?</label>
-        <input v-model="wakeTime" type="time" class="inputField" />
-      </div>
-
-      <!-- Кнопка -->
       <div class="text-center">
-        <button
-          @click="handleSubmit"
-          class="px-6 py-2 baseBtn"
-        >
+        <button @click="handleSubmit" class="px-6 py-2 baseBtn" >
           Отправить
         </button>
       </div>
+
     </div>
   </div>
 </template>
-
-<style scoped>
-.inputField {
-  @apply
-  bg-[#FFF8F0] bg-opacity-60 hover:bg-[#fcf3e9]
-  border-[#F4A261] border-4
-  rounded-3xl transition px-3
-  w-1/2 
-}
-</style>
