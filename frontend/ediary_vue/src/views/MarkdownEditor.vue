@@ -21,7 +21,7 @@ import { useRoute, useRouter } from 'vue-router'
 import type { EntryInfoDTO, EntryUpdateDTO } from '@/types/Entry';
 import { fetchEntry, removeEntry, updateEntry } from '@/services/entryService';
 
-import MdEditor from '@/components/MDEditor.vue';
+import MdEditor from '@/components/MdEditor.vue';
 
 const route = useRoute()
 const router = useRouter()
