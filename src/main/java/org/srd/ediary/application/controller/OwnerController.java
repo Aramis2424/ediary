@@ -9,7 +9,6 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.srd.ediary.application.dto.OwnerCreateDTO;
 import org.srd.ediary.application.dto.OwnerInfoDTO;
-import org.srd.ediary.application.dto.OwnerLoginDTO;
 import org.srd.ediary.application.exception.InvalidCredentialsException;
 import org.srd.ediary.application.exception.OwnerAlreadyExistException;
 import org.srd.ediary.application.security.OwnerDetails;

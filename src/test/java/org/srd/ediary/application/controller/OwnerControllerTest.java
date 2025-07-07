@@ -20,14 +20,13 @@ import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
 import org.srd.ediary.application.dto.OwnerCreateDTO;
 import org.srd.ediary.application.dto.OwnerInfoDTO;
-import org.srd.ediary.application.dto.OwnerLoginDTO;
+import org.srd.ediary.application.dto.TokenRequestDTO;
 import org.srd.ediary.application.exception.InvalidCredentialsException;
 import org.srd.ediary.application.exception.OwnerAlreadyExistException;
 import org.srd.ediary.application.security.OwnerDetails;
 import org.srd.ediary.application.security.jwt.JwtFilter;
 import org.srd.ediary.application.service.OwnerService;
 
-import java.io.IOException;
 import java.time.LocalDate;
 
 import static org.mockito.ArgumentMatchers.anyLong;
@@ -49,7 +48,7 @@ class OwnerControllerTest {
     @MockBean
     private OwnerService ownerService;
     private JacksonTester<OwnerCreateDTO> creationJson;
-    private JacksonTester<OwnerLoginDTO> loginJson;
+    private JacksonTester<TokenRequestDTO> loginJson;
 
     private final LocalDate birthDate = LocalDate.of(2000, 1, 1);
     private final OwnerInfoDTO output = new OwnerInfoDTO(1L, "Ivan",
