@@ -16,13 +16,13 @@
 | PUT | [/diaries/{diaryId}](#putdiariesdiaryid) | Update diary by id |
 | DELETE | [/diaries/{diaryId}](#deletediariesdiaryid) | Delete diary by id |
 | POST | [/diaries](#postdiaries) | Create diary |
-| GET | [/diaries/{diaryId}/entry-cards](#getdiariesdiaryidentry-cards) | get entry cards representation |
-| GET | [/diaries/{diaryId}/can-create-entry](#getdiariesdiaryidcan-create-entry) | get permission for creating entry |
 | GET | [/diaries/{diaryId}/entries](#getdiariesdiaryidentries) | Get all owner`s entries |
 | GET | [/entries/{entryId}](#getentriesentryid) | Get entry by id |
 | PATCH | [/entries/{entryId}](#patchentriesentryid) | Update entry by id |
 | DELETE | [/entries/{entryId}](#deleteentriesentryid) | Delete entry by id |
 | POST | [/entries](#postentries) | Create entry for diary |
+| GET | [/diaries/{diaryId}/entry-cards](#getdiariesdiaryidentry-cards) | get entry cards representation |
+| GET | [/diaries/{diaryId}/can-create-entry](#getdiariesdiaryidcan-create-entry) | get permission for creating entry |
 | GET | [/owners/{ownerId}/moods](#getownersowneridmoods) | Get all owner`s moods |
 | GET | [/moods/{moodId}](#getmoodsmoodid) | Get mood by id |
 | PUT | [/moods/{moodId}](#putmoodsmoodid) | Update mood by id |
@@ -406,85 +406,6 @@ bearerAuth
 
 ***
 
-### [GET]/diaries/{diaryId}/entry-cards
-
-- Summary  
-get entry cards representation
-
-- Security  
-bearerAuth  
-
-#### Responses
-
-- 200 Returns all entries entry cards that belong to the specified diary.
-
-`application/json`
-
-```ts
-{
-  diaryId?: integer
-  entryId?: integer
-  title?: string
-  scoreMood?: integer
-  scoreProductivity?: integer
-  createdDate?: string
-}[]
-```
-
-- 403 Access denied
-
-- 404 Diary not found
-
-- default Unexpected error
-
-`application/json`
-
-```ts
-{
-  code: string
-  message: string
-}
-```
-
-***
-
-### [GET]/diaries/{diaryId}/can-create-entry
-
-- Summary  
-get permission for creating entry
-
-- Security  
-bearerAuth  
-
-#### Responses
-
-- 200 Returns permission if user can create new entry
-
-`application/json`
-
-```ts
-{
-  allowed?: boolean
-}[]
-```
-
-- 403 Access denied
-
-- 404 Diary not found
-
-- default Unexpected error
-
-`application/json`
-
-```ts
-{
-  code: string
-  message: string
-}
-```
-
-***
-
 ### [GET]/diaries/{diaryId}/entries
 
 - Summary  
@@ -678,6 +599,85 @@ bearerAuth
   createdDate?: string
 }
 ```
+
+- default Unexpected error
+
+`application/json`
+
+```ts
+{
+  code: string
+  message: string
+}
+```
+
+***
+
+### [GET]/diaries/{diaryId}/entry-cards
+
+- Summary  
+get entry cards representation
+
+- Security  
+bearerAuth  
+
+#### Responses
+
+- 200 Returns all entries entry cards that belong to the specified diary.
+
+`application/json`
+
+```ts
+{
+  diaryId?: integer
+  entryId?: integer
+  title?: string
+  scoreMood?: integer
+  scoreProductivity?: integer
+  createdDate?: string
+}[]
+```
+
+- 403 Access denied
+
+- 404 Diary not found
+
+- default Unexpected error
+
+`application/json`
+
+```ts
+{
+  code: string
+  message: string
+}
+```
+
+***
+
+### [GET]/diaries/{diaryId}/can-create-entry
+
+- Summary  
+get permission for creating entry
+
+- Security  
+bearerAuth  
+
+#### Responses
+
+- 200 Returns permission if user can create new entry
+
+`application/json`
+
+```ts
+{
+  allowed?: boolean
+}[]
+```
+
+- 403 Access denied
+
+- 404 Diary not found
 
 - default Unexpected error
 

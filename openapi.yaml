@@ -258,72 +258,6 @@ paths:
                 $ref: "#/components/schemas/Error"
       security:
         - bearerAuth: []
-  /diaries/{diaryId}/entry-cards:
-    get:
-      tags:
-        - diary
-      summary: get entry cards representation
-      parameters:
-        - name: diaryId
-          in: path
-          required: true
-          schema:
-            type: integer
-            format: int64
-      responses:
-        '200':
-          description: Returns all entries entry cards that belong to the specified diary.
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/EntryCardDTO'
-        '404':
-          description: Diary not found
-        '403':
-          description: Access denied
-        default:
-          description: Unexpected error
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
-      security:
-        - bearerAuth: []
-  /diaries/{diaryId}/can-create-entry:
-    get:
-      tags:
-        - diary
-      summary: get permission for creating entry
-      parameters:
-        - name: diaryId
-          in: path
-          required: true
-          schema:
-            type: integer
-            format: int64
-      responses:
-        '200':
-          description: Returns permission if user can create new entry
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/EntryPermission'
-        '404':
-          description: Diary not found
-        '403':
-          description: Access denied
-        default:
-          description: Unexpected error
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
-      security:
-        - bearerAuth: []
         
   /diaries/{diaryId}/entries:
     get:
@@ -473,6 +407,72 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/EntryInfoDTO'
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+      security:
+        - bearerAuth: []
+  /diaries/{diaryId}/entry-cards:
+    get:
+      tags:
+        - entry
+      summary: get entry cards representation
+      parameters:
+        - name: diaryId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Returns all entries entry cards that belong to the specified diary.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/EntryCardDTO'
+        '404':
+          description: Diary not found
+        '403':
+          description: Access denied
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+      security:
+        - bearerAuth: []
+  /diaries/{diaryId}/can-create-entry:
+    get:
+      tags:
+        - entry
+      summary: get permission for creating entry
+      parameters:
+        - name: diaryId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Returns permission if user can create new entry
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/EntryPermission'
+        '404':
+          description: Diary not found
+        '403':
+          description: Access denied
         default:
           description: Unexpected error
           content:
