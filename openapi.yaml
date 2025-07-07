@@ -59,7 +59,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/OwnerLoginDTO'
+              $ref: '#/components/schemas/TokenRequest'
       responses:
         '200':
           description: JWT token returned
@@ -250,6 +250,72 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/DiaryInfoDTO'
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+      security:
+        - bearerAuth: []
+  /diaries/{diaryId}/entry-cards:
+    get:
+      tags:
+        - diary
+      summary: get entry cards representation
+      parameters:
+        - name: diaryId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Returns all entries entry cards that belong to the specified diary.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/EntryCardDTO'
+        '404':
+          description: Diary not found
+        '403':
+          description: Access denied
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+      security:
+        - bearerAuth: []
+  /diaries/{diaryId}/can-create-entry:
+    get:
+      tags:
+        - diary
+      summary: get permission for creating entry
+      parameters:
+        - name: diaryId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Returns permission if user can create new entry
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/EntryPermission'
+        '404':
+          description: Diary not found
+        '403':
+          description: Access denied
         default:
           description: Unexpected error
           content:
@@ -575,17 +641,6 @@ paths:
 
 components:
   schemas:
-    OwnerLoginDTO:
-      type: object
-      required: [login, password]
-      properties:
-        login:
-          type: string
-          example: "user@example.com"
-        password:
-          type: string
-          format: password
-          example: "secret123"
     OwnerCreateDTO:
       type: object
       required: [name, birthDate, login, password]
@@ -672,6 +727,41 @@ components:
           type: string
           format: date
           example: "2025-06-29"
+          
+    EntryCardDTO:
+      type: object
+      properties:
+        diaryId:
+          type: integer
+          format: int64
+          example: 101
+        entryId:
+          type: integer
+          format: int64
+          example: 102
+        title:
+          type: string
+          example: "Мой дневник счастья"
+        scoreMood:
+          type: integer
+          minimum: 0
+          maximum: 10
+          example: 7
+        scoreProductivity:
+          type: integer
+          minimum: 0
+          maximum: 10
+          example: 8
+        createdDate:
+          type: string
+          format: date
+          example: "2025-06-29"
+    EntryPermission:
+      type: object
+      properties:
+        allowed:
+          type: boolean
+          example: true
           
     EntryCreateDTO:
       type: object
@@ -792,9 +882,9 @@ components:
           
     TokenRequest:
       type: object
-      required: [username, password]
+      required: [login, password]
       properties:
-        username:
+        login:
           type: string
           example: "user123"
         password:
