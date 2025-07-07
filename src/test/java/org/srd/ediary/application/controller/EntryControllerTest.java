@@ -15,6 +15,7 @@ import org.srd.ediary.application.dto.*;
 import org.srd.ediary.application.exception.DiaryNotFoundException;
 import org.srd.ediary.application.exception.EntryNotFoundException;
 import org.srd.ediary.application.security.jwt.JwtFilter;
+import org.srd.ediary.application.service.EntryCardService;
 import org.srd.ediary.application.service.EntryService;
 
 import java.time.LocalDate;
@@ -35,11 +36,19 @@ class EntryControllerTest {
     private JwtFilter jwtFilter;
     @MockBean
     private EntryService entryService;
+    @MockBean
+    private EntryCardService entryCardService;
     private JacksonTester<EntryCreateDTO> creationJson;
     private JacksonTester<EntryUpdateDTO> updateJson;
 
     private final EntryInfoDTO output = new EntryInfoDTO(1L, "day1", "Good day", LocalDate.now());
     private final List<EntryInfoDTO> outputList = List.of(output);
+    private final List<EntryCardDTO> outputListCards = List.of(
+            new EntryCardDTO(1L, 3L, "test 01", 7, 8,
+                    LocalDate.of(2020, 1, 1)),
+            new EntryCardDTO(2L, 3L, "test 02", -1, -1,
+                    LocalDate.of(2020, 2, 2))
+    );
 
     @BeforeEach
     void setUp() {
@@ -48,7 +57,7 @@ class EntryControllerTest {
         objectMapper.findAndRegisterModules();
         JacksonTester.initFields(this, objectMapper);
         mockMvc = MockMvcBuilders
-                .standaloneSetup(new EntryController(entryService))
+                .standaloneSetup(new EntryController(entryService, entryCardService))
                 .build();
     }
 
@@ -78,6 +87,22 @@ class EntryControllerTest {
                         .content(String.valueOf(entryId))
                 )
                 .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void testGetEntryCards_UsualTest() throws Exception {
+        Long diaryId = 3L;
+        when(entryCardService.getEntryCards(diaryId)).thenReturn(outputListCards);
+
+        mockMvc.perform(get("/api/v1/diaries/" + diaryId + "/entry-cards")
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON)
+                .content(String.valueOf(diaryId))
+        )
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.length()").value(2))
+                .andExpect(jsonPath("$[0].entryId").value(1L))
+                .andExpect(jsonPath("$[0].title").value("test 01"));
     }
 
     @Test
