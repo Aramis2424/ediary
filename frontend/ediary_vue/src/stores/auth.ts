@@ -1,7 +1,6 @@
 import { defineStore } from 'pinia'
-import type { OwnerInfoDTO, OwnerCreateDTO, OwnerLoginDTO, TokenRequest, TokenResponse } from '@/types/Owner'
-import { api } from '@/api/axios'
-import type { AxiosResponse } from 'axios'
+import type { OwnerInfoDTO, OwnerCreateDTO, TokenRequest, TokenResponse } from '@/types/Owner'
+import { createOwner, fetchOwner, getToken } from '@/services/ownerService'
 
 interface AuthState {
   user: OwnerInfoDTO | null
@@ -21,32 +20,36 @@ export const useAuthStore = defineStore('auth', {
   actions: {
     async login(reqToken: TokenRequest) {
       try {
-        const response = await api.post<TokenRequest, AxiosResponse<TokenResponse>>('/token/create', reqToken)
-        this.token = response.data.token
-        
-        localStorage.setItem('token', this.token)
+        const response: TokenResponse = await getToken(reqToken)
+        this.token = response.token
 
-        await this.fetchUser(reqToken)
-      } catch {
-        throw new Error('Login failed')
+        localStorage.setItem('token', this.token)
+        await this.fetchUser()
+      } catch (error: any) {
+        throw new Error(`Login failed: ${error}`)
       }
     },
 
     async register(reqRegister: OwnerCreateDTO) {
-      await api.post('/owner/register', reqRegister)
-      await this.login({
-        login: reqRegister.login, 
-        password: reqRegister.password})
+      try {
+        await createOwner(reqRegister);
+        await this.login({
+          login: reqRegister.login, 
+          password: reqRegister.password})
+      } catch (error: any) {
+        throw new Error(`Register failed: ${error}`)
+      }
     },
 
-    async fetchUser(loginDto: OwnerLoginDTO) {
+    async fetchUser() {
       if (!this.token) 
         return
       try {
-        const response = await api.post<OwnerLoginDTO, AxiosResponse<OwnerInfoDTO>>('/owner/login', loginDto)
-        this.user = response.data
-      } catch {
+        const response = await fetchOwner()
+        this.user = response
+      } catch (error: any) {
         this.logout()
+        throw error
       }
     },
 
@@ -54,6 +57,7 @@ export const useAuthStore = defineStore('auth', {
       this.user = null
       this.token = null
       localStorage.removeItem('token')
+      localStorage.removeItem('diary')
     },
   },
   

@@ -4,24 +4,8 @@
       <h2 class="text-3xl text-center mb-3"> Вход </h2>
       <form @submit.prevent="handleLogin" class="space-y-8">
         <div class="space-y-3">
-            <div class="space-y-4">
-                <p class="text-xl text-[#5A3A2B] -mb-3"> Логин </p>
-                <input
-                v-model="login"
-                type="text"
-                placeholder="Введите Ваш логин"
-                class="w-full p-3 rounded-2xl border-[#F4A261] border-2 focus:outline-none focus:ring-1 focus:ring-[#e09455]"
-                />
-            </div>
-            <div class="space-y-4">
-                <p class="text-xl text-[#5A3A2B] -mb-3"> Пароль </p>
-                <input
-                v-model="password"
-                type="password"
-                placeholder="Введите Ваш пароль"
-                class="w-full p-3 rounded-2xl border-[#F4A261] border-2 focus:outline-none focus:ring-1 focus:ring-[#e09455]"
-                />
-            </div>
+            <FormField v-model="login" type="text" placeholder="Введите Ваш логин" label="Логин" />
+            <FormField v-model="password" type="passwaord" placeholder="Введите Ваш пароль" label="Пароль" />
         </div>
         <button
           type="submit"
@@ -42,6 +26,7 @@
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { useAuthStore } from '@/stores/auth';
+import FormField from '@/components/FormField.vue';
 
 const router = useRouter();
 const auth = useAuthStore();

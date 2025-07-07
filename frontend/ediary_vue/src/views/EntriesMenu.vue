@@ -1,36 +1,39 @@
 <script setup lang="ts">
 import { useRouter } from 'vue-router'
 import { ref, onMounted } from 'vue'
-import { api } from '@/api/axios';
-import { useDiaryStore } from '../stores/diaries';
+import { useDiaryStore } from '@/stores/diaries';
 import EntryCard from '@/components/EntryCard.vue';
-import EntriesSearching from './EntriesSearching.vue';
-import NewEntryCard from './NewEntryCard.vue';
-import SurveyMood from './SurveyMood.vue';
-import type { Entry, EntryCreateDTO } from '@/types/Entry';
-import type { EntryCard as EntryCardDto } from '@/types/EntryCard';
-import type { AxiosResponse } from 'axios';
+import EntriesSearching from '@/views/EntriesSearching.vue';
+import NewEntryCard from '@/components/NewEntryCard.vue';
+import SurveyMood from '@/views/SurveyMood.vue';
+import type { EntryInfoDTO } from '@/types/Entry';
+import type { EntryCard as EntryCardType } from '@/types/EntryCard';
+import { createEntry } from '@/services/entryService';
+import { fetchEntryCards } from '@/services/entryCardService';
 
 const router = useRouter();
 const diary = useDiaryStore();
 
-const entries = ref<EntryCardDto[]>([])
+const entries = ref<EntryCardType[]>([])
 const showSearching = ref(false); 
 const showSurveyMood = ref(false);
 
 onMounted(async () => {
-  const cards = await api.get<EntryCardDto[]>(`/entryCards/${diary.id}`)
-  entries.value = cards.data;
+  try {
+    const cards = await fetchEntryCards(diary.id)
+    entries.value = cards;
+  } catch {
+    console.error("Error while fetching entry cards");
+  }
 })
 
-async function createEntry(): Promise<void> {
-  const newEntry: EntryCreateDTO = {
-    diaryId: String(diary.id),
-    title: "Новый день",
-    content: ""
+async function createNewEntry(): Promise<void> {
+  try {
+    const createdEntry: EntryInfoDTO = await createEntry(diary.id)
+    gotoEntry(createdEntry.id);
+  } catch {
+    console.error("Error while creating entry");
   }
-  const res = await api.post<EntryCreateDTO, AxiosResponse<Entry>>('entries/', newEntry)
-  gotoEntry(res.data.id);
 }
 
 async function createMood() {
@@ -52,7 +55,7 @@ const gotoHome = () => {router.push('/home')}
 </div>
 
 <EntriesSearching v-if="showSearching" @clicked="showSearching = false"/> 
-<SurveyMood v-if="showSurveyMood" @clicked="createEntry"/>
+<SurveyMood v-if="showSurveyMood" @clicked="createNewEntry"/>
 </template>
 
 <style scoped>

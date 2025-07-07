@@ -34,6 +34,14 @@
   fixed inset-0.5 bg-opacity-60 
 }
 
+.inputSurveyField {
+  @apply
+  bg-[#FFF8F0] bg-opacity-60 hover:bg-[#fcf3e9]
+  border-[#F4A261] border-4
+  rounded-3xl transition px-3
+  w-1/2 
+}
+
 :root {
   font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;

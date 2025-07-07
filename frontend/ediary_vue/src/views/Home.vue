@@ -1,40 +1,41 @@
 <script setup lang="ts">
 import { useRouter } from 'vue-router';
 import { useDiaryStore } from '@/stores/diaries';
-import { onMounted, ref, type Ref } from 'vue';
-import { api } from '@/api/axios';
-import Settings from './Settings.vue';
-import AboutYourself from './AboutYourself.vue';
-import type { DiaryCreateDTO, DiaryInfoDTO } from '@/types/Diary';
+import { ref, watch, type Ref } from 'vue';
+import Settings from '@/views/Settings.vue';
+import AboutYourself from '@/views/AboutYourself.vue';
+import type { DiaryInfoDTO } from '@/types/Diary';
 import { useAuthStore } from '@/stores/auth';
-import type { AxiosResponse } from 'axios';
+import { fetchDiary, createDiary } from '@/services/diaryService';
 
-const showSettings = ref(false);
-const showAboutYourself = ref(false);
 const router = useRouter();
 const owner = useAuthStore();
 const diaryStore = useDiaryStore()
 
-const gotoEntriesMenu = () => {router.push('/menu')}
-const gotoMoodGraph = () => {router.push('/graph')}
+const showSettings = ref(false);
+const showAboutYourself = ref(false);
 
 const ownerName: Ref<string> = ref('');
-let diaryInfo: AxiosResponse<DiaryInfoDTO> | null = null
-onMounted(async () => {
-  ownerName.value = owner.user?.name ?? "Error"
-  try {
-    diaryInfo = await api.get<DiaryInfoDTO>(`/diaries/${owner.user?.id ?? 0}`)
-  } catch {
-    const newDiary: DiaryCreateDTO = {
-      ownerId: owner.user!.id,
-      title: "New diary",
-      description: "Description for new diary"
+let diaryInfo: DiaryInfoDTO | null = null
+
+watch(
+  () => owner.user,
+  async (ownerInfo) => {
+    if (!ownerInfo)
+      return
+    ownerName.value = ownerInfo.name
+    try {
+      diaryInfo = await fetchDiary(ownerInfo.id)
+    } catch {
+      diaryInfo = await createDiary(ownerInfo.id)
     }
-    diaryInfo = await api.post<DiaryCreateDTO, 
-        AxiosResponse<DiaryInfoDTO>>(`/diaries/`, newDiary)
-  }
-  diaryStore.logIn(diaryInfo!.data)
-})
+    diaryStore.logIn(diaryInfo)
+    },
+  { immediate: true }
+)
+
+const gotoEntriesMenu = () => {router.push('/menu')}
+const gotoMoodGraph = () => {router.push('/graph')}
 </script>
 
 <template>
