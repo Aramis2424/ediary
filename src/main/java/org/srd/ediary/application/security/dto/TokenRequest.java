@@ -4,6 +4,6 @@ import lombok.Builder;
 
 @Builder
 public record TokenRequest(
-        String username,
+        String login,
         String password
 ) {}

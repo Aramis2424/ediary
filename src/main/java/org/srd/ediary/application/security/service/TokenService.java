@@ -5,17 +5,13 @@ import org.springframework.security.access.AuthorizationServiceException;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
-import org.srd.ediary.application.security.AuthUserDetailsService;
 import org.srd.ediary.application.security.OwnerDetails;
 import org.srd.ediary.application.security.dto.TokenRequest;
 import org.srd.ediary.application.security.dto.TokenResponse;
 import org.srd.ediary.application.security.jwt.JwtUtils;
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -27,7 +23,7 @@ public class TokenService {
 
     public TokenResponse generateToken(TokenRequest tokenRequest) {
         Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
-                        tokenRequest.username(), tokenRequest.password())
+                        tokenRequest.login(), tokenRequest.password())
         );
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
