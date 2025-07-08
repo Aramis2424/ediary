@@ -29,7 +29,10 @@ watch(
     } catch {
       diaryInfo = await createDiary(ownerInfo.id)
     }
-    diaryStore.logIn(diaryInfo)
+    if (diaryInfo)
+      diaryStore.save(diaryInfo)
+    else
+      console.error("Error while creating or fetching diary");
     },
   { immediate: true }
 )
