@@ -460,6 +460,12 @@ paths:
           schema:
             type: integer
             format: int64
+        - name: date
+          in: query
+          required: true
+          schema:
+            type: string
+            format: date
       responses:
         '200':
           description: Returns permission if user can create new entry
@@ -468,7 +474,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/EntryPermission'
+                  $ref: '#/components/schemas/EntryPermissionRes'
         '404':
           description: Diary not found
         '403':
@@ -756,7 +762,7 @@ components:
           type: string
           format: date
           example: "2025-06-29"
-    EntryPermission:
+    EntryPermissionRes:
       type: object
       properties:
         allowed:

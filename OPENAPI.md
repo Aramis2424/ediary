@@ -39,7 +39,7 @@
 | DiaryUpdateDTO | [#/components/schemas/DiaryUpdateDTO](#componentsschemasdiaryupdatedto) |  |
 | DiaryInfoDTO | [#/components/schemas/DiaryInfoDTO](#componentsschemasdiaryinfodto) |  |
 | EntryCardDTO | [#/components/schemas/EntryCardDTO](#componentsschemasentrycarddto) |  |
-| EntryPermission | [#/components/schemas/EntryPermission](#componentsschemasentrypermission) |  |
+| EntryPermissionRes | [#/components/schemas/EntryPermissionRes](#componentsschemasentrypermissionres) |  |
 | EntryCreateDTO | [#/components/schemas/EntryCreateDTO](#componentsschemasentrycreatedto) |  |
 | EntryUpdateDTO | [#/components/schemas/EntryUpdateDTO](#componentsschemasentryupdatedto) |  |
 | EntryInfoDTO | [#/components/schemas/EntryInfoDTO](#componentsschemasentryinfodto) |  |
@@ -663,6 +663,12 @@ get permission for creating entry
 - Security  
 bearerAuth  
 
+#### Parameters(Query)
+
+```ts
+date: string
+```
+
 #### Responses
 
 - 200 Returns permission if user can create new entry
@@ -979,7 +985,7 @@ bearerAuth
 }
 ```
 
-### #/components/schemas/EntryPermission
+### #/components/schemas/EntryPermissionRes
 
 ```ts
 {
