@@ -9,7 +9,7 @@ export const getEntry = async (entryId: number): Promise<AxiosResponse<EntryInfo
 
 export const postEntry = async (newEntry: EntryCreateDTO): Promise<AxiosResponse<EntryInfoDTO>> => {
   const res = await api.post<EntryInfoDTO, AxiosResponse<EntryInfoDTO>, EntryCreateDTO>(
-                '/entries/', newEntry)
+                '/entries', newEntry)
   return res;
 };
 

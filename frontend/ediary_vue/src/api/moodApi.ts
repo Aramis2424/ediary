@@ -4,6 +4,6 @@ import type { MoodCreateDTO, MoodInfoDTO } from '@/types/Mood.ts';
 
 export const postMood = async (newMood: MoodCreateDTO): Promise<AxiosResponse<MoodInfoDTO>> => {
   const res = await api.post<MoodInfoDTO, AxiosResponse<MoodInfoDTO>, MoodCreateDTO>(
-                '/moods/', newMood)
+                '/moods', newMood)
   return res;
 };
