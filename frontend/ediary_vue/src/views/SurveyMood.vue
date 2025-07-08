@@ -2,7 +2,6 @@
 import { ref } from 'vue'
 import { useAuthStore } from '@/stores/auth'
 import { createMood } from '@/services/moodService'
-import type { MoodCreateDTO } from '@/types/Mood'
 import SurveyBaseInput from '@/components/SurveyBaseInput.vue'
 import SurveySelectInput from '@/components/SurveySelectInput.vue'
 
@@ -23,17 +22,18 @@ const handleSubmit = async () => {
     alert('Пожалуйста, укажите время сна и пробуждения')
     return
   }
-
-  const newMood: MoodCreateDTO = {
-    ownerID: owner.user?.id ?? 0,
-    scoreProductivity: dayRating.value,
-    scoreMood: moodRating.value,
-    bedtime: sleepTime.value,
-    wakeUpTime: wakeTime.value,
-  }
-
+  
+  if (!owner.user)
+    throw new Error("Error while creating mood")
+  
   try {
-    await createMood(newMood)
+    await createMood(
+      owner.user.id, 
+      dayRating.value, 
+      moodRating.value, 
+      sleepTime.value, 
+      wakeTime.value
+    )    
     emit('clicked')
   } catch {
     console.error("Error while creating entry");
