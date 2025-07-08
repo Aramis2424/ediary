@@ -17,8 +17,10 @@ import org.srd.ediary.domain.model.Entry;
 import org.srd.ediary.domain.repository.DiaryRepository;
 import org.srd.ediary.domain.repository.EntryRepository;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 
 @Service
@@ -69,7 +71,8 @@ public class EntryService {
     }
 
     @PreAuthorize("@entryAccess.isDiaryBelongsOwner(#diaryId, authentication.principal.id)")
-    public EntryPermission canCreateEntry(Long diaryId) {
-        return new EntryPermission(true);
+    public EntryPermission canCreateEntry(Long diaryId, LocalDate requestedDate) {
+        Optional<Entry> optionalEntry = entryRepo.getByDiaryIdAndCreatedDate(diaryId, requestedDate);
+        return new EntryPermission(optionalEntry.isEmpty());
     }
 }
