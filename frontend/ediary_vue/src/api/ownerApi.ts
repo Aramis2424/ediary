@@ -13,6 +13,6 @@ export const postOwnerLogin = async (loginData: TokenRequest): Promise<AxiosResp
 };
 
 export const getOwner = async (): Promise<AxiosResponse<OwnerInfoDTO>> => {
-    const res = await api.get<OwnerInfoDTO, AxiosResponse<OwnerInfoDTO>, OwnerCreateDTO>('/owners/me');
+    const res = await api.get<OwnerInfoDTO, AxiosResponse<OwnerInfoDTO>>('/owners/me');
     return res;
 };
