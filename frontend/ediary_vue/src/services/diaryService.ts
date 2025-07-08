@@ -4,7 +4,9 @@ import type { DiaryInfoDTO, DiaryCreateDTO } from '@/types/Diary';
 export const fetchDiary = async (ownerId: number): Promise<DiaryInfoDTO> => {
     try {
         const res = await getDiaries(ownerId);
-        if (!res.data || res.status !== 200) {
+        if (!res.data || res.status !== 200 
+            || !Array.isArray(res.data) 
+            || res.data.length === 0) {
             throw new Error('Cannot fetch diary');
         }
         return res.data[0];
@@ -21,7 +23,7 @@ export const fetchDiary = async (ownerId: number): Promise<DiaryInfoDTO> => {
 
 export const createDiary = async (ownerId: number): Promise<DiaryInfoDTO> => {
     const newDiary: DiaryCreateDTO = {
-        ownerId: ownerId,
+        ownerID: ownerId,
         title: "New diary",
         description: "Description for new diary"
     }
