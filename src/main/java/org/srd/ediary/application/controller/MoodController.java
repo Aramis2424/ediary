@@ -35,7 +35,7 @@ public class MoodController {
     @PostMapping("/moods")
     @Operation(summary = "Create mood for owner")
     public ResponseEntity<MoodInfoDTO> createMood(@RequestBody MoodCreateDTO mood) {
-        return new ResponseEntity<>(service.create(mood), HttpStatus.OK);
+        return new ResponseEntity<>(service.create(mood), HttpStatus.CREATED);
     }
 
     @PutMapping("/moods/{moodId}")
