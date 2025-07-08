@@ -22,12 +22,13 @@ public class OwnerController {
     private final OwnerService service;
 
     @PostMapping("/owners")
-    @Operation(summary = "Create user.")
+    @Operation(summary = "Create user")
     public ResponseEntity<OwnerInfoDTO> createOwner(@RequestBody OwnerCreateDTO dto) {
         return new ResponseEntity<>(service.registerOwner(dto), HttpStatus.CREATED);
     }
 
     @GetMapping("/owners/me")
+    @Operation(summary = "Fetch user using token")
     public ResponseEntity<OwnerInfoDTO> fetchOwnerByToken(@AuthenticationPrincipal OwnerDetails principal) {
         return new ResponseEntity<>(service.fetchOwner(principal.getId()), HttpStatus.OK);
     }
