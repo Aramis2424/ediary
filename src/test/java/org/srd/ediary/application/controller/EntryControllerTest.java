@@ -106,6 +106,40 @@ class EntryControllerTest {
     }
 
     @Test
+    void testGetPermissionToCreateEntry_Allowed() throws Exception {
+        Long diaryId = 3L;
+        LocalDate date = LocalDate.of(2020, 1, 1);
+        when(entryService.canCreateEntry(diaryId, date)).thenReturn(
+                new EntryPermission(true));
+
+        mockMvc.perform(get("/api/v1/diaries/" + diaryId + "/can-create-entry")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .content(String.valueOf(diaryId))
+                        .param("date", "2020-01-01")
+                )
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.allowed").value("true"));
+    }
+
+    @Test
+    void testGetPermissionToCreateEntry_NotAllowed() throws Exception {
+        Long diaryId = 3L;
+        LocalDate date = LocalDate.of(2020, 1, 1);
+        when(entryService.canCreateEntry(diaryId, date)).thenReturn(
+                new EntryPermission(false));
+
+        mockMvc.perform(get("/api/v1/diaries/" + diaryId + "/can-create-entry")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .content(String.valueOf(diaryId))
+                        .param("date", "2020-01-01")
+                )
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.allowed").value("false"));
+    }
+
+    @Test
     void testGetEntriesByDiary_ExistingDiary() throws Exception{
         Long diaryId = 3L;
         when(entryService.getAllEntriesByDiary(diaryId)).thenReturn(outputList);

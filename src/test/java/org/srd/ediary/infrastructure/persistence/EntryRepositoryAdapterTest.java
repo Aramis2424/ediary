@@ -84,4 +84,26 @@ class EntryRepositoryAdapterTest {
 
         assertEquals(2, entries.size());
     }
+
+    @Test
+    void testGetByDiaryIdAndCreatedDate_Exist() {
+        LocalDate date = LocalDate.now();
+        Entry entry = new Entry(diary, "entry", "day day");
+        repo.save(entry);
+
+        Optional<Entry> gotEntry = repo.getByDiaryIdAndCreatedDate(diary.getId(), date);
+
+        assertTrue(gotEntry.isPresent());
+        assertEquals("entry", gotEntry.get().getTitle());
+        assertEquals("day day", gotEntry.get().getContent());
+    }
+
+    @Test
+    void testGetByDiaryIdAndCreatedDate_NonExist() {
+        LocalDate date = LocalDate.now();
+
+        Optional<Entry> gotEntry = repo.getByDiaryIdAndCreatedDate(diary.getId(), date);
+
+        assertTrue(gotEntry.isEmpty());
+    }
 }

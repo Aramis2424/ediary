@@ -269,4 +269,49 @@ public class EntrySecurityTest {
 
         verify(entryRepo, never()).delete(entryId);
     }
+
+    @Test
+    @WithMockOwnerDetails(id = validOwnerId)
+    void testCanCreateEntry_WithAccess() throws Exception{
+        Long entryId = 1L;
+        Long diaryId = 1L;
+        LocalDate date = LocalDate.of(2020, 1, 1);
+        when(entryRepo.getByDiaryIdAndCreatedDate(diaryId, date)).thenReturn(
+                Optional.of(entryFromRepo)
+        );
+        when(entryAccess.isDiaryBelongsOwner(diaryId, validOwnerId)).thenReturn(true);
+
+        mockMvc.perform(get("/api/v1/diaries/" + diaryId + "/can-create-entry")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .content(String.valueOf(diaryId))
+                        .param("date", date.toString())
+                )
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.allowed").value("false"));
+
+        verify(entryAccess, times(1)).isDiaryBelongsOwner(diaryId, validOwnerId);
+    }
+
+    @Test
+    @WithMockOwnerDetails(id = invalidOwnerId)
+    void testCanCreateEntry_WithNoAccess() throws Exception{
+        Long entryId = 1L;
+        Long diaryId = 1L;
+        LocalDate date = LocalDate.of(2020, 1, 1);
+        when(entryRepo.getByDiaryIdAndCreatedDate(diaryId, date)).thenReturn(
+                Optional.of(entryFromRepo)
+        );
+        when(entryAccess.isDiaryBelongsOwner(diaryId, validOwnerId)).thenReturn(false);
+
+        mockMvc.perform(get("/api/v1/diaries/" + diaryId + "/can-create-entry")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .content(String.valueOf(diaryId))
+                        .param("date", date.toString())
+                )
+                .andExpect(status().isForbidden());
+
+        verify(entryAccess, times(1)).isDiaryBelongsOwner(diaryId, invalidOwnerId);
+    }
 }
