@@ -21,7 +21,7 @@ export const fetchEntry = async (entryId: number): Promise<EntryInfoDTO> => {
 
 export const createEntry = async (diaryId: number): Promise<EntryInfoDTO> => {
     const newEntry: EntryCreateDTO = {
-        diaryId: String(diaryId),
+        diaryID: String(diaryId),
         title: "Новый день",
         content: ""
     }

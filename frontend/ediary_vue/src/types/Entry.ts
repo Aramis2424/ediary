@@ -1,6 +1,6 @@
 export interface Entry{
     id: number;
-    diaryId: number;
+    diaryID: number;
     title: string;
     content: string;
     createdDate: string;
@@ -14,7 +14,7 @@ export interface EntryInfoDTO {
 }
 
 export interface EntryCreateDTO {
-    diaryId: string;
+    diaryID: string;
     title: string;
     content: string;
 }

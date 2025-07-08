@@ -69,7 +69,7 @@ export const handlers = [
     const nextId: number = entries.reduce((prevId, curEntry) => {
       return curEntry.id > prevId ? curEntry.id : prevId
     }, 0) + 1    
-    const newEntry: Entry = { id: nextId, diaryId: Number(body.diaryId), 
+    const newEntry: Entry = { id: nextId, diaryID: Number(body.diaryID), 
       title: body.title, content: body.content, createdDate: formattedDate}
     entries.push(newEntry)
     return HttpResponse.json(newEntry, { status: 201 })
@@ -101,7 +101,7 @@ export const handlers = [
   }),
 
   http.get('/api/v1/owners/:ownerId/diaries', ({ params }) => {
-    const requiredDiaries: Diary[] | undefined = diaries.filter(v => v.ownerId === Number(params.ownerId))
+    const requiredDiaries: Diary[] | undefined = diaries.filter(v => v.ownerID === Number(params.ownerId))
     if (!Array.isArray(requiredDiaries) || requiredDiaries.length === 0) {
       return HttpResponse.json({ message: 'Diaries not found' }, { status: 404 })
     }
@@ -117,7 +117,7 @@ export const handlers = [
     const nextId: number = diaries.reduce((prevId, curEntry) => {
       return curEntry.id > prevId ? curEntry.id : prevId
     }, 0) + 1    
-    const newDiary: Diary = { id: nextId, ownerId: Number(body.ownerId), 
+    const newDiary: Diary = { id: nextId, ownerID: Number(body.ownerID), 
       title: body.title, description: body.description, cntEntries: 0, createdDate: formattedDate}
     diaries.push(newDiary)
     return HttpResponse.json(newDiary, { status: 201 })
@@ -132,7 +132,7 @@ export const handlers = [
     const nextId: number = moods.reduce((prevId, curEntry) => {
       return curEntry.id > prevId ? curEntry.id : prevId
     }, 0) + 1    
-    const newMood: Mood = { id: nextId, ownerId: Number(body.ownerId), 
+    const newMood: Mood = { id: nextId, ownerID: Number(body.ownerID), 
       scoreMood: body.scoreMood, scoreProductivity: body.scoreProductivity, bedtime: body.bedtime, 
       wakeUpTime: body.wakeUpTime, createdDate: formattedDate}
     moods.push(newMood)

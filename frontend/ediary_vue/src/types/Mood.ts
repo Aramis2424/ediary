@@ -1,6 +1,6 @@
 export interface Mood {
     id: number;
-    ownerId: number;
+    ownerID: number;
     scoreMood: number;
     scoreProductivity: number;
     bedtime: string;
@@ -9,7 +9,7 @@ export interface Mood {
 }
 
 export interface MoodCreateDTO {
-    ownerId: number;
+    ownerID: number;
     scoreMood: number;
     scoreProductivity: number;
     bedtime: string;

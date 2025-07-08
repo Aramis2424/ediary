@@ -25,7 +25,7 @@ const handleSubmit = async () => {
   }
 
   const newMood: MoodCreateDTO = {
-    ownerId: owner.user?.id ?? 0,
+    ownerID: owner.user?.id ?? 0,
     scoreProductivity: dayRating.value,
     scoreMood: moodRating.value,
     bedtime: sleepTime.value,
