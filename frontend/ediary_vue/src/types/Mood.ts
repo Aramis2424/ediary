@@ -31,3 +31,8 @@ export interface MoodInfoDTO {
     wakeUpTime: string;
     createdDate: string;
 }
+
+export interface MoodTimeGraph {
+    time: string;
+    date: string;
+}
