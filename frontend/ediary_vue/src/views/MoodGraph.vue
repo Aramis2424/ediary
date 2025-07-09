@@ -63,19 +63,9 @@ const chartOptions = computed(() => ({
     title: {
       display: true,
       text: 'Время подъема по дням',
-      font: {
-          size: 18
-      },
     },
     legend: {
       display: false,
-      position: 'top',
-      labels: {
-        font: {
-          size: 18
-        },
-        color: '#333'
-      }
     },
     tooltip: {
       callbacks: {
@@ -101,9 +91,6 @@ const chartOptions = computed(() => ({
       title: {
         display: true,
         text: 'Дата',
-        font: {
-          size: 18
-        },
       }
     },
     y: {
@@ -120,9 +107,6 @@ const chartOptions = computed(() => ({
       title: {
         display: true,
         text: 'Время подъема',
-        font: {
-          size: 18
-        },
       }
     }
   }
