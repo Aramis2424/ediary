@@ -89,7 +89,7 @@ watch(
 
 <div class="flex flex-col justify-center items-center m-1">
     <div class="w-1/3 h-96 rounded-xl border-[#F4A261] border-2">
-        <Line :data="data" :options="fullOptions" />
+        <Line :data="data" :options="fullOptions" class="bg-white opacity-80" />
     </div>
     <div class="flex items-center justify-between my-1 gap-x-2">
         <button class="baseBtn px-2 w-24" @click="emit('prev')" >

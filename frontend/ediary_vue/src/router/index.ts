@@ -2,7 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 import LoginPage from '@/views/LoginPage.vue'
 import RegisterPage from '@/views/RegisterPage.vue'
 import Home from '@/views/Home.vue'
-import MoodGraph from '@/views/MoodGraph.vue'
+import MoodMenu from '@/views/MoodMenu.vue'
 import EntriesMenu from '@/views/EntriesMenu.vue'
 import MarkdownEditor from '@/views/MarkdownEditor.vue'
 import { useAuthStore } from '@/stores/auth'
@@ -12,7 +12,7 @@ const routes = [
   { path: '/login', component: LoginPage, meta: { public: true } },
   { path: '/register', component: RegisterPage, meta: { public: true } },
   { path: '/home', component: Home },
-  { path: '/graph', component: MoodGraph },
+  { path: '/mood', component: MoodMenu },
   { path: '/menu', component: EntriesMenu },
   { path: '/entry/:id', component: MarkdownEditor },
 ]

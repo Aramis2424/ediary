@@ -1,8 +1,11 @@
 <script lang="ts" setup>
+import { useRouter } from 'vue-router'
 import WakeUpTimeGraph from '@/components/WakeUpTimeGraph.vue'
 import Bedtime from '@/components/BedtimeGraph.vue';
 import MoodProdGraph from '@/components/MoodProdGraph.vue';
 import type { MoodScoreGraph, MoodTimeGraph } from '@/types/Mood';
+
+const router = useRouter();
 
 // --- Примерные данные ---
 const wakeUpData: MoodTimeGraph[] = [
@@ -44,16 +47,20 @@ const scoreData: MoodScoreGraph[] = [
   { date: '2025-07-07', mood: 7, productivity: 8 }
 ]
 
+const gotoHome = () => {router.push('/home')}
 </script>
 
 <template>
-  
-<div class="overflow-x-auto overflow-y-hidden">
-  <div class="flex flex-col">
-    <MoodProdGraph :scoreData="scoreData" />
-    <WakeUpTimeGraph :wakeUpData="wakeUpData" />
-    <Bedtime :wakeUpData="bedtimeData" />
+
+<div class="h-screen w-full flex items-center px-2 bg-fire">
+  <button class="sideBtnL" @click="gotoHome"> Назад </button>
+  <div class="h-[90vh] w-full overflow-y-scroll hide-scrollbar">
+    <div class="flex flex-col gap-y-16">
+      <MoodProdGraph :scoreData="scoreData" />
+      <WakeUpTimeGraph :wakeUpData="wakeUpData" />
+      <Bedtime :wakeUpData="bedtimeData" />
   </div>
+</div>
 </div>
 
 </template>

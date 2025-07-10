@@ -38,7 +38,7 @@ watch(
 )
 
 const gotoEntriesMenu = () => {router.push('/menu')}
-const gotoMoodGraph = () => {router.push('/graph')}
+const gotoMoodMenu = () => {router.push('/mood')}
 </script>
 
 <template>
@@ -53,7 +53,7 @@ const gotoMoodGraph = () => {router.push('/graph')}
         <button @click="gotoEntriesMenu()" class="w-[30vw] h-16 baseBtn text-black text-2xl md:text-3xl lg:text-4xl font-czizh">
           Личный дневник
         </button>
-        <button @click="gotoMoodGraph()" class="w-[30vw] h-16 baseBtn text-black text-2xl md:text-3xl lg:text-4xl font-czizh">
+        <button @click="gotoMoodMenu()" class="w-[30vw] h-16 baseBtn text-black text-2xl md:text-3xl lg:text-4xl font-czizh">
           Настроения
         </button>
       </div>

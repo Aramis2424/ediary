@@ -7,18 +7,6 @@ defineProps<{
   scoreData: MoodScoreGraph[]
 }>()
 
-// function timeToMillis(time: string): string {
-//   const [h, m] = time.split(':').map(Number)
-//   return String(h * 60 * 60 * 1000 + m * 60 * 1000)
-// }
-
-// function mapTime(data: MoodTimeGraph[]): MoodTimeGraph[] {
-//   return data.map(it => ({
-//         date: it.date,
-//         time: timeToMillis(it.time)
-//       }))
-// }
-
 </script>
 
 <template>
