@@ -36,28 +36,31 @@ const handleSubmit = async () => {
     )    
     emit('clicked')
   } catch {
-    console.error("Error while creating entry");
+    console.error("Error while creating mood");
   }
 }
 </script>
 
 <template>
-  <div class="moodBacking flex justify-center items-center">
-    <div class="max-w-lg w-full mx-auto p-6 bg-white rounded-2xl 
-                shadow space-y-6 flex flex-col content-start">
-      <h1 class="text-2xl font-semibold text-center">Опросник дня</h1>
+  <div class="baseBacking">
+    <div class="moodBacking flex justify-center items-center">
+      <div class="max-w-lg w-full mx-auto p-6 bg-white rounded-2xl 
+                  shadow space-y-6 flex flex-col content-start relative">
+        <h1 class="text-2xl font-semibold text-center">Опросник дня</h1>
 
-      <SurveySelectInput label="1. Как прошёл ваш день?" v-model="dayRating" />
-      <SurveySelectInput label="2. Какое у вас настроение?" v-model="moodRating" />
-      <SurveyBaseInput v-model="sleepTime" type="time" label="3. Во сколько вы уснули вчера?" />
-      <SurveyBaseInput v-model="wakeTime" type="time" label="4. Во сколько Вы проснулись сегодня?" />
+        <SurveySelectInput label="1. Как прошёл ваш день?" v-model="dayRating" />
+        <SurveySelectInput label="2. Какое у вас настроение?" v-model="moodRating" />
+        <SurveyBaseInput v-model="sleepTime" type="time" label="3. Во сколько вы уснули вчера?" />
+        <SurveyBaseInput v-model="wakeTime" type="time" label="4. Во сколько Вы проснулись сегодня?" />
 
-      <div class="text-center">
         <button @click="handleSubmit" class="px-6 py-2 baseBtn" >
           Отправить
         </button>
-      </div>
+        <button @click="$emit('clicked')" class="absolute -top-4 right-2 text-gray-500 hover:text-black">
+              ✕
+        </button>
 
+      </div>
     </div>
   </div>
 </template>
