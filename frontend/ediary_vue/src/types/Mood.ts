@@ -36,3 +36,9 @@ export interface MoodTimeGraph {
     time: string;
     date: string;
 }
+
+export interface MoodScoreGraph {
+    mood: number;
+    productivity: number
+    date: string;
+}

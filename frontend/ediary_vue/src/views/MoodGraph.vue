@@ -1,9 +1,11 @@
 <script lang="ts" setup>
 import WakeUpTimeGraph from '@/components/WakeUpTimeGraph.vue'
-import Bedtime from '@/components/Bedtime.vue';
+import Bedtime from '@/components/BedtimeGraph.vue';
+import MoodProdGraph from '@/components/MoodProdGraph.vue';
+import type { MoodScoreGraph, MoodTimeGraph } from '@/types/Mood';
 
 // --- Примерные данные ---
-const wakeUpData = [
+const wakeUpData: MoodTimeGraph[] = [
   { date: '2025-06-28', time: '07:30' },
   { date: '2025-06-29', time: '08:00' },
   { date: '2025-06-30', time: '07:45' },
@@ -16,7 +18,7 @@ const wakeUpData = [
   { date: '2025-07-07', time: '07:00' }
 ]
 
-const bedtimeData = [
+const bedtimeData: MoodTimeGraph[] = [
   { date: '2025-06-28', time: '22:30' },
   { date: '2025-06-29', time: '23:00' },
   { date: '2025-06-30', time: '00:45' },
@@ -29,12 +31,26 @@ const bedtimeData = [
   { date: '2025-07-07', time: '00:00' }
 ]
 
+const scoreData: MoodScoreGraph[] = [
+  { date: '2025-06-28', mood: 5, productivity: 7 },
+  { date: '2025-06-29', mood: 6, productivity: 6 },
+  { date: '2025-06-30', mood: 5, productivity: 9 },
+  { date: '2025-07-01', mood: 6, productivity: 4 },
+  { date: '2025-07-02', mood: 7, productivity: 5 },
+  { date: '2025-07-03', mood: 4, productivity: 8 },
+  { date: '2025-07-04', mood: 8, productivity: 3 },
+  { date: '2025-07-05', mood: 5, productivity: 5 },
+  { date: '2025-07-06', mood: 9, productivity: 9 },
+  { date: '2025-07-07', mood: 7, productivity: 8 }
+]
+
 </script>
 
 <template>
   
-<div class="overflow-x-auto">
+<div class="overflow-x-auto overflow-y-hidden">
   <div class="flex flex-col">
+    <MoodProdGraph :scoreData="scoreData" />
     <WakeUpTimeGraph :wakeUpData="wakeUpData" />
     <Bedtime :wakeUpData="bedtimeData" />
   </div>
