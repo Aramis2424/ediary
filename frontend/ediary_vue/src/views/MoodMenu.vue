@@ -3,9 +3,16 @@ import { useRouter } from 'vue-router'
 import WakeUpTimeGraph from '@/components/WakeUpTimeGraph.vue'
 import Bedtime from '@/components/BedtimeGraph.vue';
 import MoodProdGraph from '@/components/MoodProdGraph.vue';
+import SurveyMood from '@/views/SurveyMood.vue';
 import type { MoodScoreGraph, MoodTimeGraph } from '@/types/Mood';
+import { ref } from 'vue';
 
 const router = useRouter();
+const showSurveyMood = ref(false);
+
+async function surveyMood() {
+  showSurveyMood.value = true
+}
 
 // --- Примерные данные ---
 const wakeUpData: MoodTimeGraph[] = [
@@ -59,8 +66,10 @@ const gotoHome = () => {router.push('/home')}
       <MoodProdGraph :scoreData="scoreData" />
       <WakeUpTimeGraph :wakeUpData="wakeUpData" />
       <Bedtime :wakeUpData="bedtimeData" />
+    </div>
   </div>
+  <button class="sideBtnR" @click="surveyMood"> Отметить настроение </button>
 </div>
-</div>
+<SurveyMood v-if="showSurveyMood" @clicked="showSurveyMood=false"/>
 
 </template>
