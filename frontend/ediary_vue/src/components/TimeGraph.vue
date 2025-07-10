@@ -31,18 +31,13 @@ function shiftWindow(direction: 'back' | 'forward') {
   }
 }
 
-function timeToMillis(time: string): number {
-  const [h, m] = time.split(':').map(Number)
-  return h * 60 * 60 * 1000 + m * 60 * 1000
-}
-
 const chartData = computed(() => ({
   datasets: [
     {
       label: 'DateTime',
       data: props.timeData.map(it => ({
         x: it.date,
-        y: timeToMillis(it.time)
+        y: Number(it.time)
       })),
       borderColor: props.borderColor,
       backgroundColor: props.bgColor,

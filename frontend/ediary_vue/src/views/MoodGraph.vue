@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import WakeUpTimeGraph from '@/components/WakeUpTimeGraph.vue'
+import Bedtime from '@/components/Bedtime.vue';
 
 // --- Примерные данные ---
 const wakeUpData = [
@@ -15,6 +16,19 @@ const wakeUpData = [
   { date: '2025-07-07', time: '07:00' }
 ]
 
+const bedtimeData = [
+  { date: '2025-06-28', time: '22:30' },
+  { date: '2025-06-29', time: '23:00' },
+  { date: '2025-06-30', time: '00:45' },
+  { date: '2025-07-01', time: '23:50' },
+  { date: '2025-07-02', time: '23:10' },
+  { date: '2025-07-03', time: '22:30' },
+  { date: '2025-07-04', time: '00:05' },
+  { date: '2025-07-05', time: '22:45' },
+  { date: '2025-07-06', time: '23:20' },
+  { date: '2025-07-07', time: '00:00' }
+]
+
 </script>
 
 <template>
@@ -22,7 +36,7 @@ const wakeUpData = [
 <div class="overflow-x-auto">
   <div class="flex flex-col">
     <WakeUpTimeGraph :wakeUpData="wakeUpData" />
-    <WakeUpTimeGraph :wakeUpData="wakeUpData" />
+    <Bedtime :wakeUpData="bedtimeData" />
   </div>
 </div>
 

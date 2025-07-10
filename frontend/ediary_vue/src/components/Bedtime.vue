@@ -8,8 +8,15 @@ defineProps<{
 }>()
 
 function timeToMillis(time: string): string {
-  const [h, m] = time.split(':').map(Number)
-  return String(h * 60 * 60 * 1000 + m * 60 * 1000)
+  const [h, m] = time.split(':').map(Number);
+  let totalMinutes = h * 60 + m;
+  
+  // Если заснул после полуночи — считаем как "ночь следующего дня"
+  if (totalMinutes < 18 * 60) {
+    totalMinutes += 24 * 60;
+  }
+
+  return String(totalMinutes * 60 * 1000);
 }
 
 function mapTime(data: MoodTimeGraph[]): MoodTimeGraph[] {
@@ -28,11 +35,11 @@ function mapTime(data: MoodTimeGraph[]): MoodTimeGraph[] {
               border-color="rgb(75, 192, 192)"
               bg-color="rgba(75, 192, 192, 0.3)"
               point-style="triangle"
-              title="Время подъема по дням"
+              title="Время засыпания по дням"
               title-x="Дата"
-              title-y="Время подъема"
-              :min-y="0 * 60 * 60 * 1000"
-              :max-y="24 * 60 * 60 * 1000"/>
+              title-y="Время засыпания"
+              :min-y="14 * 60 * 60 * 1000"
+              :max-y="38 * 60 * 60 * 1000"/>
 </div>
   
 </template>
