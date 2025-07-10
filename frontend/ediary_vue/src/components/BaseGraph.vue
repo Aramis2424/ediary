@@ -88,7 +88,7 @@ watch(
 <template>
 
 <div class="flex flex-col justify-center items-center m-1">
-    <div class="w-1/3 h-96">
+    <div class="w-2/3 h-96">
         <Line :data="data" :options="fullOptions" class="bg-white opacity-80 rounded-xl border-[#F4A261] border-4" />
     </div>
     <div class="flex items-center justify-between my-1 gap-x-2">
