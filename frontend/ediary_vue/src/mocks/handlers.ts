@@ -12,7 +12,7 @@ import type { EntryCard } from '@/types/EntryCard'
 import { diaries, toInfoDto as toDiaryInfoDto } from './dataDiaries'
 import type { Diary, DiaryCreateDTO } from '@/types/Diary'
 
-import { moods } from './dataMoods'
+import { moods, toInfoDto as toMoodInfoDto } from './dataMoods'
 import type { Mood, MoodCreateDTO } from '@/types/Mood'
 
 export const handlers = [
@@ -137,5 +137,13 @@ export const handlers = [
       wakeUpTime: body.wakeUpTime, createdDate: formattedDate}
     moods.push(newMood)
     return HttpResponse.json(newMood, { status: 201 })
+  }),
+  http.get('/api/v1/owners/:ownerId/moods', ({ params }) => {
+    const requiredMoods: Mood[] | undefined = moods.filter(v => v.ownerID === Number(params.ownerId))
+    if (!Array.isArray(requiredMoods) || requiredMoods.length === 0) {
+      return HttpResponse.json({ message: 'Moods not found' }, { status: 404 })
+    }
+    const requiredDtoMoods = requiredMoods.map(it => toMoodInfoDto(it))
+    return HttpResponse.json(requiredDtoMoods)
   }),
 ]

@@ -7,3 +7,8 @@ export const postMood = async (newMood: MoodCreateDTO): Promise<AxiosResponse<Mo
                 '/moods', newMood)
   return res;
 };
+
+export const getMoods = async (ownerId: number): Promise<AxiosResponse<MoodInfoDTO[]>> => {
+  const res: AxiosResponse<MoodInfoDTO[]> = await api.get(`/owners/${ownerId}/moods`);
+  return res;
+};

@@ -4,17 +4,50 @@ import WakeUpTimeGraph from '@/components/WakeUpTimeGraph.vue'
 import Bedtime from '@/components/BedtimeGraph.vue';
 import MoodProdGraph from '@/components/MoodProdGraph.vue';
 import SurveyMood from '@/views/SurveyMood.vue';
-import type { MoodScoreGraph, MoodTimeGraph } from '@/types/Mood';
-import { ref } from 'vue';
+import type { MoodInfoDTO, MoodScoreGraph, MoodTimeGraph } from '@/types/Mood';
+import { computed, onMounted, ref } from 'vue';
+import { fetchMoods } from '@/services/moodService';
+import { useAuthStore } from '@/stores/auth';
 
 const router = useRouter();
+const owner = useAuthStore();
+
 const showSurveyMood = ref(false);
 
 async function surveyMood() {
   showSurveyMood.value = true
 }
 
-// --- Примерные данные ---
+function toMoodScoreGraph(data: MoodInfoDTO[]): MoodScoreGraph[] {
+  return data.map(entry => ({
+    mood: entry.scoreMood,
+    productivity: entry.scoreProductivity,
+    date: entry.createdDate
+  }));
+}
+
+function toTimeGraph(data: MoodInfoDTO[], type: 'wake' | 'bed'): MoodTimeGraph[] {
+  return data.map(entry => ({
+    time: type === 'wake' ? entry.wakeUpTime : entry.bedtime,
+    date: entry.createdDate
+  }));
+}
+
+const moodList = ref<MoodInfoDTO[]>([]);
+onMounted(async () => {
+  if (!owner.user)
+    return
+  try {
+    moodList.value = await fetchMoods(owner.user.id)
+  } catch {
+    console.error("Error while fetching moods");
+  }
+})
+
+// const scoreData = computed(() => toMoodScoreGraph(moodList.value));
+// const wakeUpData = computed(() => toTimeGraph(moodList.value, 'wake'));
+// const bedtimeData = computed(() => toTimeGraph(moodList.value, 'bed'));
+
 const wakeUpData: MoodTimeGraph[] = [
   { date: '2025-06-28', time: '07:30' },
   { date: '2025-06-29', time: '08:00' },

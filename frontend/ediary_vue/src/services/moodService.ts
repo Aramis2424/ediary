@@ -1,4 +1,4 @@
-import { postMood } from '@/api/moodApi';
+import { getMoods, postMood } from '@/api/moodApi';
 import type { MoodCreateDTO, MoodInfoDTO } from '@/types/Mood';
 import dayjs from 'dayjs'
 
@@ -16,6 +16,25 @@ export const createMood = async (ownerID: number, sP: number, sM: number,
         return res.data;
     } catch (error: any) {
         throw error;
+    }
+};
+
+export const fetchMoods = async (ownerId: number): Promise<MoodInfoDTO[]> => {
+    try {
+        const res = await getMoods(ownerId);
+        if (!res.data || res.status !== 200) {
+            throw new Error('Cannot fetch moods');
+        }
+        return res.data.sort(
+          (a, b) => new Date(a.createdDate).getTime() - new Date(b.createdDate).getTime());
+    } catch (error: any) {
+        if (error.response?.status === 404) {
+            throw new Error("Owner not found");
+        } else if (error.response?.status === 403) {
+            throw new Error("Access denied");
+        } else {
+            throw error;
+        }
     }
 };
 
