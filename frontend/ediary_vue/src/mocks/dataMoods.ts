@@ -13,9 +13,19 @@ export const moods: Mood[] = [
     { "id":10, "ownerID":8, "scoreMood":10, "scoreProductivity":6, "bedtime":"2023-04-14T17:33:09", "wakeUpTime":"2023-04-14T21:33:09", "createdDate":"2022-02-21" },
     { "id":11, "ownerID":8, "scoreMood":8, "scoreProductivity":5, "bedtime":"2022-06-19T12:26:06", "wakeUpTime":"2022-06-19T16:26:06", "createdDate":"2021-03-01" },
     { "id":12, "ownerID":8, "scoreMood":1, "scoreProductivity":5, "bedtime":"2020-02-13T00:06:36", "wakeUpTime":"2020-02-13T05:06:36", "createdDate":"2020-01-10" },
-    { "id":45, "ownerID":11, "scoreMood":6, "scoreProductivity":9, "bedtime":"2020-02-04T00:00:00", "wakeUpTime":"2020-02-04T00:00:00", "createdDate":"2020-03-07" },
-    { "id":46, "ownerID":11, "scoreMood":1, "scoreProductivity":4, "bedtime":"2020-02-03T00:00:00", "wakeUpTime":"2020-02-03T00:00:00", "createdDate":"2020-03-19" },
-    { "id":47, "ownerID":11, "scoreMood":5, "scoreProductivity":2, "bedtime":"2020-02-09T00:00:00", "wakeUpTime":"2020-02-09T00:00:00", "createdDate":"2020-03-04" }
+    { "id":45, "ownerID":11, "scoreMood":6, "scoreProductivity":9, "bedtime":"2020-02-04T00:30:00", "wakeUpTime":"2020-02-04T07:00:00", "createdDate":"2025-06-07" },
+    { "id":46, "ownerID":11, "scoreMood":1, "scoreProductivity":4, "bedtime":"2020-02-03T01:00:00", "wakeUpTime":"2020-02-03T08:30:00", "createdDate":"2025-06-09" },
+    { "id":47, "ownerID":11, "scoreMood":5, "scoreProductivity":2, "bedtime":"2020-02-09T00:10:00", "wakeUpTime":"2020-02-09T08:00:00", "createdDate":"2025-06-10" },
+
+    { "id":48, "ownerID":11, "scoreMood":6, "scoreProductivity":9, "bedtime":"2020-02-10T00:30:00", "wakeUpTime":"2020-02-04T07:00:00", "createdDate":"2025-06-11" },
+    { "id":49, "ownerID":11, "scoreMood":1, "scoreProductivity":4, "bedtime":"2020-02-11T01:00:00", "wakeUpTime":"2020-02-03T08:30:00", "createdDate":"2025-06-12" },
+    { "id":50, "ownerID":11, "scoreMood":5, "scoreProductivity":2, "bedtime":"2020-02-12T00:10:00", "wakeUpTime":"2020-02-09T08:00:00", "createdDate":"2025-06-13" },
+    { "id":51, "ownerID":11, "scoreMood":6, "scoreProductivity":9, "bedtime":"2020-02-13T00:30:00", "wakeUpTime":"2020-02-04T07:00:00", "createdDate":"2025-06-14" },
+    { "id":52, "ownerID":11, "scoreMood":1, "scoreProductivity":4, "bedtime":"2020-02-14T01:00:00", "wakeUpTime":"2020-02-03T08:30:00", "createdDate":"2025-06-15" },
+    { "id":53, "ownerID":11, "scoreMood":5, "scoreProductivity":2, "bedtime":"2020-02-15T00:10:00", "wakeUpTime":"2020-02-09T08:00:00", "createdDate":"2025-06-16" },
+    { "id":54, "ownerID":11, "scoreMood":6, "scoreProductivity":9, "bedtime":"2020-02-16T00:30:00", "wakeUpTime":"2020-02-04T07:00:00", "createdDate":"2025-06-17" },
+    { "id":55, "ownerID":11, "scoreMood":1, "scoreProductivity":4, "bedtime":"2020-02-17T01:00:00", "wakeUpTime":"2020-02-03T08:30:00", "createdDate":"2025-06-18" },
+    { "id":56, "ownerID":11, "scoreMood":5, "scoreProductivity":2, "bedtime":"2020-02-18T00:10:00", "wakeUpTime":"2020-02-09T08:00:00", "createdDate":"2025-06-19" }
 ]
 
 export function toInfoDto(obj: Mood): MoodInfoDTO {
