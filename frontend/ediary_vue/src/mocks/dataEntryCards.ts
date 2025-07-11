@@ -6,8 +6,8 @@ export function getCards(): EntryCard[] {
     for (const entry of entries) {
         cards.push(
             { diaryId: entry.diaryID, entryId: entry.id, title: entry.title, 
-                scoreMood: Math.floor(Math.random() * 10) + 1, 
-                scoreProductivity: Math.floor(Math.random() * 10) + 1, 
+                scoreMood: Math.floor(Math.random() * 10) - 1, 
+                scoreProductivity: Math.floor(Math.random() * 10) - 1, 
                 createdDate: entry.createdDate }
         )
     }
