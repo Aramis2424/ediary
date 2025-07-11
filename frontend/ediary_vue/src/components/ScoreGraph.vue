@@ -2,7 +2,7 @@
 import type { ChartData, ChartOptions } from 'chart.js'
 import type { MoodScoreGraph } from '@/types/Mood'
 import 'chartjs-adapter-date-fns'
-import { ref, computed } from 'vue'
+import { ref, computed, watch } from 'vue'
 import { parseISO, subDays, addDays } from 'date-fns'
 import BaseGraph from '@/components/BaseGraph.vue'
 
@@ -23,16 +23,20 @@ const props = defineProps<{
   maxY: number
 }>()
 
-const allDates = props.scoreData.map(it => parseISO(it.date))
-const initialMax = allDates[allDates.length - 1]
-const maxDate = ref(initialMax)
-const minDate = computed(() => subDays(maxDate.value, 6))
+const allDates = computed(() => props.scoreData.map(it => parseISO(it.date)));
+const minDate = computed(() => subDays(maxDate.value, 6));
+const maxDate = ref(new Date());
+watch(allDates, (dates) => {
+  if (dates.length) {
+    maxDate.value = dates[dates.length - 1];
+  }
+}, { immediate: true });
 
 function shiftWindow(direction: 'back' | 'forward') {
   if (direction === 'back') {
-    maxDate.value = subDays(maxDate.value, 7)
+    maxDate.value = subDays(maxDate.value, 7);
   } else {
-    maxDate.value = addDays(maxDate.value, 7)
+    maxDate.value = addDays(maxDate.value, 7);
   }
 }
 
