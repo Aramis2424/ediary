@@ -6,13 +6,14 @@ import MoodProdGraph from '@/components/MoodProdGraph.vue';
 import SurveyMood from '@/views/SurveyMood.vue';
 import type { MoodInfoDTO, MoodScoreGraph, MoodTimeGraph } from '@/types/Mood';
 import { computed, onMounted, ref } from 'vue';
-import { fetchMoods } from '@/services/moodService';
+import { fetchMoods, fetchPermissionMood } from '@/services/moodService';
 import { useAuthStore } from '@/stores/auth';
 
 const router = useRouter();
 const owner = useAuthStore();
 
 const showSurveyMood = ref(false);
+const enableCreateMood = ref(false);
 
 async function surveyMood() {
   showSurveyMood.value = true
@@ -54,9 +55,21 @@ async function pullMoods() {
   }
 }
 
+async function pullPermission() {
+  if (!owner.user)
+    return
+  try {
+    const result = await fetchPermissionMood(owner.user?.id);
+    enableCreateMood.value = result.allowed;
+  } catch {
+    console.error("Error while fetching permission mood");
+  }
+}
+
 const moodList = ref<MoodInfoDTO[]>([]);
 onMounted(async () => {
  await pullMoods()
+ await pullPermission()
 })
 
 const scoreData = computed(() => toMoodScoreGraph(moodList.value));
@@ -77,7 +90,8 @@ const gotoHome = () => {router.push('/home')}
       <BedtimeGraph :wakeUpData="bedtimeData" />
     </div>
   </div>
-  <button class="sideBtnR" @click="surveyMood"> Отметить настроение </button>
+  <button v-if="enableCreateMood" class="sideBtnR" @click="surveyMood"> Отметить настроение </button>
+  <button v-else class="diableSideBtnR"> Сегодня настроение уже отмечено </button>
 </div>
 <SurveyMood v-if="showSurveyMood" @clicked="showSurveyMood=false; pullMoods()"/>
 
