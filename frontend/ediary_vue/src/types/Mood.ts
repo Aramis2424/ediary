@@ -32,6 +32,10 @@ export interface MoodInfoDTO {
     createdDate: string;
 }
 
+export interface MoodPermissionRes {
+    allowed: boolean
+}
+
 export interface MoodTimeGraph {
     time: string;
     date: string;

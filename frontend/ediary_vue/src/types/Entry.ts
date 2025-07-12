@@ -23,3 +23,7 @@ export interface EntryUpdateDTO {
     title: string;
     content: string;
 }
+
+export interface EntryPermissionRes {
+    allowed: boolean
+}
