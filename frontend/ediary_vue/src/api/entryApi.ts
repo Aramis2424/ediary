@@ -24,7 +24,11 @@ export const deleteEntry = async (entryId: number): Promise<AxiosResponse<void>>
   return res;
 };
 
-export const getPermissionEntry = async (diaryId: number): Promise<AxiosResponse<EntryPermissionRes>> => {
-  const res: AxiosResponse<EntryPermissionRes> = await api.get(`/diaries/${diaryId}/can-create-entry`);
+export const getPermissionEntry = async (diaryId: number, date: string): Promise<AxiosResponse<EntryPermissionRes>> => {
+  const res: AxiosResponse<EntryPermissionRes> = await api.get(`/diaries/${diaryId}/can-create-entry`, {
+    params: {
+      date: date
+    }
+  });
   return res;
 }

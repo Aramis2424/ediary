@@ -1,5 +1,6 @@
 import { postEntry, getEntry, deleteEntry, putEntry, getPermissionEntry } from '@/api/entryApi';
 import type { EntryInfoDTO, EntryCreateDTO, EntryUpdateDTO, EntryPermissionRes } from '@/types/Entry';
+import { currentDate } from '@/utils/timeUtil';
 
 export const fetchEntry = async (entryId: number): Promise<EntryInfoDTO> => {
     try {
@@ -67,7 +68,7 @@ export const removeEntry = async (entryId: number): Promise<void> => {
 
 export const fetchPermissionEntry = async (diaryId: number): Promise<EntryPermissionRes> => {
     try {
-        const res = await getPermissionEntry(diaryId);
+        const res = await getPermissionEntry(diaryId, currentDate);
         if (!res.data || res.status !== 200) {
             throw new Error('Cannot get permission for creating entry');
         }

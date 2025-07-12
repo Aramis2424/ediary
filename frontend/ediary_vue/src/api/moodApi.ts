@@ -13,7 +13,11 @@ export const getMoods = async (ownerId: number): Promise<AxiosResponse<MoodInfoD
   return res;
 };
 
-export const getPermissionMood = async (ownerId: number): Promise<AxiosResponse<MoodPermissionRes>> => {
-  const res: AxiosResponse<MoodPermissionRes> = await api.get(`/owners/${ownerId}/can-create-mood`);
+export const getPermissionMood = async (ownerId: number, date: string): Promise<AxiosResponse<MoodPermissionRes>> => {
+  const res: AxiosResponse<MoodPermissionRes> = await api.get(`/owners/${ownerId}/can-create-mood`, {
+    params: {
+      date: date
+    }
+  });
   return res;
 }
