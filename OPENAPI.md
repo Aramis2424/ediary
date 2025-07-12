@@ -28,7 +28,7 @@
 | PUT | [/moods/{moodId}](#putmoodsmoodid) | Update mood by id |
 | DELETE | [/moods/{moodId}](#deletemoodsmoodid) | Delete mood by id |
 | POST | [/moods](#postmoods) | Create mood for owner |
-| GET | [/moods/{moodId}/can-create-mood](#getmoodsmoodidcan-create-mood) | get permission for creating entry |
+| GET | [/moods/{ownerId}/can-create-mood](#getmoodsowneridcan-create-mood) | get permission for creating entry |
 
 ## Reference Table
 
@@ -918,7 +918,7 @@ bearerAuth
 
 ***
 
-### [GET]/moods/{moodId}/can-create-mood
+### [GET]/moods/{ownerId}/can-create-mood
 
 - Summary  
 get permission for creating entry

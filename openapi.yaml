@@ -644,13 +644,13 @@ paths:
                 $ref: "#/components/schemas/Error"
       security:
         - bearerAuth: []
-  /moods/{moodId}/can-create-mood:
+  /moods/{ownerId}/can-create-mood:
     get:
       tags:
         - mood
       summary: get permission for creating entry
       parameters:
-        - name: moodId
+        - name: ownerId
           in: path
           required: true
           schema:
