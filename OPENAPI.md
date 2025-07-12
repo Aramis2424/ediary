@@ -28,6 +28,7 @@
 | PUT | [/moods/{moodId}](#putmoodsmoodid) | Update mood by id |
 | DELETE | [/moods/{moodId}](#deletemoodsmoodid) | Delete mood by id |
 | POST | [/moods](#postmoods) | Create mood for owner |
+| GET | [/moods/{moodId}/can-create-mood](#getmoodsmoodidcan-create-mood) | get permission for creating entry |
 
 ## Reference Table
 
@@ -46,6 +47,7 @@
 | MoodCreateDTO | [#/components/schemas/MoodCreateDTO](#componentsschemasmoodcreatedto) |  |
 | MoodUpdateDTO | [#/components/schemas/MoodUpdateDTO](#componentsschemasmoodupdatedto) |  |
 | MoodInfoDTO | [#/components/schemas/MoodInfoDTO](#componentsschemasmoodinfodto) |  |
+| MoodPermissionRes | [#/components/schemas/MoodPermissionRes](#componentsschemasmoodpermissionres) |  |
 | TokenRequest | [#/components/schemas/TokenRequest](#componentsschemastokenrequest) |  |
 | TokenResponse | [#/components/schemas/TokenResponse](#componentsschemastokenresponse) |  |
 | Error | [#/components/schemas/Error](#componentsschemaserror) |  |
@@ -914,6 +916,49 @@ bearerAuth
 }
 ```
 
+***
+
+### [GET]/moods/{moodId}/can-create-mood
+
+- Summary  
+get permission for creating entry
+
+- Security  
+bearerAuth  
+
+#### Parameters(Query)
+
+```ts
+date: string
+```
+
+#### Responses
+
+- 200 Returns permission if user can create new mood
+
+`application/json`
+
+```ts
+{
+  allowed?: boolean
+}[]
+```
+
+- 403 Access denied
+
+- 404 Owner not found
+
+- default Unexpected error
+
+`application/json`
+
+```ts
+{
+  code: string
+  message: string
+}
+```
+
 ## References
 
 ### #/components/schemas/OwnerCreateDTO
@@ -1057,6 +1102,14 @@ bearerAuth
   bedtime?: string
   wakeUpTime?: string
   createdAt?: string
+}
+```
+
+### #/components/schemas/MoodPermissionRes
+
+```ts
+{
+  allowed?: boolean
 }
 ```
 

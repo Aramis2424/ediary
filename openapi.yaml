@@ -644,6 +644,45 @@ paths:
                 $ref: "#/components/schemas/Error"
       security:
         - bearerAuth: []
+  /moods/{moodId}/can-create-mood:
+    get:
+      tags:
+        - mood
+      summary: get permission for creating entry
+      parameters:
+        - name: moodId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: date
+          in: query
+          required: true
+          schema:
+            type: string
+            format: date
+      responses:
+        '200':
+          description: Returns permission if user can create new mood
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/MoodPermissionRes'
+        '404':
+          description: Owner not found
+        '403':
+          description: Access denied
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+      security:
+        - bearerAuth: []
 
 components:
   schemas:
@@ -885,6 +924,12 @@ components:
           type: string
           format: date
           example: "2025-06-29"
+    MoodPermissionRes:
+      type: object
+      properties:
+        allowed:
+          type: boolean
+          example: true
           
     TokenRequest:
       type: object
