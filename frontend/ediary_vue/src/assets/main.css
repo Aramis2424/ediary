@@ -23,12 +23,32 @@
     writing-mode: vertical-lr;
 }
 
+.disableBtn {
+    @apply 
+     bg-[#FFF8F0] bg-opacity-60
+     border-[#F4A261] border-4
+     rounded-3xl;
+}
+.diableSideBtn {
+    @apply h-[90vh] w-8 p-5
+    text-black text-3xl font-czizh
+     flex items-center justify-center
+     disableBtn
+}
+.diableSideBtnL {
+    @apply diableSideBtn;
+    writing-mode: sideways-lr;
+}
+.diableSideBtnR {
+    @apply diableSideBtn;
+    writing-mode: vertical-lr;
+}
+
 .baseBacking {
   @apply
   fixed inset-1 bg-gray-900 bg-opacity-60 
   rounded-lg flex items-center justify-center z-50
 }
-
 .moodBacking {
   @apply
   fixed inset-0.5 bg-opacity-60 
