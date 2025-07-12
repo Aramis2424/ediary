@@ -4,7 +4,7 @@ import { owners } from './dataOwners'
 import type { OwnerCreateDTO, TokenRequest } from '@/types/Owner'
 
 import { entries, toInfoDto } from './dataEntries'
-import type { Entry, EntryCreateDTO } from '@/types/Entry'
+import type { Entry, EntryCreateDTO, EntryPermissionRes } from '@/types/Entry'
 
 import { getCards } from './dataEntryCards'
 import type { EntryCard } from '@/types/EntryCard'
@@ -13,7 +13,7 @@ import { diaries, toInfoDto as toDiaryInfoDto } from './dataDiaries'
 import type { Diary, DiaryCreateDTO } from '@/types/Diary'
 
 import { moods, toInfoDto as toMoodInfoDto } from './dataMoods'
-import type { Mood, MoodCreateDTO } from '@/types/Mood'
+import type { Mood, MoodCreateDTO, MoodPermissionRes } from '@/types/Mood'
 
 export const handlers = [
   http.get('/api/v1/owners/me', async ({ request }) => {
@@ -91,6 +91,10 @@ export const handlers = [
 
     return HttpResponse.json({ success: true }, { status: 204 })
   }),
+  http.get('/api/v1/diaries/:diaryId/can-create-entry', ({  }) => {
+    const permission: EntryPermissionRes =  {allowed: Math.random() < 0.7};
+    return HttpResponse.json(permission)
+  }),
 
   http.get('/api/v1/diaries/:diaryId/entry-cards', ({ params }) => {
     const cards: EntryCard[] | undefined = getCards().filter(v => v.diaryId === Number(params.diaryId))
@@ -145,5 +149,9 @@ export const handlers = [
     }
     const requiredDtoMoods = requiredMoods.map(it => toMoodInfoDto(it))
     return HttpResponse.json(requiredDtoMoods)
+  }),
+  http.get('/api/v1/owners/:ownerId/can-create-mood', ({  }) => {
+    const permission: MoodPermissionRes =  {allowed: Math.random() < 0.7};
+    return HttpResponse.json(permission)
   }),
 ]
