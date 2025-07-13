@@ -5,19 +5,20 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.srd.ediary.application.dto.MoodCreateDTO;
-import org.srd.ediary.application.dto.MoodInfoDTO;
-import org.srd.ediary.application.dto.MoodUpdateDTO;
+import org.srd.ediary.application.dto.*;
 import org.srd.ediary.application.exception.MoodNotFoundException;
 import org.srd.ediary.application.exception.OwnerNotFoundException;
 import org.srd.ediary.application.mapper.MoodMapper;
+import org.srd.ediary.domain.model.Entry;
 import org.srd.ediary.domain.model.Mood;
 import org.srd.ediary.domain.model.Owner;
 import org.srd.ediary.domain.repository.MoodRepository;
 import org.srd.ediary.domain.repository.OwnerRepository;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Transactional
@@ -66,5 +67,11 @@ public class MoodService {
     @PreAuthorize("@moodAccess.isAllowed(#id, authentication.principal.id)")
     public void delete(Long id) {
         moodRepo.delete(id);
+    }
+
+    @PreAuthorize("#ownerId.equals(authentication.principal.id)")
+    public MoodPermission canCreateMood(Long ownerId, LocalDate requestedDate) {
+        Optional<Mood> optionalMood = moodRepo.getByOwnerIdAndCreatedDate(ownerId, requestedDate);
+        return new MoodPermission(optionalMood.isEmpty());
     }
 }
