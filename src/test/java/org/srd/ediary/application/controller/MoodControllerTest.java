@@ -126,7 +126,7 @@ class MoodControllerTest {
                 .accept(MediaType.APPLICATION_JSON)
                 .content(creationJson.write(input).getJson())
         )
-                .andExpect(status().isOk())
+                .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.id").value(1L))
                 .andExpect(jsonPath("$.scoreMood").value(7));
     }
