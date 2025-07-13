@@ -11,9 +11,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.srd.ediary.application.dto.MoodCreateDTO;
-import org.srd.ediary.application.dto.MoodInfoDTO;
-import org.srd.ediary.application.dto.MoodUpdateDTO;
+import org.srd.ediary.application.dto.*;
 import org.srd.ediary.application.exception.MoodNotFoundException;
 import org.srd.ediary.application.exception.OwnerNotFoundException;
 import org.srd.ediary.application.security.jwt.JwtFilter;
@@ -85,6 +83,40 @@ class MoodControllerTest {
                         .content(String.valueOf(moodId))
                 )
                 .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void testGetPermissionToCreateMood_Allowed() throws Exception {
+        Long ownerId = 5L;
+        LocalDate date = LocalDate.of(2020, 1, 1);
+        when(moodService.canCreateMood(ownerId, date)).thenReturn(
+                new MoodPermission(true));
+
+        mockMvc.perform(get("/api/v1/owners/" + ownerId + "/can-create-mood")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .content(String.valueOf(ownerId))
+                        .param("date", "2020-01-01")
+                )
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.allowed").value("true"));
+    }
+
+    @Test
+    void testGetPermissionToCreateMood_NotAllowed() throws Exception {
+        Long ownerId = 5L;
+        LocalDate date = LocalDate.of(2020, 1, 1);
+        when(moodService.canCreateMood(ownerId, date)).thenReturn(
+                new MoodPermission(false));
+
+        mockMvc.perform(get("/api/v1/owners/" + ownerId + "/can-create-mood")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .content(String.valueOf(ownerId))
+                        .param("date", "2020-01-01")
+                )
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.allowed").value("false"));
     }
 
     @Test

@@ -158,7 +158,7 @@ public class MoodSecurityTest {
                         .accept(MediaType.APPLICATION_JSON)
                         .content(creationJson.write(input).getJson())
                 )
-                .andExpect(status().isOk())
+                .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.scoreMood").value(7));
 
         verify(moodRepo, times(1)).save(any(Mood.class));
@@ -258,5 +258,44 @@ public class MoodSecurityTest {
                 .andExpect(status().isForbidden());
 
         verify(moodRepo, never()).delete(moodId);
+    }
+
+    @Test
+    @WithMockOwnerDetails(id = validOwnerId)
+    void testCanCreateMood_WithAccess() throws Exception{
+        LocalDate date = LocalDate.of(2020, 1, 1);
+        when(moodRepo.getByOwnerIdAndCreatedDate(validOwnerId, date)).thenReturn(
+                Optional.of(moodFromRepo)
+        );
+
+        mockMvc.perform(get("/api/v1/owners/" + validOwnerId + "/can-create-mood")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .content(String.valueOf(validOwnerId))
+                        .param("date", date.toString())
+                )
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.allowed").value("false"));
+
+        verify(moodRepo, times(1)).getByOwnerIdAndCreatedDate(validOwnerId, date);
+    }
+
+    @Test
+    @WithMockOwnerDetails(id = invalidOwnerId)
+    void testCanCreateEntry_WithNoAccess() throws Exception{
+        LocalDate date = LocalDate.of(2020, 1, 1);
+        when(moodRepo.getByOwnerIdAndCreatedDate(validOwnerId, date)).thenReturn(
+                Optional.of(moodFromRepo)
+        );
+
+        mockMvc.perform(get("/api/v1/owners/" + validOwnerId + "/can-create-mood")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .content(String.valueOf(validOwnerId))
+                        .param("date", date.toString())
+                )
+                .andExpect(status().isForbidden());
+
+        verify(moodRepo, never()).getByOwnerIdAndCreatedDate(invalidOwnerId, date);
     }
 }

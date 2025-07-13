@@ -5,11 +5,10 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.srd.ediary.application.dto.MoodCreateDTO;
-import org.srd.ediary.application.dto.MoodInfoDTO;
-import org.srd.ediary.application.dto.MoodUpdateDTO;
+import org.srd.ediary.application.dto.*;
 import org.srd.ediary.application.exception.MoodNotFoundException;
 import org.srd.ediary.application.exception.OwnerNotFoundException;
+import org.srd.ediary.domain.model.Entry;
 import org.srd.ediary.domain.model.Mood;
 import org.srd.ediary.domain.model.Owner;
 import org.srd.ediary.domain.repository.MoodRepository;
@@ -149,5 +148,32 @@ class MoodServiceTest {
         service.delete(moodId);
 
         verify(moodRepo, times(1)).delete(moodId);
+    }
+
+    @Test
+    void testCanCreateMood_True() {
+        final Long ownerId = 1L;
+        final LocalDate date = LocalDate.of(2020, 1, 1);
+        Mood gotMood = new Mood(owner, 7, 7, bedtime, wakeUpTime);
+        MoodPermission expected = new MoodPermission(false);
+        when(moodRepo.getByOwnerIdAndCreatedDate(ownerId, date))
+                .thenReturn(Optional.of(gotMood));
+
+        MoodPermission actual = service.canCreateMood(ownerId, date);
+
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    void testCanCreateMood_False() {
+        final Long ownerId = 1L;
+        final LocalDate date = LocalDate.of(2020, 1, 1);
+        MoodPermission expected = new MoodPermission(true);
+        when(moodRepo.getByOwnerIdAndCreatedDate(ownerId, date))
+                .thenReturn(Optional.empty());
+
+        MoodPermission actual = service.canCreateMood(ownerId, date);
+
+        assertEquals(expected, actual);
     }
 }
