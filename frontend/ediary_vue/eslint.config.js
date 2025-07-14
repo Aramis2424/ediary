@@ -7,7 +7,7 @@ export default [
   {
     ignores: ['node_modules', 'dist', '**/mockServiceWorker.js', 
               "src/shims-vue.d.ts", "vite.config.ts",
-              "**/MoodGraph.vue", 'tests/**'],
+              "**/MoodGraph.vue", 'tests/**', 'coverage/**'],
   },
   {
     files: ['**/*.vue'],

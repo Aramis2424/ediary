@@ -65,7 +65,7 @@ const chartOptions = computed(() => ({
     },
     tooltip: {
       callbacks: {
-        label: function (context: any) {
+        label: function (context: { parsed: { y: string | number | Date }; dataset: { label: string } }) {
           const time = new Date(context.parsed.y).toISOString().substring(11, 16)
           return `${context.dataset.label}: ${time}`
         }
