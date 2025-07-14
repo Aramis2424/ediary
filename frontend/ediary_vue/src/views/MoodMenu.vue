@@ -23,7 +23,7 @@ function toMoodScoreGraph(data: MoodInfoDTO[]): MoodScoreGraph[] {
   return data.map(entry => ({
     mood: entry.scoreMood,
     productivity: entry.scoreProductivity,
-    date: entry.createdDate
+    date: entry.createdAt
   }));
 }
 

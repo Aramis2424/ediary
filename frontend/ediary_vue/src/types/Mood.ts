@@ -5,7 +5,7 @@ export interface Mood {
     scoreProductivity: number;
     bedtime: string;
     wakeUpTime: string;
-    createdDate: string;
+    createdAt: string;
 }
 
 export interface MoodCreateDTO {
@@ -29,7 +29,7 @@ export interface MoodInfoDTO {
     scoreProductivity: number;
     bedtime: string;
     wakeUpTime: string;
-    createdDate: string;
+    createdAt: string;
 }
 
 export interface MoodPermissionRes {

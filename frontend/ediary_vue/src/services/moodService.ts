@@ -27,7 +27,7 @@ export const fetchMoods = async (ownerId: number): Promise<MoodInfoDTO[]> => {
             throw new Error('Cannot fetch moods');
         }
         return res.data.sort(
-          (a, b) => new Date(a.createdDate).getTime() - new Date(b.createdDate).getTime());
+          (a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime());
     } catch (error: any) {
         if (error.response?.status === 404) {
             throw new Error("Owner not found");

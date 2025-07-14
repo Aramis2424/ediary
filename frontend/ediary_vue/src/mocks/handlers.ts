@@ -138,7 +138,7 @@ export const handlers = [
     }, 0) + 1    
     const newMood: Mood = { id: nextId, ownerID: Number(body.ownerID), 
       scoreMood: body.scoreMood, scoreProductivity: body.scoreProductivity, bedtime: body.bedtime, 
-      wakeUpTime: body.wakeUpTime, createdDate: formattedDate}
+      wakeUpTime: body.wakeUpTime, createdAt: formattedDate}
     moods.push(newMood)
     return HttpResponse.json(newMood, { status: 201 })
   }),
