@@ -37,7 +37,7 @@ public class DiaryController {
     @PostMapping("/diaries")
     @Operation(summary = "Create diary")
     public ResponseEntity<DiaryInfoDTO> createDiary(@RequestBody DiaryCreateDTO diary) {
-        return new ResponseEntity<>(service.create(diary), HttpStatus.OK);
+        return new ResponseEntity<>(service.create(diary), HttpStatus.CREATED);
     }
 
     @PutMapping("/diaries/{diaryId}")

@@ -156,7 +156,7 @@ public class DiarySecurityTest {
                         .accept(MediaType.APPLICATION_JSON)
                         .content(creationJson.write(input).getJson())
                 )
-                .andExpect(status().isOk())
+                .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.title").value("d1"))
                 .andExpect(jsonPath("$.description").value("of1"));
 

@@ -121,7 +121,7 @@ class DiaryControllerTest {
                 .accept(MediaType.APPLICATION_JSON)
                 .content(creationJson.write(input).getJson())
         )
-                .andExpect(status().isOk())
+                .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.id").value(1L))
                 .andExpect(jsonPath("$.cntEntry").value(10));
     }
