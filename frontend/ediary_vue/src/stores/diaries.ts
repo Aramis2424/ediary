@@ -10,14 +10,14 @@ export const useDiaryStore = defineStore('diary', {
     createdDate: '',
   }),
   actions: {
-    logIn(diary: DiaryInfoDTO) {
+    save(diary: DiaryInfoDTO) {
       this.id = diary.id
       this.title = diary.title
       this. description = diary.description
       this.cntEntries = diary.cntEntries
       this.createdDate = ''
     },
-    logOut() {
+    remove() {
         this.id = 0,
         this.title = ''
         this.description = ''

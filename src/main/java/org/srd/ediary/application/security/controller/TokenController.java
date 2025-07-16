@@ -3,6 +3,8 @@ package org.srd.ediary.application.security.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,7 +22,7 @@ public class TokenController {
 
     @PostMapping("/token/create")
     @Operation(summary = "Login user")
-    public TokenResponse createToken(@RequestBody TokenRequest tokenRequest) {
-        return tokenService.generateToken(tokenRequest);
+    public ResponseEntity<TokenResponse> createToken(@RequestBody TokenRequest tokenRequest) {
+        return new ResponseEntity<>(tokenService.generateToken(tokenRequest), HttpStatus.OK);
     }
 }

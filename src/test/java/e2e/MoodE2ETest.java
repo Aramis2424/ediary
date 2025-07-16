@@ -184,7 +184,7 @@ public class MoodE2ETest {
                         .content(creationJson.write(input).getJson())
                         .header("Authorization", "Bearer " + token)
                 )
-                .andExpect(status().isOk())
+                .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.scoreMood").value(7));
     }
 

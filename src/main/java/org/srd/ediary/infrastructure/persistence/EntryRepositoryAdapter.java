@@ -8,6 +8,7 @@ import org.srd.ediary.domain.repository.EntryRepository;
 import org.srd.ediary.infrastructure.entity.EntryEntity;
 import org.srd.ediary.infrastructure.mapper.EntryEntityMapper;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -15,6 +16,7 @@ import java.util.stream.Collectors;
 
 interface SpringEntryRepository extends CrudRepository<EntryEntity, Long> {
     List<EntryEntity> getAllByDiaryId(Long id);
+    Optional<EntryEntity> getByDiaryIdAndCreatedDate(Long diaryId, LocalDate createdDate);
 }
 
 @Repository
@@ -45,5 +47,10 @@ public class EntryRepositoryAdapter implements EntryRepository {
         return entityList.stream()
                 .map(EntryEntityMapper.INSTANCE::entityToModel)
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public Optional<Entry> getByDiaryIdAndCreatedDate(Long diaryId, LocalDate createdDate) {
+        return repo.getByDiaryIdAndCreatedDate(diaryId, createdDate).map(EntryEntityMapper.INSTANCE::entityToModel);
     }
 }

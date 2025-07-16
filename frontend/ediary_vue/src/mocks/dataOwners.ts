@@ -1,4 +1,4 @@
-import type { Owner, OwnerLoginDTO, OwnerInfoDTO, OwnerCreateDTO, TokenResponse, TokenRequest } from "@/types/Owner"
+import type { Owner, OwnerInfoDTO, OwnerCreateDTO, TokenResponse, TokenRequest } from "@/types/Owner"
 
 export const owners: Owner[] = [
     { "id":1, "name":"Sandra", "birthDate":"2005-05-26", "login":"sandra977", "password":"$2b$12$ovLPjI5l6XYJ.yz4kuDA4O9oOxIJklDaLR92Ry06RcCk30yU5SNgG", "createdDate":"2014-06-28" },
@@ -13,10 +13,6 @@ export const owners: Owner[] = [
     { "id":10, "name":"George", "birthDate":"1970-04-03", "login":"george374", "password":"$2b$12$L80edk7FQorGAyHD/KaS0.wWwXn8bdooCIhx5mBVr93cF7NqwsjxO", "createdDate":"2013-04-16" },
     { "id":11, "name":"Ivan", "birthDate":"2000-01-01", "login":"ivan01", "password":"navi01", "createdDate":"2020-01-01" }
 ]
-
-export function toLoginDto(obj: Owner): OwnerLoginDTO {
-    return { login: obj.login, password: obj.password }
-}
 
 export function toInfoDto(obj: Owner): OwnerInfoDTO {
     return {id: obj.id, name: obj.name, birthDate: obj.birthDate, 

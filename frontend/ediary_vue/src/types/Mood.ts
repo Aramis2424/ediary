@@ -1,15 +1,15 @@
 export interface Mood {
     id: number;
-    ownerId: number;
+    ownerID: number;
     scoreMood: number;
     scoreProductivity: number;
     bedtime: string;
     wakeUpTime: string;
-    createdDate: string;
+    createdAt: string;
 }
 
 export interface MoodCreateDTO {
-    ownerId: number;
+    ownerID: number;
     scoreMood: number;
     scoreProductivity: number;
     bedtime: string;
@@ -29,5 +29,20 @@ export interface MoodInfoDTO {
     scoreProductivity: number;
     bedtime: string;
     wakeUpTime: string;
-    createdDate: string;
+    createdAt: string;
+}
+
+export interface MoodPermissionRes {
+    allowed: boolean
+}
+
+export interface MoodTimeGraph {
+    time: string;
+    date: string;
+}
+
+export interface MoodScoreGraph {
+    mood: number;
+    productivity: number
+    date: string;
 }

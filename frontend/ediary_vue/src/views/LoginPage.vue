@@ -5,7 +5,7 @@
       <form @submit.prevent="handleLogin" class="space-y-8">
         <div class="space-y-3">
             <FormField v-model="login" type="text" placeholder="Введите Ваш логин" label="Логин" />
-            <FormField v-model="password" type="passwaord" placeholder="Введите Ваш пароль" label="Пароль" />
+            <FormField v-model="password" type="password" placeholder="Введите Ваш пароль" label="Пароль" />
         </div>
         <button
           type="submit"

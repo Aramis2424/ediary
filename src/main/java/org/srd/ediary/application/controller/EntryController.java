@@ -3,16 +3,17 @@ package org.srd.ediary.application.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.srd.ediary.application.dto.EntryCreateDTO;
-import org.srd.ediary.application.dto.EntryInfoDTO;
-import org.srd.ediary.application.dto.EntryUpdateDTO;
+import org.srd.ediary.application.dto.*;
 import org.srd.ediary.application.exception.DiaryNotFoundException;
 import org.srd.ediary.application.exception.EntryNotFoundException;
+import org.srd.ediary.application.service.EntryCardService;
 import org.srd.ediary.application.service.EntryService;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -21,6 +22,7 @@ import java.util.List;
 @Tag(name = "entry", description = "Access to entries")
 public class EntryController {
     private final EntryService service;
+    private final EntryCardService serviceCard;
 
     @GetMapping("/diaries/{diaryId}/entries")
     @Operation(summary = "Get all owner`s entries")
@@ -32,6 +34,20 @@ public class EntryController {
     @Operation(summary = "Get entry by id")
     public ResponseEntity<EntryInfoDTO> getEntry(@PathVariable Long entryId) {
         return new ResponseEntity<>(service.getEntry(entryId), HttpStatus.OK);
+    }
+
+    @GetMapping("/diaries/{diaryId}/entry-cards")
+    @Operation(summary = "Get entry cards representation")
+    public ResponseEntity<List<EntryCardDTO>> getEntryCards(@PathVariable Long diaryId) {
+        return new ResponseEntity<>(serviceCard.getEntryCards(diaryId), HttpStatus.OK);
+    }
+
+    @GetMapping("/diaries/{diaryId}/can-create-entry")
+    @Operation(summary = "Get permission for creating entry")
+    public ResponseEntity<EntryPermission> canCreateEntry(@PathVariable Long diaryId,
+                                                          @RequestParam("date")
+                                              @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate requestedDate) {
+        return new ResponseEntity<>(service.canCreateEntry(diaryId, requestedDate), HttpStatus.OK);
     }
 
     @PostMapping("/entries")

@@ -3,6 +3,7 @@ package org.srd.ediary.application.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -11,6 +12,7 @@ import org.srd.ediary.application.exception.MoodNotFoundException;
 import org.srd.ediary.application.exception.OwnerNotFoundException;
 import org.srd.ediary.application.service.MoodService;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -32,10 +34,18 @@ public class MoodController {
         return new ResponseEntity<>(service.getMoodsByOwner(ownerId), HttpStatus.OK);
     }
 
+    @GetMapping("/owners/{ownerId}/can-create-mood")
+    @Operation(summary = "Get permission for creating mood")
+    public ResponseEntity<MoodPermission> canCreateMood(@PathVariable Long ownerId,
+                                                        @RequestParam("date")
+                                                        @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate requestedDate) {
+        return new ResponseEntity<>(service.canCreateMood(ownerId, requestedDate), HttpStatus.OK);
+    }
+
     @PostMapping("/moods")
     @Operation(summary = "Create mood for owner")
     public ResponseEntity<MoodInfoDTO> createMood(@RequestBody MoodCreateDTO mood) {
-        return new ResponseEntity<>(service.create(mood), HttpStatus.OK);
+        return new ResponseEntity<>(service.create(mood), HttpStatus.CREATED);
     }
 
     @PutMapping("/moods/{moodId}")

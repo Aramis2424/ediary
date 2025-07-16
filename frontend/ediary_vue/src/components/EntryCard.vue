@@ -61,11 +61,11 @@ const workColor: ComputedRef<string> = computed(() => {
     <div class="absolute top-2/3 pl-3">
         <div class="flex items-center space-x-2">
             <div :class="['w-4 h-4 rounded-full', moodColor]"></div>
-            <span class="text-sm font-medium">{{ 'настроние: ' + entry.scoreMood }}</span>
+            <span class="text-sm font-medium">{{ 'настроние' + (entry.scoreMood > 0 ? ': ' + entry.scoreMood : '') }}</span>
         </div>
         <div class="flex items-center space-x-2">
             <div :class="['w-4 h-4 rounded-full', workColor]"></div>
-            <span class="text-sm font-medium">{{ 'день: ' + entry.scoreProductivity }}</span>
+            <span class="text-sm font-medium">{{ 'день' + (entry.scoreProductivity > 0 ? ': ' + entry.scoreProductivity : '') }}</span>
         </div>
     </div>
   </div>

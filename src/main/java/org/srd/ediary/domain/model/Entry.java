@@ -7,7 +7,10 @@ public class Entry {
     private Diary diary;
     private String title;
     private String content;
-    private final LocalDate createdDate;
+    private LocalDate createdDate;
+
+    public Entry() {
+    }
 
     public Entry(Diary diary, String title, String content) {
         this.id = null;
@@ -51,5 +54,9 @@ public class Entry {
 
     public void setContent(String content) {
         this.content = content;
+    }
+
+    public void setCreatedDate(LocalDate createdDate) {
+        this.createdDate = createdDate;
     }
 }

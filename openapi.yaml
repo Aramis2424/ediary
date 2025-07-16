@@ -59,7 +59,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/OwnerLoginDTO'
+              $ref: '#/components/schemas/TokenRequest'
       responses:
         '200':
           description: JWT token returned
@@ -415,6 +415,78 @@ paths:
                 $ref: "#/components/schemas/Error"
       security:
         - bearerAuth: []
+  /diaries/{diaryId}/entry-cards:
+    get:
+      tags:
+        - entry
+      summary: get entry cards representation
+      parameters:
+        - name: diaryId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Returns all entries entry cards that belong to the specified diary.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/EntryCardDTO'
+        '404':
+          description: Diary not found
+        '403':
+          description: Access denied
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+      security:
+        - bearerAuth: []
+  /diaries/{diaryId}/can-create-entry:
+    get:
+      tags:
+        - entry
+      summary: get permission for creating entry
+      parameters:
+        - name: diaryId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: date
+          in: query
+          required: true
+          schema:
+            type: string
+            format: date
+      responses:
+        '200':
+          description: Returns permission if user can create new entry
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/EntryPermissionRes'
+        '404':
+          description: Diary not found
+        '403':
+          description: Access denied
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+      security:
+        - bearerAuth: []
   
   /owners/{ownerId}/moods:
     get:
@@ -572,20 +644,48 @@ paths:
                 $ref: "#/components/schemas/Error"
       security:
         - bearerAuth: []
+  /moods/{ownerId}/can-create-mood:
+    get:
+      tags:
+        - mood
+      summary: get permission for creating entry
+      parameters:
+        - name: ownerId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: date
+          in: query
+          required: true
+          schema:
+            type: string
+            format: date
+      responses:
+        '200':
+          description: Returns permission if user can create new mood
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/MoodPermissionRes'
+        '404':
+          description: Owner not found
+        '403':
+          description: Access denied
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+      security:
+        - bearerAuth: []
 
 components:
   schemas:
-    OwnerLoginDTO:
-      type: object
-      required: [login, password]
-      properties:
-        login:
-          type: string
-          example: "user@example.com"
-        password:
-          type: string
-          format: password
-          example: "secret123"
     OwnerCreateDTO:
       type: object
       required: [name, birthDate, login, password]
@@ -672,6 +772,41 @@ components:
           type: string
           format: date
           example: "2025-06-29"
+          
+    EntryCardDTO:
+      type: object
+      properties:
+        diaryId:
+          type: integer
+          format: int64
+          example: 101
+        entryId:
+          type: integer
+          format: int64
+          example: 102
+        title:
+          type: string
+          example: "Мой дневник счастья"
+        scoreMood:
+          type: integer
+          minimum: 0
+          maximum: 10
+          example: 7
+        scoreProductivity:
+          type: integer
+          minimum: 0
+          maximum: 10
+          example: 8
+        createdDate:
+          type: string
+          format: date
+          example: "2025-06-29"
+    EntryPermissionRes:
+      type: object
+      properties:
+        allowed:
+          type: boolean
+          example: true
           
     EntryCreateDTO:
       type: object
@@ -789,12 +924,18 @@ components:
           type: string
           format: date
           example: "2025-06-29"
+    MoodPermissionRes:
+      type: object
+      properties:
+        allowed:
+          type: boolean
+          example: true
           
     TokenRequest:
       type: object
-      required: [username, password]
+      required: [login, password]
       properties:
-        username:
+        login:
           type: string
           example: "user123"
         password:

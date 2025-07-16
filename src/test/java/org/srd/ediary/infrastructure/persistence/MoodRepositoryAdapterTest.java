@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.context.ActiveProfiles;
+import org.srd.ediary.domain.model.Entry;
 import org.srd.ediary.domain.model.Mood;
 import org.srd.ediary.domain.model.Owner;
 
@@ -81,5 +82,27 @@ class MoodRepositoryAdapterTest {
         List<Mood> moods = repo.getAllByOwner(owner.getId());
 
         assertEquals(2, moods.size());
+    }
+
+    @Test
+    void testGetByOwnerIdAndCreatedDate_Exist() {
+        LocalDate date = LocalDate.now();
+        Mood mood = new Mood(owner, 7, 8, bedtime, wakeUpTime);
+        repo.save(mood);
+
+        Optional<Mood> gotMood = repo.getByOwnerIdAndCreatedDate(owner.getId(), date);
+
+        assertTrue(gotMood.isPresent());
+        assertEquals(7, gotMood.get().getScoreMood());
+        assertEquals(8, gotMood.get().getScoreProductivity());
+    }
+
+    @Test
+    void testGetByDiaryIdAndCreatedDate_NonExist() {
+        LocalDate date = LocalDate.now();
+
+        Optional<Mood> gotMood = repo.getByOwnerIdAndCreatedDate(owner.getId(), date);
+
+        assertTrue(gotMood.isEmpty());
     }
 }

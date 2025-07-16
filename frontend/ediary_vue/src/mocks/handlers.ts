@@ -4,7 +4,7 @@ import { owners } from './dataOwners'
 import type { OwnerCreateDTO, TokenRequest } from '@/types/Owner'
 
 import { entries, toInfoDto } from './dataEntries'
-import type { Entry, EntryCreateDTO } from '@/types/Entry'
+import type { Entry, EntryCreateDTO, EntryPermissionRes } from '@/types/Entry'
 
 import { getCards } from './dataEntryCards'
 import type { EntryCard } from '@/types/EntryCard'
@@ -12,8 +12,8 @@ import type { EntryCard } from '@/types/EntryCard'
 import { diaries, toInfoDto as toDiaryInfoDto } from './dataDiaries'
 import type { Diary, DiaryCreateDTO } from '@/types/Diary'
 
-import { moods } from './dataMoods'
-import type { Mood, MoodCreateDTO } from '@/types/Mood'
+import { moods, toInfoDto as toMoodInfoDto } from './dataMoods'
+import type { Mood, MoodCreateDTO, MoodPermissionRes } from '@/types/Mood'
 
 export const handlers = [
   http.get('/api/v1/owners/me', async ({ request }) => {
@@ -69,7 +69,7 @@ export const handlers = [
     const nextId: number = entries.reduce((prevId, curEntry) => {
       return curEntry.id > prevId ? curEntry.id : prevId
     }, 0) + 1    
-    const newEntry: Entry = { id: nextId, diaryId: Number(body.diaryId), 
+    const newEntry: Entry = { id: nextId, diaryID: Number(body.diaryID), 
       title: body.title, content: body.content, createdDate: formattedDate}
     entries.push(newEntry)
     return HttpResponse.json(newEntry, { status: 201 })
@@ -91,6 +91,10 @@ export const handlers = [
 
     return HttpResponse.json({ success: true }, { status: 204 })
   }),
+  http.get('/api/v1/diaries/:diaryId/can-create-entry', ({  }) => {
+    const permission: EntryPermissionRes =  {allowed: Math.random() < 0.7};
+    return HttpResponse.json(permission)
+  }),
 
   http.get('/api/v1/diaries/:diaryId/entry-cards', ({ params }) => {
     const cards: EntryCard[] | undefined = getCards().filter(v => v.diaryId === Number(params.diaryId))
@@ -101,7 +105,7 @@ export const handlers = [
   }),
 
   http.get('/api/v1/owners/:ownerId/diaries', ({ params }) => {
-    const requiredDiaries: Diary[] | undefined = diaries.filter(v => v.ownerId === Number(params.ownerId))
+    const requiredDiaries: Diary[] | undefined = diaries.filter(v => v.ownerID === Number(params.ownerId))
     if (!Array.isArray(requiredDiaries) || requiredDiaries.length === 0) {
       return HttpResponse.json({ message: 'Diaries not found' }, { status: 404 })
     }
@@ -117,7 +121,7 @@ export const handlers = [
     const nextId: number = diaries.reduce((prevId, curEntry) => {
       return curEntry.id > prevId ? curEntry.id : prevId
     }, 0) + 1    
-    const newDiary: Diary = { id: nextId, ownerId: Number(body.ownerId), 
+    const newDiary: Diary = { id: nextId, ownerID: Number(body.ownerID), 
       title: body.title, description: body.description, cntEntries: 0, createdDate: formattedDate}
     diaries.push(newDiary)
     return HttpResponse.json(newDiary, { status: 201 })
@@ -132,10 +136,22 @@ export const handlers = [
     const nextId: number = moods.reduce((prevId, curEntry) => {
       return curEntry.id > prevId ? curEntry.id : prevId
     }, 0) + 1    
-    const newMood: Mood = { id: nextId, ownerId: Number(body.ownerId), 
+    const newMood: Mood = { id: nextId, ownerID: Number(body.ownerID), 
       scoreMood: body.scoreMood, scoreProductivity: body.scoreProductivity, bedtime: body.bedtime, 
-      wakeUpTime: body.wakeUpTime, createdDate: formattedDate}
+      wakeUpTime: body.wakeUpTime, createdAt: formattedDate}
     moods.push(newMood)
     return HttpResponse.json(newMood, { status: 201 })
+  }),
+  http.get('/api/v1/owners/:ownerId/moods', ({ params }) => {
+    const requiredMoods: Mood[] | undefined = moods.filter(v => v.ownerID === Number(params.ownerId))
+    if (!Array.isArray(requiredMoods) || requiredMoods.length === 0) {
+      return HttpResponse.json({ message: 'Moods not found' }, { status: 404 })
+    }
+    const requiredDtoMoods = requiredMoods.map(it => toMoodInfoDto(it))
+    return HttpResponse.json(requiredDtoMoods)
+  }),
+  http.get('/api/v1/owners/:ownerId/can-create-mood', ({  }) => {
+    const permission: MoodPermissionRes =  {allowed: Math.random() < 0.7};
+    return HttpResponse.json(permission)
   }),
 ]

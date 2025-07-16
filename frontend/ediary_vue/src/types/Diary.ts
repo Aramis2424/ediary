@@ -1,6 +1,6 @@
 export interface Diary {
     id: number;
-    ownerId: number;
+    ownerID: number;
     title: string;
     description: string;
     cntEntries: number;
@@ -16,7 +16,7 @@ export interface DiaryInfoDTO {
 }
 
 export interface DiaryCreateDTO {
-    ownerId: number;
+    ownerID: number;
     title: string;
     description: string;
 }

@@ -6,8 +6,8 @@
         <div class="space-y-3">
             <FormField v-model="name" type="text" placeholder="Введите Ваше имя" label="Имя" />
             <FormField v-model="login" type="text" placeholder="Введите Ваш логин" label="Логин" />
-            <FormField v-model="password" type="passwaord" placeholder="Введите Ваш пароль" label="Пароль" />
-            <FormField v-model="confirmPassword" type="passwaord" placeholder="Повторите Ваш пароль" label="Повтрите паоль" />
+            <FormField v-model="password" type="password" placeholder="Введите Ваш пароль" label="Пароль" />
+            <FormField v-model="confirmPassword" type="password" placeholder="Повторите Ваш пароль" label="Повтрите паоль" />
             <FormField v-model="birthdate" type="date" placeholder="Укажите Вашу дату рождения" label="Дата рождения" />
         </div>
         <button

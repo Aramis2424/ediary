@@ -21,28 +21,33 @@
 | PATCH | [/entries/{entryId}](#patchentriesentryid) | Update entry by id |
 | DELETE | [/entries/{entryId}](#deleteentriesentryid) | Delete entry by id |
 | POST | [/entries](#postentries) | Create entry for diary |
+| GET | [/diaries/{diaryId}/entry-cards](#getdiariesdiaryidentry-cards) | get entry cards representation |
+| GET | [/diaries/{diaryId}/can-create-entry](#getdiariesdiaryidcan-create-entry) | get permission for creating entry |
 | GET | [/owners/{ownerId}/moods](#getownersowneridmoods) | Get all owner`s moods |
 | GET | [/moods/{moodId}](#getmoodsmoodid) | Get mood by id |
 | PUT | [/moods/{moodId}](#putmoodsmoodid) | Update mood by id |
 | DELETE | [/moods/{moodId}](#deletemoodsmoodid) | Delete mood by id |
 | POST | [/moods](#postmoods) | Create mood for owner |
+| GET | [/moods/{ownerId}/can-create-mood](#getmoodsowneridcan-create-mood) | get permission for creating entry |
 
 ## Reference Table
 
 | Name | Path | Description |
 | --- | --- | --- |
-| OwnerLoginDTO | [#/components/schemas/OwnerLoginDTO](#componentsschemasownerlogindto) |  |
 | OwnerCreateDTO | [#/components/schemas/OwnerCreateDTO](#componentsschemasownercreatedto) |  |
 | OwnerInfoDTO | [#/components/schemas/OwnerInfoDTO](#componentsschemasownerinfodto) |  |
 | DiaryCreateDTO | [#/components/schemas/DiaryCreateDTO](#componentsschemasdiarycreatedto) |  |
 | DiaryUpdateDTO | [#/components/schemas/DiaryUpdateDTO](#componentsschemasdiaryupdatedto) |  |
 | DiaryInfoDTO | [#/components/schemas/DiaryInfoDTO](#componentsschemasdiaryinfodto) |  |
+| EntryCardDTO | [#/components/schemas/EntryCardDTO](#componentsschemasentrycarddto) |  |
+| EntryPermissionRes | [#/components/schemas/EntryPermissionRes](#componentsschemasentrypermissionres) |  |
 | EntryCreateDTO | [#/components/schemas/EntryCreateDTO](#componentsschemasentrycreatedto) |  |
 | EntryUpdateDTO | [#/components/schemas/EntryUpdateDTO](#componentsschemasentryupdatedto) |  |
 | EntryInfoDTO | [#/components/schemas/EntryInfoDTO](#componentsschemasentryinfodto) |  |
 | MoodCreateDTO | [#/components/schemas/MoodCreateDTO](#componentsschemasmoodcreatedto) |  |
 | MoodUpdateDTO | [#/components/schemas/MoodUpdateDTO](#componentsschemasmoodupdatedto) |  |
 | MoodInfoDTO | [#/components/schemas/MoodInfoDTO](#componentsschemasmoodinfodto) |  |
+| MoodPermissionRes | [#/components/schemas/MoodPermissionRes](#componentsschemasmoodpermissionres) |  |
 | TokenRequest | [#/components/schemas/TokenRequest](#componentsschemastokenrequest) |  |
 | TokenResponse | [#/components/schemas/TokenResponse](#componentsschemastokenresponse) |  |
 | Error | [#/components/schemas/Error](#componentsschemaserror) |  |
@@ -610,6 +615,91 @@ bearerAuth
 
 ***
 
+### [GET]/diaries/{diaryId}/entry-cards
+
+- Summary  
+get entry cards representation
+
+- Security  
+bearerAuth  
+
+#### Responses
+
+- 200 Returns all entries entry cards that belong to the specified diary.
+
+`application/json`
+
+```ts
+{
+  diaryId?: integer
+  entryId?: integer
+  title?: string
+  scoreMood?: integer
+  scoreProductivity?: integer
+  createdDate?: string
+}[]
+```
+
+- 403 Access denied
+
+- 404 Diary not found
+
+- default Unexpected error
+
+`application/json`
+
+```ts
+{
+  code: string
+  message: string
+}
+```
+
+***
+
+### [GET]/diaries/{diaryId}/can-create-entry
+
+- Summary  
+get permission for creating entry
+
+- Security  
+bearerAuth  
+
+#### Parameters(Query)
+
+```ts
+date: string
+```
+
+#### Responses
+
+- 200 Returns permission if user can create new entry
+
+`application/json`
+
+```ts
+{
+  allowed?: boolean
+}[]
+```
+
+- 403 Access denied
+
+- 404 Diary not found
+
+- default Unexpected error
+
+`application/json`
+
+```ts
+{
+  code: string
+  message: string
+}
+```
+
+***
+
 ### [GET]/owners/{ownerId}/moods
 
 - Summary  
@@ -826,16 +916,50 @@ bearerAuth
 }
 ```
 
-## References
+***
 
-### #/components/schemas/OwnerLoginDTO
+### [GET]/moods/{ownerId}/can-create-mood
+
+- Summary  
+get permission for creating entry
+
+- Security  
+bearerAuth  
+
+#### Parameters(Query)
+
+```ts
+date: string
+```
+
+#### Responses
+
+- 200 Returns permission if user can create new mood
+
+`application/json`
 
 ```ts
 {
-  login: string
-  password: string
+  allowed?: boolean
+}[]
+```
+
+- 403 Access denied
+
+- 404 Owner not found
+
+- default Unexpected error
+
+`application/json`
+
+```ts
+{
+  code: string
+  message: string
 }
 ```
+
+## References
 
 ### #/components/schemas/OwnerCreateDTO
 
@@ -890,6 +1014,27 @@ bearerAuth
   // Количество записей в дневнике
   cntEntry?: integer
   createdDate?: string
+}
+```
+
+### #/components/schemas/EntryCardDTO
+
+```ts
+{
+  diaryId?: integer
+  entryId?: integer
+  title?: string
+  scoreMood?: integer
+  scoreProductivity?: integer
+  createdDate?: string
+}
+```
+
+### #/components/schemas/EntryPermissionRes
+
+```ts
+{
+  allowed?: boolean
 }
 ```
 
@@ -960,11 +1105,19 @@ bearerAuth
 }
 ```
 
+### #/components/schemas/MoodPermissionRes
+
+```ts
+{
+  allowed?: boolean
+}
+```
+
 ### #/components/schemas/TokenRequest
 
 ```ts
 {
-  username: string
+  login: string
   password: string
 }
 ```
