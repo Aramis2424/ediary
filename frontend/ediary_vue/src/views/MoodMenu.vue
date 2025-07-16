@@ -93,6 +93,6 @@ const gotoHome = () => {router.push('/home')}
   <button v-if="enableCreateMood" class="sideBtnR" @click="surveyMood"> Отметить настроение </button>
   <button v-else class="diableSideBtnR"> Сегодня настроение уже отмечено </button>
 </div>
-<SurveyMood v-if="showSurveyMood" @clicked="showSurveyMood=false; pullMoods()"/>
+<SurveyMood v-if="showSurveyMood" @clicked="showSurveyMood=false; pullMoods(); pullPermission();"/>
 
 </template>

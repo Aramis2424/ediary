@@ -16,7 +16,7 @@ import java.util.Optional;
 
 interface SpringMoodRepository extends CrudRepository<MoodEntity, Long> {
     List<MoodEntity> findAllByOwnerId(Long id);
-    Optional<MoodEntity> getByOwnerIdAndCreatedAt(Long ownerId, LocalDate createdDate);
+    Optional<MoodEntity> getByOwnerIdAndCreatedAt(Long ownerId, LocalDate createdAt);
 }
 
 @Repository
