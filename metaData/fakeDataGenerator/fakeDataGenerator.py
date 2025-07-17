@@ -14,6 +14,12 @@ class DataGenerator:
     ENTRY_FILE = DATA_FOLDER + "entry.sql"
     IVAN_FILE = DATA_FOLDER + "ivan.sql"
 
+    OWNERS_FILE_JSON = DATA_FOLDER + "owners.json"
+    DIARIES_FILE_JSON = DATA_FOLDER + "diaries.json"
+    MOODS_FILE_JSON = DATA_FOLDER + "moods.json"
+    ENTRY_FILE_JSON = DATA_FOLDER + "entry.json"
+    IVAN_FILE_JSON = DATA_FOLDER + "ivan.json"
+
     gender = ["male", "female"]
     faker = Faker("en_US")
 
@@ -48,15 +54,35 @@ class DataGenerator:
         with open(self.IVAN_FILE, "w") as file:
             for line in sql_lines:
                 file.write(line)
+
+        file_number = 0
+        with open(self.OWNERS_FILE_JSON, "a") as file:
+            for line in generator.json_lines[file_number]:
+                file.write(line)
+            file_number += 1
+        with open(self.DIARIES_FILE_JSON, "a") as file:
+            for line in generator.json_lines[file_number]:
+                file.write(line)
+            file_number += 1
+        with open(self.MOODS_FILE_JSON, "a") as file:
+            for line in generator.json_lines[file_number]:
+                file.write(line)
+            file_number += 1
+        with open(self.ENTRY_FILE_JSON, "a") as file:
+            for line in generator.json_lines[file_number]:
+                file.write(line)
+            file_number += 1
         print("--- generate ivan successfully ---")
 
     async def generate_owners(self):
         self.owners_cnt = self.MAX_COUNT
-        with open(self.OWNERS_FILE, "w") as file:
+        with open(self.OWNERS_FILE, "w") as file, open(self.OWNERS_FILE_JSON, "w") as file_json:
             file.write(SQLTruncateCommand("owners").get())
             for i in range(self.MAX_COUNT):
                 line = self.create_owner_attributes_line()
+                line_json = self.create_owner_json_line(i + 1)
                 file.write(line)
+                file_json.write(line_json)
         print("--- generate owners successfully ---")
 
     def create_owner_attributes_line(self):
@@ -72,15 +98,31 @@ class DataGenerator:
 
         return DataGenerator.create_insert_command_line(table, columns, values)
 
+    def create_owner_json_line(self, owner_id):
+        name = self.faker.first_name()
+        birth_date = self.faker.date_between_dates(date(1970, 1, 1), date(2010, 1, 1))
+        login = DataGenerator.get_login_from_name(name)
+        password = DataGenerator.bcrypt_password(self.faker.word() + str(randint(1, 199)))
+        created_date = self.faker.date_between_dates(date(2010, 1, 1), date(2015, 1, 1))
+
+        attributes = ["id", "name", "birthDate", "login", "password", "createdDate"]
+        values = [owner_id, name, birth_date, login, password, created_date]
+
+        json_line_maker = JsonLineMaker()
+
+        return json_line_maker.set_attributes(attributes).set_values(values).build() + "\n"
+
     async def generate_diaries(self):
-        with open(self.DIARIES_FILE, "w") as file:
+        with open(self.DIARIES_FILE, "w") as file, open(self.DIARIES_FILE_JSON, "w") as file_json:
             file.write(SQLTruncateCommand("diaries").get())
             diary_id = 1
             for owner_id in range(1, self.owners_cnt + 1):
                 cnt_per_owner = DataGenerator.get_number_of_diaries()
                 for j in range(cnt_per_owner):
                     line = self.create_diary_attributes_line(owner_id, diary_id)
+                    line_json = self.create_diary_json_line(owner_id, diary_id)
                     file.write(line)
+                    file_json.write(line_json)
                     diary_id += 1
                 self.diaries_cnt += cnt_per_owner
         print("--- generate diaries successfully ---")
@@ -99,14 +141,33 @@ class DataGenerator:
 
         return DataGenerator.create_insert_command_line(table, columns, values)
 
+    def create_diary_json_line(self, owner_id, diary_id):
+        title = self.faker.sentence(nb_words=2)
+        description = " ".join(self.faker.sentences(nb=1))
+        cnt_entries = DataGenerator.get_number_of_entries()
+        created_date = self.faker.date_between_dates(date(2015, 1, 1), date(2020, 1, 1))
+
+        self.cnt_entries_per_diary[diary_id] = cnt_entries
+
+        attributes = ["id", "ownerId", "title", "description", "cntEntries", "createdDate"]
+        values = [diary_id, owner_id, title, description, cnt_entries, created_date]
+
+        json_line_maker = JsonLineMaker()
+
+        return json_line_maker.set_attributes(attributes).set_values(values).build() + "\n"
+
     async def generate_moods(self):
-        with open(self.MOODS_FILE, "w") as file:
+        json_mood_id = 0
+        with open(self.MOODS_FILE, "w") as file, open(self.MOODS_FILE_JSON, "w") as file_json:
             file.write(SQLTruncateCommand("moods").get())
             for owner_id in range(1, self.owners_cnt + 1):
                 cnt_per_owner = DataGenerator.get_number_of_moods()
                 for j in range(cnt_per_owner):
+                    json_mood_id += 1
                     line = self.create_mood_attributes_line(owner_id)
+                    line_json = self.create_mood_json_line(owner_id, json_mood_id)
                     file.write(line)
+                    file_json.write(line_json)
                 self.moods_cnt += cnt_per_owner
         print("--- generate moods successfully ---")
 
@@ -127,13 +188,36 @@ class DataGenerator:
 
         return DataGenerator.create_insert_command_line(table, columns, values)
 
+    def create_mood_json_line(self, owner_id, mood_id):
+        score_mood = randint(1, 10)
+        score_productivity = randint(1, 10)
+        created_date = self.faker.date_between_dates(date(2020, 1, 1), date(2024, 1, 1))
+
+        bedtime = self.faker.date_time_between(date(2020, 1, 1), date(2024, 1, 1))
+        wake_up_time = bedtime + timedelta(hours=randint(1, 8))
+
+        bedtime = DataGenerator.get_formatted_datetime(bedtime)
+        wake_up_time = DataGenerator.get_formatted_datetime(wake_up_time)
+
+        attributes = ["id", "ownerId", "scoreMood",
+                      "scoreProductivity", "bedtime", "wakeUpTime", "createdDate"]
+        values = [mood_id, owner_id, score_mood, score_productivity, bedtime, wake_up_time, created_date]
+
+        json_line_maker = JsonLineMaker()
+
+        return json_line_maker.set_attributes(attributes).set_values(values).build() + "\n"
+
     async def generate_entries(self):
-        with open(self.ENTRY_FILE, "w") as file:
+        json_entry_id = 0
+        with open(self.ENTRY_FILE, "w") as file, open(self.ENTRY_FILE_JSON, "w") as file_json:
             file.write(SQLTruncateCommand("entries").get())
             for diary_id, cnt_entries in self.cnt_entries_per_diary.items():
                 for i in range(cnt_entries):
+                    json_entry_id += 1
                     line = self.create_entry_attributes_line(diary_id)
+                    line_json = self.create_entry_json_line(diary_id, json_entry_id)
                     file.write(line)
+                    file_json.write(line_json)
                 self.entries_cnt += cnt_entries
         print("--- generate entries successfully ---")
 
@@ -147,6 +231,18 @@ class DataGenerator:
         values = [diary_id, title, content, created_date]
 
         return DataGenerator.create_insert_command_line(table, columns, values)
+
+    def create_entry_json_line(self, diary_id, entry_id):
+        title = self.faker.sentence(nb_words=2)
+        content = " ".join(self.faker.sentences(nb=3))
+        created_date = self.faker.date_between_dates(date(2020, 1, 1), date(2024, 1, 1))
+
+        attributes = ["id", "diaryId", "title", "content", "createdDate"]
+        values = [entry_id, diary_id, title, content, created_date]
+
+        json_line_maker = JsonLineMaker()
+
+        return json_line_maker.set_attributes(attributes).set_values(values).build() + "\n"
 
     @staticmethod
     def get_login_from_name(name):
@@ -251,6 +347,28 @@ class SQLInsertCommandBuilder:
         return self.sql_command
 
 
+class JsonLineMaker:
+    def __init__(self):
+        self.attributes = None
+        self.values = None
+
+    def set_attributes(self, attributes):
+        attributes = [f'"{str(attr)}"' for attr in attributes]
+        self.attributes = attributes
+        return self
+
+    def set_values(self, values):
+        self.values = [str(val) if isinstance(val, (int, float)) else f'"{str(val)}"' for val in values]
+        return self
+
+    def build(self):
+        if not self.attributes or not self.values:
+            return " "
+        pairs = [f"{attr}:{val}" for attr, val in zip(self.attributes, self.values)]
+
+        return '{ ' + ", ".join(pairs) + ' }'
+
+
 class IvanGenerator:
     faker = Faker("en_US")
 
@@ -265,15 +383,16 @@ class IvanGenerator:
         self.entry_cnt = entry_cnt
 
         self.sql_lines = []
+        self.json_lines = []
 
     def generate_all(self):
-        self.generate_account()
+        self.generate_account(self.ivan_id)
         self.generate_diaries(self.ivan_id, self.diary_cnt, self.entry_cnt)
         self.generate_moods(self.ivan_id, self.mood_cnt)
         self.generate_entries(self.diary_id, self.entry_cnt)
         return self.sql_lines
 
-    def generate_account(self):
+    def generate_account(self, owner_id):
         name = "Ivan"
         login = "ivan01"
         password = DataGenerator.bcrypt_password("navi01")
@@ -283,11 +402,19 @@ class IvanGenerator:
         table = "owners"
         columns = ["name", "birth_date", "login", "password", "created_date"]
         values = [name, birth_date, login, password, created_date]
+
         line = DataGenerator.create_insert_command_line(table, columns, values)
         self.sql_lines.append(line)
 
+        attributes = ["id", "name", "birthDate", "login", "password", "createdDate"]
+        json_values = [owner_id, name, birth_date, login, password, created_date]
+        json_line_maker = JsonLineMaker()
+        self.json_lines.append([json_line_maker.set_attributes(attributes).set_values(json_values).build() + "\n"])
+
     def generate_diaries(self, owner_id, diary_cnt, entry_cnt):
-        for _ in range(diary_cnt):
+        json_line_maker = JsonLineMaker()
+        json_lines = []
+        for i in range(diary_cnt):
             title = self.faker.sentence(nb_words=2)
             description = " ".join(self.faker.sentences(nb=1))
             cnt_entries = entry_cnt
@@ -299,8 +426,15 @@ class IvanGenerator:
             line = DataGenerator.create_insert_command_line(table, columns, values)
             self.sql_lines.append(line)
 
+            attributes = ["id", "ownerId", "title", "description", "cntEntries", "createdDate"]
+            json_values = [i + 1 + 3 * owner_id, owner_id, title, description, cnt_entries, created_date]
+            json_lines.append(json_line_maker.set_attributes(attributes).set_values(json_values).build() + "\n")
+        self.json_lines.append(json_lines)
+
     def generate_moods(self, owner_id, mood_cnt):
-        for _ in range(mood_cnt):
+        json_line_maker = JsonLineMaker()
+        json_lines = []
+        for i in range(mood_cnt):
             score_mood = randint(1, 10)
             score_productivity = randint(1, 10)
             created_date = self.faker.date_between_dates(date(2020, 3, 1), date(2020, 3, 20))
@@ -318,8 +452,17 @@ class IvanGenerator:
             line = DataGenerator.create_insert_command_line(table, columns, values)
             self.sql_lines.append(line)
 
+            attributes = ["id", "ownerId", "scoreMood",
+                          "scoreProductivity", "bedtime", "wakeUpTime", "createdDate"]
+            json_values = [i + 1 + 4 * owner_id, owner_id, score_mood,
+                           score_productivity, bedtime, wake_up_time, created_date]
+            json_lines.append(json_line_maker.set_attributes(attributes).set_values(json_values).build() + "\n")
+        self.json_lines.append(json_lines)
+
     def generate_entries(self, diary_id, entries_cnt):
-        for _ in range(entries_cnt):
+        json_line_maker = JsonLineMaker()
+        json_lines = []
+        for i in range(entries_cnt):
             title = self.faker.sentence(nb_words=2)
             content = " ".join(self.faker.sentences(nb=3))
             created_date = self.faker.date_between_dates(date(2020, 3, 1), date(2020, 3, 20))
@@ -330,6 +473,12 @@ class IvanGenerator:
 
             line = DataGenerator.create_insert_command_line(table, columns, values)
             self.sql_lines.append(line)
+
+            attributes = ["id", "diaryId", "title", "content", "createdDate"]
+            json_values = [i + 1 + 4 * diary_id, diary_id, title, content, created_date]
+
+            json_lines.append(json_line_maker.set_attributes(attributes).set_values(json_values).build() + "\n")
+        self.json_lines.append(json_lines)
 
 
 def main():

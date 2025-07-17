@@ -25,6 +25,7 @@ public class EntryEntity {
     @JoinColumn(name = "diary_fk")
     private DiaryEntity diary;
     private String title;
+    @Column(columnDefinition = "TEXT")
     private String content;
     @Column(name = "created_date")
     private LocalDate createdDate;

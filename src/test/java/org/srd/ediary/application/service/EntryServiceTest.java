@@ -7,6 +7,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.srd.ediary.application.dto.EntryCreateDTO;
 import org.srd.ediary.application.dto.EntryInfoDTO;
+import org.srd.ediary.application.dto.EntryPermission;
 import org.srd.ediary.application.dto.EntryUpdateDTO;
 import org.srd.ediary.application.exception.DiaryNotFoundException;
 import org.srd.ediary.application.exception.EntryNotFoundException;
@@ -142,5 +143,32 @@ class EntryServiceTest {
         service.delete(entryId);
 
         verify(entryRepo, times(1)).delete(entryId);
+    }
+
+    @Test
+    void testCanCreateEntry_True() {
+        final Long diaryId = 1L;
+        final LocalDate date = LocalDate.of(2020, 1, 1);
+        Entry gotEntry = new Entry(diary, "Day1", "Good day");
+        EntryPermission expected = new EntryPermission(false);
+        when(entryRepo.getByDiaryIdAndCreatedDate(diaryId, date))
+                .thenReturn(Optional.of(gotEntry));
+
+        EntryPermission actual = service.canCreateEntry(diaryId, date);
+
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    void testCanCreateEntry_False() {
+        final Long diaryId = 1L;
+        final LocalDate date = LocalDate.of(2020, 1, 1);
+        EntryPermission expected = new EntryPermission(true);
+        when(entryRepo.getByDiaryIdAndCreatedDate(diaryId, date))
+                .thenReturn(Optional.empty());
+
+        EntryPermission actual = service.canCreateEntry(diaryId, date);
+
+        assertEquals(expected, actual);
     }
 }

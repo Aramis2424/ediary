@@ -41,6 +41,11 @@ kotlin {
     jvmToolchain(17)
 }
 
+tasks.named<JavaExec>("run") {
+    standardInput = System.`in`
+}
+
 application {
-    mainClass.set("MainKt")
+    mainClass.set("org.srd.ediary_cli.MainKt")
+    applicationDefaultJvmArgs = listOf("-Dfile.encoding=UTF-8")
 }

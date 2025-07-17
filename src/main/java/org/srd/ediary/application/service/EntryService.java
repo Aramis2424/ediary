@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.srd.ediary.application.dto.EntryCreateDTO;
 import org.srd.ediary.application.dto.EntryInfoDTO;
+import org.srd.ediary.application.dto.EntryPermission;
 import org.srd.ediary.application.dto.EntryUpdateDTO;
 import org.srd.ediary.application.exception.DiaryNotFoundException;
 import org.srd.ediary.application.exception.EntryNotFoundException;
@@ -16,8 +17,10 @@ import org.srd.ediary.domain.model.Entry;
 import org.srd.ediary.domain.repository.DiaryRepository;
 import org.srd.ediary.domain.repository.EntryRepository;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 
 @Service
@@ -65,5 +68,11 @@ public class EntryService {
     @PreAuthorize("@entryAccess.isAllowed(#id, authentication.principal.id)")
     public void delete(Long id) {
         entryRepo.delete(id);
+    }
+
+    @PreAuthorize("@entryAccess.isDiaryBelongsOwner(#diaryId, authentication.principal.id)")
+    public EntryPermission canCreateEntry(Long diaryId, LocalDate requestedDate) {
+        Optional<Entry> optionalEntry = entryRepo.getByDiaryIdAndCreatedDate(diaryId, requestedDate);
+        return new EntryPermission(optionalEntry.isEmpty());
     }
 }

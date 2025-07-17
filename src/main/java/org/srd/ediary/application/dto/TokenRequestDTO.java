@@ -1,6 +1,6 @@
 package org.srd.ediary.application.dto;
 
-public record OwnerLoginDTO(
+public record TokenRequestDTO(
         String login,
         String password
 ) {

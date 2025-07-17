@@ -57,7 +57,7 @@ class DiaryControllerTest {
         Long diaryId = 1L;
         when(diaryService.getDiary(diaryId)).thenReturn(output);
 
-        mockMvc.perform(get("/diaries/" + diaryId)
+        mockMvc.perform(get("/api/v1/diaries/" + diaryId)
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
                 .content(String.valueOf(diaryId))
@@ -72,7 +72,7 @@ class DiaryControllerTest {
         Long diaryId = 1L;
         when(diaryService.getDiary(diaryId)).thenThrow(DiaryNotFoundException.class);
 
-        mockMvc.perform(get("/diaries/" + diaryId)
+        mockMvc.perform(get("/api/v1/diaries/" + diaryId)
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
                         .content(String.valueOf(diaryId))
@@ -85,7 +85,7 @@ class DiaryControllerTest {
         Long ownerId = 5L;
         when(diaryService.getOwnerDiaries(ownerId)).thenReturn(listOutput);
 
-        mockMvc.perform(get("/diaries/owner/" + ownerId)
+        mockMvc.perform(get("/api/v1/owners/" + ownerId + "/diaries")
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
                 .content(String.valueOf(ownerId))
@@ -101,7 +101,7 @@ class DiaryControllerTest {
         Long ownerId = 5L;
         when(diaryService.getOwnerDiaries(ownerId)).thenThrow(OwnerNotFoundException.class);
 
-        mockMvc.perform(get("/diaries/owner/" + ownerId)
+        mockMvc.perform(get("/api/v1/owners/" + ownerId + "/diaries")
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
                         .content(String.valueOf(ownerId))
@@ -115,13 +115,13 @@ class DiaryControllerTest {
         DiaryCreateDTO input = new DiaryCreateDTO(ownerId, "d1", "of1");
         when(diaryService.create(input)).thenReturn(output);
 
-        mockMvc.perform(post("/diaries/")
+        mockMvc.perform(post("/api/v1/diaries/")
                 .contentType(MediaType.APPLICATION_JSON)
                 .characterEncoding("UTF-8")
                 .accept(MediaType.APPLICATION_JSON)
                 .content(creationJson.write(input).getJson())
         )
-                .andExpect(status().isOk())
+                .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.id").value(1L))
                 .andExpect(jsonPath("$.cntEntry").value(10));
     }
@@ -132,7 +132,7 @@ class DiaryControllerTest {
         DiaryCreateDTO input = new DiaryCreateDTO(ownerId, "d1", "of1");
         when(diaryService.create(input)).thenThrow(OwnerNotFoundException.class);
 
-        mockMvc.perform(post("/diaries/")
+        mockMvc.perform(post("/api/v1/diaries/")
                         .contentType(MediaType.APPLICATION_JSON)
                         .characterEncoding("UTF-8")
                         .accept(MediaType.APPLICATION_JSON)
@@ -147,7 +147,7 @@ class DiaryControllerTest {
         DiaryUpdateDTO input = new DiaryUpdateDTO("d2", "of2");
         when(diaryService.update(diaryId, input)).thenReturn(output);
 
-        mockMvc.perform(put("/diaries/" + diaryId)
+        mockMvc.perform(put("/api/v1/diaries/" + diaryId)
                 .contentType(MediaType.APPLICATION_JSON)
                 .characterEncoding("UTF-8")
                 .accept(MediaType.APPLICATION_JSON)
@@ -164,7 +164,7 @@ class DiaryControllerTest {
         DiaryUpdateDTO input = new DiaryUpdateDTO("d2", "of2");
         when(diaryService.update(diaryId, input)).thenThrow(DiaryNotFoundException.class);
 
-        mockMvc.perform(put("/diaries/" + diaryId)
+        mockMvc.perform(put("/api/v1/diaries/" + diaryId)
                         .contentType(MediaType.APPLICATION_JSON)
                         .characterEncoding("UTF-8")
                         .accept(MediaType.APPLICATION_JSON)
@@ -178,7 +178,7 @@ class DiaryControllerTest {
         Long diaryId = 1L;
         doNothing().when(diaryService).remove(diaryId);
 
-        mockMvc.perform(delete("/diaries/" + diaryId)
+        mockMvc.perform(delete("/api/v1/diaries/" + diaryId)
                         .contentType(MediaType.APPLICATION_JSON)
                         .characterEncoding("UTF-8")
                         .accept(MediaType.APPLICATION_JSON)

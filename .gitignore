@@ -4,6 +4,7 @@ metaData/fakeDataGenerator/data/
 # secrets properties file
 secrets.properties
 .env
+frontend/ediary_cli/gradle.properties
 
 # Compiled class file
 *.class

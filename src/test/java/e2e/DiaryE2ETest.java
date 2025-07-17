@@ -117,7 +117,7 @@ public class DiaryE2ETest {
     @BeforeEach
     @Test
     void getToken() throws Exception{
-        MvcResult result = mockMvc.perform(post("/token/create")
+        MvcResult result = mockMvc.perform(post("/api/v1/token/create")
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
                         .content(requestJson.write(tokenRequest).getJson())
@@ -131,7 +131,7 @@ public class DiaryE2ETest {
     @Test
     void getToken_Invalid() throws Exception{
         TokenRequest invalidTokenRequest = new TokenRequest("err", "err");
-        mockMvc.perform(post("/token/create")
+        mockMvc.perform(post("/api/v1/token/create")
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
                         .content(requestJson.write(invalidTokenRequest).getJson())
@@ -141,7 +141,7 @@ public class DiaryE2ETest {
 
     @Test
     void testGetOwner() throws Exception {
-        mockMvc.perform(get("/")
+        mockMvc.perform(get("/api/v1")
                         .param("id", "-1")
                         .param("name", "Ivan")
                         .header("Authorization", "Bearer " + token)
@@ -154,7 +154,7 @@ public class DiaryE2ETest {
 
     @Test
     void testGetDiaryById_Valid() throws Exception {
-        mockMvc.perform(get("/diaries/" + diaryId)
+        mockMvc.perform(get("/api/v1/diaries/" + diaryId)
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
                         .content(String.valueOf(diaryId))
@@ -166,7 +166,7 @@ public class DiaryE2ETest {
 
     @Test
     void testGetDiaryById_InvalidToken() throws Exception {
-        mockMvc.perform(get("/diaries/" + diaryId)
+        mockMvc.perform(get("/api/v1/diaries/" + diaryId)
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
                         .content(String.valueOf(diaryId))
@@ -177,7 +177,7 @@ public class DiaryE2ETest {
 
     @Test
     void testGetDiaryById_Unauthorized() throws Exception {
-        mockMvc.perform(get("/diaries/" + diaryId)
+        mockMvc.perform(get("/api/v1/diaries/" + diaryId)
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
                         .content(String.valueOf(diaryId))
@@ -189,7 +189,7 @@ public class DiaryE2ETest {
     void testGetDiaryById_Forbidden() throws Exception {
         Long alienDiaryId = 13L;
 
-        mockMvc.perform(get("/diaries/" + alienDiaryId)
+        mockMvc.perform(get("/api/v1/diaries/" + alienDiaryId)
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
                         .content(String.valueOf(alienDiaryId))
@@ -200,7 +200,7 @@ public class DiaryE2ETest {
 
     @Test
     void testGetDiariesByOwner_WithAccess() throws Exception{
-        mockMvc.perform(get("/diaries/owner/" + ownerId)
+        mockMvc.perform(get("/api/v1/owners/" + ownerId + "/diaries")
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
                         .content(String.valueOf(ownerId))
@@ -213,7 +213,7 @@ public class DiaryE2ETest {
     @Test
     void testGetDiariesByOwner_WithNoAccess() throws Exception{
         Long alienOwnerId = 1L;
-        mockMvc.perform(get("/diaries/owner/" + alienOwnerId)
+        mockMvc.perform(get("/api/v1/owners/" + alienOwnerId + "/diaries")
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
                         .content(String.valueOf(alienOwnerId))
@@ -226,14 +226,14 @@ public class DiaryE2ETest {
     void testCreateDiary_WithAccess() throws Exception {
         DiaryCreateDTO input = new DiaryCreateDTO(ownerId, "d1", "of1");
 
-        mockMvc.perform(post("/diaries")
+        mockMvc.perform(post("/api/v1/diaries")
                         .contentType(MediaType.APPLICATION_JSON)
                         .characterEncoding("UTF-8")
                         .accept(MediaType.APPLICATION_JSON)
                         .content(creationJson.write(input).getJson())
                         .header("Authorization", "Bearer " + token)
                 )
-                .andExpect(status().isOk())
+                .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.title").value("d1"))
                 .andExpect(jsonPath("$.description").value("of1"));
     }
@@ -243,7 +243,7 @@ public class DiaryE2ETest {
         Long alienOwnerId = 1L;
         DiaryCreateDTO input = new DiaryCreateDTO(alienOwnerId, "d1", "of1");
 
-        mockMvc.perform(post("/diaries")
+        mockMvc.perform(post("/api/v1/diaries")
                         .contentType(MediaType.APPLICATION_JSON)
                         .characterEncoding("UTF-8")
                         .accept(MediaType.APPLICATION_JSON)
@@ -257,7 +257,7 @@ public class DiaryE2ETest {
     void testUpdateDiary_WithAccess() throws Exception {
         DiaryUpdateDTO input = new DiaryUpdateDTO("Direction.", "of1");
 
-        mockMvc.perform(put("/diaries/" + diaryId)
+        mockMvc.perform(put("/api/v1/diaries/" + diaryId)
                         .contentType(MediaType.APPLICATION_JSON)
                         .characterEncoding("UTF-8")
                         .accept(MediaType.APPLICATION_JSON)
@@ -274,7 +274,7 @@ public class DiaryE2ETest {
         long alienDiaryId = 1L;
         DiaryUpdateDTO input = new DiaryUpdateDTO("d1", "of1");
 
-        mockMvc.perform(put("/diaries/" + alienDiaryId)
+        mockMvc.perform(put("/api/v1/diaries/" + alienDiaryId)
                         .contentType(MediaType.APPLICATION_JSON)
                         .characterEncoding("UTF-8")
                         .accept(MediaType.APPLICATION_JSON)
@@ -287,7 +287,7 @@ public class DiaryE2ETest {
     @Test
     void testDeleteDiary_WithNoAccess() throws Exception {
         Long alienDiaryId = 1L;
-        mockMvc.perform(delete("/diaries/" + alienDiaryId)
+        mockMvc.perform(delete("/api/v1/diaries/" + alienDiaryId)
                         .contentType(MediaType.APPLICATION_JSON)
                         .characterEncoding("UTF-8")
                         .accept(MediaType.APPLICATION_JSON)

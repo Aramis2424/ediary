@@ -96,4 +96,26 @@ class OwnerServiceTest {
 
         verify(ownerRepo, never()).save(Mockito.any(Owner.class));
     }
+
+    @Test
+    void testFetchOwner_ExistingOwner() {
+        Long existingId = 1L;
+        String login = "example";
+        String password = "abc123";
+        Owner gotOwner = new Owner("Ivan", birthDate, login, password);
+        OwnerInfoDTO expected = new OwnerInfoDTO(null,"Ivan", birthDate, login, LocalDate.now());
+        when(ownerRepo.getByID(existingId)).thenReturn(Optional.of(gotOwner));
+
+        OwnerInfoDTO actual = service.fetchOwner(existingId);
+
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    void testFetchOwner_NonExistingOwner() {
+        Long nonExistingId = 0L;
+        when(ownerRepo.getByID(nonExistingId)).thenReturn(Optional.empty());
+
+        assertThrows(InvalidCredentialsException.class, () -> service.fetchOwner(nonExistingId));
+    }
 }

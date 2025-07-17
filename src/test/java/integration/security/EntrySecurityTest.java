@@ -72,7 +72,7 @@ public class EntrySecurityTest {
         when(entryRepo.getByID(entryId)).thenReturn(Optional.of(entryFromRepo));
         when(entryAccess.isAllowed(entryId, validOwnerId)).thenReturn(true);
 
-        mockMvc.perform(get("/entries/" + entryId)
+        mockMvc.perform(get("/api/v1/entries/" + entryId)
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
                         .content(String.valueOf(entryId))
@@ -91,7 +91,7 @@ public class EntrySecurityTest {
         when(entryRepo.getByID(entryId)).thenReturn(Optional.of(entryFromRepo));
         when(entryAccess.isAllowed(entryId, invalidOwnerId)).thenReturn(false);
 
-        mockMvc.perform(get("/entries/" + entryId)
+        mockMvc.perform(get("/api/v1/entries/" + entryId)
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
                         .content(String.valueOf(entryId))
@@ -106,7 +106,7 @@ public class EntrySecurityTest {
     void testGetEntry_Unauthorized() throws Exception{
         Long entryId = 1L;
 
-        mockMvc.perform(get("/entries/" + entryId)
+        mockMvc.perform(get("/api/v1/entries/" + entryId)
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
                         .content(String.valueOf(entryId))
@@ -121,7 +121,7 @@ public class EntrySecurityTest {
         when(entryRepo.getAllByDiary(diaryId)).thenReturn(listEntryFromRepo);
         when(entryAccess.isDiaryBelongsOwner(diaryId, validOwnerId)).thenReturn(true);
 
-        mockMvc.perform(get("/entries/diary/" + diaryId)
+        mockMvc.perform(get("/api/v1/diaries/" + diaryId + "/entries")
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
                         .content(String.valueOf(diaryId))
@@ -140,7 +140,7 @@ public class EntrySecurityTest {
         when(entryRepo.getAllByDiary(diaryId)).thenReturn(listEntryFromRepo);
         when(entryAccess.isDiaryBelongsOwner(diaryId, invalidOwnerId)).thenReturn(false);
 
-        mockMvc.perform(get("/entries/diary/" + diaryId)
+        mockMvc.perform(get("/api/v1/diaries/" + diaryId + "/entries")
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
                         .content(String.valueOf(diaryId))
@@ -157,7 +157,7 @@ public class EntrySecurityTest {
         when(entryRepo.save(any(Entry.class))).thenReturn(entryFromRepo);
         when(entryAccess.isDiaryBelongsOwner(diaryId, validOwnerId)).thenReturn(true);
 
-        mockMvc.perform(post("/entries")
+        mockMvc.perform(post("/api/v1/entries")
                         .contentType(MediaType.APPLICATION_JSON)
                         .characterEncoding("UTF-8")
                         .accept(MediaType.APPLICATION_JSON)
@@ -179,7 +179,7 @@ public class EntrySecurityTest {
         when(entryRepo.save(any(Entry.class))).thenReturn(entryFromRepo);
         when(entryAccess.isDiaryBelongsOwner(diaryId, invalidOwnerId)).thenReturn(false);
 
-        mockMvc.perform(post("/entries")
+        mockMvc.perform(post("/api/v1/entries")
                         .contentType(MediaType.APPLICATION_JSON)
                         .characterEncoding("UTF-8")
                         .accept(MediaType.APPLICATION_JSON)
@@ -200,7 +200,7 @@ public class EntrySecurityTest {
         when(entryRepo.save(any(Entry.class))).thenReturn(entryFromRepo);
         when(entryAccess.isAllowed(entryId, validOwnerId)).thenReturn(true);
 
-        mockMvc.perform(put("/entries/" + entryId)
+        mockMvc.perform(put("/api/v1/entries/" + entryId)
                         .contentType(MediaType.APPLICATION_JSON)
                         .characterEncoding("UTF-8")
                         .accept(MediaType.APPLICATION_JSON)
@@ -222,7 +222,7 @@ public class EntrySecurityTest {
         when(entryRepo.save(any(Entry.class))).thenReturn(entryFromRepo);
         when(entryAccess.isAllowed(entryId, invalidOwnerId)).thenReturn(false);
 
-        mockMvc.perform(put("/entries/" + entryId)
+        mockMvc.perform(put("/api/v1/entries/" + entryId)
                         .contentType(MediaType.APPLICATION_JSON)
                         .characterEncoding("UTF-8")
                         .accept(MediaType.APPLICATION_JSON)
@@ -241,7 +241,7 @@ public class EntrySecurityTest {
         doNothing().when(entryRepo).delete(entryId);
         when(entryAccess.isAllowed(entryId, validOwnerId)).thenReturn(true);
 
-        mockMvc.perform(delete("/entries/" + entryId)
+        mockMvc.perform(delete("/api/v1/entries/" + entryId)
                         .contentType(MediaType.APPLICATION_JSON)
                         .characterEncoding("UTF-8")
                         .accept(MediaType.APPLICATION_JSON)
@@ -259,7 +259,7 @@ public class EntrySecurityTest {
         doNothing().when(entryRepo).delete(entryId);
         when(entryAccess.isAllowed(entryId, invalidOwnerId)).thenReturn(false);
 
-        mockMvc.perform(delete("/entries/" + entryId)
+        mockMvc.perform(delete("/api/v1/entries/" + entryId)
                         .contentType(MediaType.APPLICATION_JSON)
                         .characterEncoding("UTF-8")
                         .accept(MediaType.APPLICATION_JSON)
@@ -268,5 +268,50 @@ public class EntrySecurityTest {
                 .andExpect(status().isForbidden());
 
         verify(entryRepo, never()).delete(entryId);
+    }
+
+    @Test
+    @WithMockOwnerDetails(id = validOwnerId)
+    void testCanCreateEntry_WithAccess() throws Exception{
+        Long entryId = 1L;
+        Long diaryId = 1L;
+        LocalDate date = LocalDate.of(2020, 1, 1);
+        when(entryRepo.getByDiaryIdAndCreatedDate(diaryId, date)).thenReturn(
+                Optional.of(entryFromRepo)
+        );
+        when(entryAccess.isDiaryBelongsOwner(diaryId, validOwnerId)).thenReturn(true);
+
+        mockMvc.perform(get("/api/v1/diaries/" + diaryId + "/can-create-entry")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .content(String.valueOf(diaryId))
+                        .param("date", date.toString())
+                )
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.allowed").value("false"));
+
+        verify(entryAccess, times(1)).isDiaryBelongsOwner(diaryId, validOwnerId);
+    }
+
+    @Test
+    @WithMockOwnerDetails(id = invalidOwnerId)
+    void testCanCreateEntry_WithNoAccess() throws Exception{
+        Long entryId = 1L;
+        Long diaryId = 1L;
+        LocalDate date = LocalDate.of(2020, 1, 1);
+        when(entryRepo.getByDiaryIdAndCreatedDate(diaryId, date)).thenReturn(
+                Optional.of(entryFromRepo)
+        );
+        when(entryAccess.isDiaryBelongsOwner(diaryId, validOwnerId)).thenReturn(false);
+
+        mockMvc.perform(get("/api/v1/diaries/" + diaryId + "/can-create-entry")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .content(String.valueOf(diaryId))
+                        .param("date", date.toString())
+                )
+                .andExpect(status().isForbidden());
+
+        verify(entryAccess, times(1)).isDiaryBelongsOwner(diaryId, invalidOwnerId);
     }
 }

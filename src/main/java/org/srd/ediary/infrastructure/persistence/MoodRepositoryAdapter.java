@@ -6,14 +6,17 @@ import org.springframework.stereotype.Repository;
 import org.srd.ediary.domain.model.Mood;
 import org.srd.ediary.domain.repository.MoodRepository;
 import org.srd.ediary.infrastructure.entity.MoodEntity;
+import org.srd.ediary.infrastructure.mapper.EntryEntityMapper;
 import org.srd.ediary.infrastructure.mapper.MoodEntityMapper;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 interface SpringMoodRepository extends CrudRepository<MoodEntity, Long> {
     List<MoodEntity> findAllByOwnerId(Long id);
+    Optional<MoodEntity> getByOwnerIdAndCreatedAt(Long ownerId, LocalDate createdAt);
 }
 
 @Repository
@@ -45,5 +48,10 @@ public class MoodRepositoryAdapter implements MoodRepository {
         for (var mood : moodEntities)
             moods.add(MoodEntityMapper.INSTANCE.entityToModel(mood));
         return moods;
+    }
+
+    @Override
+    public Optional<Mood> getByOwnerIdAndCreatedDate(Long ownerId, LocalDate createdDate) {
+        return repo.getByOwnerIdAndCreatedAt(ownerId, createdDate).map(MoodEntityMapper.INSTANCE::entityToModel);
     }
 }

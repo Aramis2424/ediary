@@ -111,7 +111,7 @@ public class MoodE2ETest {
     @BeforeEach
     @Test
     void getToken() throws Exception{
-        MvcResult result = mockMvc.perform(post("/token/create")
+        MvcResult result = mockMvc.perform(post("/api/v1/token/create")
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
                         .content(requestJson.write(tokenRequest).getJson())
@@ -124,7 +124,7 @@ public class MoodE2ETest {
 
     @Test
     void testGetMood_WithAccess() throws Exception{
-        mockMvc.perform(get("/moods/" + moodId)
+        mockMvc.perform(get("/api/v1/moods/" + moodId)
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
                         .content(String.valueOf(moodId))
@@ -138,7 +138,7 @@ public class MoodE2ETest {
     void testGetMood_WithNoAccess() throws Exception{
         Long alienMoodId = 1L;
 
-        mockMvc.perform(get("/moods/" + alienMoodId)
+        mockMvc.perform(get("/api/v1/moods/" + alienMoodId)
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
                         .content(String.valueOf(alienMoodId))
@@ -149,7 +149,7 @@ public class MoodE2ETest {
 
     @Test
     void testGetMoodsByOwner_WithAccess() throws Exception{
-        mockMvc.perform(get("/moods/owner/" + ownerId)
+        mockMvc.perform(get("/api/v1/owners/" + ownerId + "/moods")
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
                         .content(String.valueOf(ownerId))
@@ -163,7 +163,7 @@ public class MoodE2ETest {
     void testGetMoodsByOwner_WithNoAccess() throws Exception{
         Long alienOwnerId = 1L;
 
-        mockMvc.perform(get("/moods/owner/" + alienOwnerId)
+        mockMvc.perform(get("/api/v1/owners/" + alienOwnerId + "/moods")
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
                         .content(String.valueOf(alienOwnerId))
@@ -177,14 +177,14 @@ public class MoodE2ETest {
     void testCreateMood_WithAccess() throws Exception {
         MoodCreateDTO input = new MoodCreateDTO(ownerId, 7,7, bedtime, wakeUpTime);
 
-        mockMvc.perform(post("/moods")
+        mockMvc.perform(post("/api/v1/moods")
                         .contentType(MediaType.APPLICATION_JSON)
                         .characterEncoding("UTF-8")
                         .accept(MediaType.APPLICATION_JSON)
                         .content(creationJson.write(input).getJson())
                         .header("Authorization", "Bearer " + token)
                 )
-                .andExpect(status().isOk())
+                .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.scoreMood").value(7));
     }
 
@@ -193,7 +193,7 @@ public class MoodE2ETest {
         Long alienOwnerId = 1L;
         MoodCreateDTO input = new MoodCreateDTO(alienOwnerId, 7,7, bedtime, wakeUpTime);
 
-        mockMvc.perform(post("/moods")
+        mockMvc.perform(post("/api/v1/moods")
                         .contentType(MediaType.APPLICATION_JSON)
                         .characterEncoding("UTF-8")
                         .accept(MediaType.APPLICATION_JSON)
@@ -207,7 +207,7 @@ public class MoodE2ETest {
     void testUpdateMood_WithAccess() throws Exception {
         MoodUpdateDTO input = new MoodUpdateDTO(4,7, bedtime, wakeUpTime);
 
-        mockMvc.perform(put("/moods/" + moodId)
+        mockMvc.perform(put("/api/v1/moods/" + moodId)
                         .contentType(MediaType.APPLICATION_JSON)
                         .characterEncoding("UTF-8")
                         .accept(MediaType.APPLICATION_JSON)
@@ -223,7 +223,7 @@ public class MoodE2ETest {
         long alienMoodId = 1L;
         MoodUpdateDTO input = new MoodUpdateDTO(4,7, bedtime, wakeUpTime);
 
-        mockMvc.perform(put("/moods/" + alienMoodId)
+        mockMvc.perform(put("/api/v1/moods/" + alienMoodId)
                         .contentType(MediaType.APPLICATION_JSON)
                         .characterEncoding("UTF-8")
                         .accept(MediaType.APPLICATION_JSON)
@@ -237,7 +237,7 @@ public class MoodE2ETest {
     void testDeleteMood_WithNoAccess() throws Exception {
         Long alienMoodId = 1L;
 
-        mockMvc.perform(delete("/moods/" + alienMoodId)
+        mockMvc.perform(delete("/api/v1/moods/" + alienMoodId)
                         .contentType(MediaType.APPLICATION_JSON)
                         .characterEncoding("UTF-8")
                         .accept(MediaType.APPLICATION_JSON)

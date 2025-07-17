@@ -1,0 +1,91 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.baseBtn {
+    @apply 
+     bg-[#FFF8F0] bg-opacity-60 hover:bg-[#D9D2CA] active:bg-[#c2bbb3]
+     border-[#F4A261] border-4
+     rounded-3xl transition;
+}
+.sideBtn {
+    @apply h-[90vh] w-8 p-5
+    text-black text-3xl font-czizh
+     flex items-center justify-center
+     baseBtn
+}
+.sideBtnL {
+    @apply sideBtn;
+    writing-mode: sideways-lr;
+}
+.sideBtnR {
+    @apply sideBtn;
+    writing-mode: vertical-lr;
+}
+
+.disableBtn {
+    @apply 
+     bg-[#FFF8F0] bg-opacity-60
+     border-[#F4A261] border-4
+     rounded-3xl;
+}
+.diableSideBtn {
+    @apply h-[90vh] w-8 p-5
+    text-black text-3xl font-czizh
+     flex items-center justify-center
+     disableBtn
+}
+.diableSideBtnL {
+    @apply diableSideBtn;
+    writing-mode: sideways-lr;
+}
+.diableSideBtnR {
+    @apply diableSideBtn;
+    writing-mode: vertical-lr;
+}
+
+.baseBacking {
+  @apply
+  fixed inset-1 bg-gray-900 bg-opacity-60 
+  rounded-lg flex items-center justify-center z-50
+}
+.moodBacking {
+  @apply
+  fixed inset-0.5 bg-opacity-60 
+}
+
+.inputSurveyField {
+  @apply
+  bg-[#FFF8F0] bg-opacity-60 hover:bg-[#fcf3e9]
+  border-[#F4A261] border-4
+  rounded-3xl transition px-3
+  w-1/2 
+}
+
+:root {
+  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+
+  color-scheme: light;
+  color: rgba(0, 0, 0, 1);
+  background-color: #FAF4ED;
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.hide-scrollbar {
+  -ms-overflow-style: none; 
+  scrollbar-width: none;    
+}
+
+#app {
+  max-width: 1940px;
+  margin: 0 auto;
+}

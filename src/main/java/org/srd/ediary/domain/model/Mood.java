@@ -10,7 +10,9 @@ public class Mood {
     private int scoreProductivity;
     private LocalDateTime bedtime;
     private LocalDateTime wakeUpTime;
-    private final LocalDate createdAt;
+    private LocalDate createdAt;
+
+    public Mood() {}
 
     public Mood(Owner owner, int scoreMood, int scoreProductivity, LocalDateTime bedtime, LocalDateTime wakeUpTime) {
         this.id = null;
@@ -72,5 +74,9 @@ public class Mood {
 
     public void setWakeUpTime(LocalDateTime wakeUpTime) {
         this.wakeUpTime = wakeUpTime;
+    }
+
+    public void setCreatedAt(LocalDate createdAt) {
+        this.createdAt = createdAt;
     }
 }

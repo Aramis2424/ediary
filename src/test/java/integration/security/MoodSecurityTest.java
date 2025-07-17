@@ -74,7 +74,7 @@ public class MoodSecurityTest {
         when(moodRepo.getByID(moodId)).thenReturn(Optional.of(moodFromRepo));
         when(moodAccess.isAllowed(moodId, validOwnerId)).thenReturn(true);
 
-        mockMvc.perform(get("/moods/" + moodId)
+        mockMvc.perform(get("/api/v1/moods/" + moodId)
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
                         .content(String.valueOf(moodId))
@@ -92,7 +92,7 @@ public class MoodSecurityTest {
         when(moodRepo.getByID(moodId)).thenReturn(Optional.of(moodFromRepo));
         when(moodAccess.isAllowed(moodId, invalidOwnerId)).thenReturn(false);
 
-        mockMvc.perform(get("/moods/" + moodId)
+        mockMvc.perform(get("/api/v1/moods/" + moodId)
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
                         .content(String.valueOf(moodId))
@@ -107,7 +107,7 @@ public class MoodSecurityTest {
     void testGetMood_Unauthorized() throws Exception{
         Long moodId = 1L;
 
-        mockMvc.perform(get("/moods/" + moodId)
+        mockMvc.perform(get("/api/v1/moods/" + moodId)
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
                         .content(String.valueOf(moodId))
@@ -121,7 +121,7 @@ public class MoodSecurityTest {
         Long ownerId = validOwnerId;
         when(moodRepo.getAllByOwner(ownerId)).thenReturn(listMoodFromRepo);
 
-        mockMvc.perform(get("/moods/owner/" + ownerId)
+        mockMvc.perform(get("/api/v1/owners/" + ownerId + "/moods")
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
                         .content(String.valueOf(ownerId))
@@ -137,7 +137,7 @@ public class MoodSecurityTest {
         Long ownerId = invalidOwnerId;
         when(moodRepo.getAllByOwner(ownerId)).thenReturn(listMoodFromRepo);
 
-        mockMvc.perform(get("/moods/owner/" + ownerId)
+        mockMvc.perform(get("/api/v1/owners/" + ownerId + "/moods")
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
                         .content(String.valueOf(ownerId))
@@ -152,13 +152,13 @@ public class MoodSecurityTest {
         MoodCreateDTO input = new MoodCreateDTO(ownerId, 7,7, bedtime, wakeUpTime);
         when(moodRepo.save(any(Mood.class))).thenReturn(moodFromRepo);
 
-        mockMvc.perform(post("/moods")
+        mockMvc.perform(post("/api/v1/moods")
                         .contentType(MediaType.APPLICATION_JSON)
                         .characterEncoding("UTF-8")
                         .accept(MediaType.APPLICATION_JSON)
                         .content(creationJson.write(input).getJson())
                 )
-                .andExpect(status().isOk())
+                .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.scoreMood").value(7));
 
         verify(moodRepo, times(1)).save(any(Mood.class));
@@ -171,7 +171,7 @@ public class MoodSecurityTest {
         MoodCreateDTO input = new MoodCreateDTO(ownerId, 7,7, bedtime, wakeUpTime);
         when(moodRepo.save(any(Mood.class))).thenReturn(moodFromRepo);
 
-        mockMvc.perform(post("/moods")
+        mockMvc.perform(post("/api/v1/moods")
                         .contentType(MediaType.APPLICATION_JSON)
                         .characterEncoding("UTF-8")
                         .accept(MediaType.APPLICATION_JSON)
@@ -191,7 +191,7 @@ public class MoodSecurityTest {
         when(moodRepo.save(any(Mood.class))).thenReturn(moodFromRepo);
         when(moodAccess.isAllowed(moodId, validOwnerId)).thenReturn(true);
 
-        mockMvc.perform(put("/moods/" + moodId)
+        mockMvc.perform(put("/api/v1/moods/" + moodId)
                         .contentType(MediaType.APPLICATION_JSON)
                         .characterEncoding("UTF-8")
                         .accept(MediaType.APPLICATION_JSON)
@@ -212,7 +212,7 @@ public class MoodSecurityTest {
         when(moodRepo.save(any(Mood.class))).thenReturn(moodFromRepo);
         when(moodAccess.isAllowed(moodId, invalidOwnerId)).thenReturn(false);
 
-        mockMvc.perform(put("/moods/" + moodId)
+        mockMvc.perform(put("/api/v1/moods/" + moodId)
                         .contentType(MediaType.APPLICATION_JSON)
                         .characterEncoding("UTF-8")
                         .accept(MediaType.APPLICATION_JSON)
@@ -231,7 +231,7 @@ public class MoodSecurityTest {
         doNothing().when(moodRepo).delete(moodId);
         when(moodAccess.isAllowed(moodId, validOwnerId)).thenReturn(true);
 
-        mockMvc.perform(delete("/moods/" + moodId)
+        mockMvc.perform(delete("/api/v1/moods/" + moodId)
                         .contentType(MediaType.APPLICATION_JSON)
                         .characterEncoding("UTF-8")
                         .accept(MediaType.APPLICATION_JSON)
@@ -249,7 +249,7 @@ public class MoodSecurityTest {
         doNothing().when(moodRepo).delete(moodId);
         when(moodAccess.isAllowed(moodId, invalidOwnerId)).thenReturn(false);
 
-        mockMvc.perform(delete("/moods/" + moodId)
+        mockMvc.perform(delete("/api/v1/moods/" + moodId)
                         .contentType(MediaType.APPLICATION_JSON)
                         .characterEncoding("UTF-8")
                         .accept(MediaType.APPLICATION_JSON)
@@ -258,5 +258,44 @@ public class MoodSecurityTest {
                 .andExpect(status().isForbidden());
 
         verify(moodRepo, never()).delete(moodId);
+    }
+
+    @Test
+    @WithMockOwnerDetails(id = validOwnerId)
+    void testCanCreateMood_WithAccess() throws Exception{
+        LocalDate date = LocalDate.of(2020, 1, 1);
+        when(moodRepo.getByOwnerIdAndCreatedDate(validOwnerId, date)).thenReturn(
+                Optional.of(moodFromRepo)
+        );
+
+        mockMvc.perform(get("/api/v1/owners/" + validOwnerId + "/can-create-mood")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .content(String.valueOf(validOwnerId))
+                        .param("date", date.toString())
+                )
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.allowed").value("false"));
+
+        verify(moodRepo, times(1)).getByOwnerIdAndCreatedDate(validOwnerId, date);
+    }
+
+    @Test
+    @WithMockOwnerDetails(id = invalidOwnerId)
+    void testCanCreateEntry_WithNoAccess() throws Exception{
+        LocalDate date = LocalDate.of(2020, 1, 1);
+        when(moodRepo.getByOwnerIdAndCreatedDate(validOwnerId, date)).thenReturn(
+                Optional.of(moodFromRepo)
+        );
+
+        mockMvc.perform(get("/api/v1/owners/" + validOwnerId + "/can-create-mood")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .content(String.valueOf(validOwnerId))
+                        .param("date", date.toString())
+                )
+                .andExpect(status().isForbidden());
+
+        verify(moodRepo, never()).getByOwnerIdAndCreatedDate(invalidOwnerId, date);
     }
 }
