@@ -24,6 +24,7 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
+import static utils.EntryTestFactory.*;
 
 @ExtendWith(MockitoExtension.class)
 class EntryServiceTest {
@@ -33,33 +34,6 @@ class EntryServiceTest {
     private DiaryRepository diaryRepo;
     @InjectMocks
     private EntryService service;
-
-    private final LocalDate birthdate = LocalDate.of(2000, 1, 1);
-    private final Owner owner = new Owner("Ivan", birthdate, "example", "abc123");
-    private final Diary diary = new Diary(owner, "d1", "about");
-
-    private EntryInfoDTO getEntryInfoDTO1() {
-        return new EntryInfoDTO(null, "Day1", "Good day 1", LocalDate.now());
-    }
-
-    private EntryInfoDTO getEntryInfoDTO2() {
-        return new EntryInfoDTO(null, "Day2", "Good day 2", LocalDate.now());
-    }
-
-    private Entry getEntry1() {
-        return new Entry(diary, "Day1", "Good day 1");
-    }
-
-    private Entry getEntry2() {
-        return new Entry(diary, "Day2", "Good day 2");
-    }
-
-    private EntryCreateDTO getEntryCreateDTO(Long diaryId) {
-        return new EntryCreateDTO(diaryId, "Day2", "Good day 2");
-    }
-    private EntryUpdateDTO getEntryUpdateDTO() {
-        return new EntryUpdateDTO("Day2","Good day 2");
-    }
 
     @Test
     void testGetEntry_ExistingEntry() {

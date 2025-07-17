@@ -24,6 +24,7 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
+import static utils.DiaryTestFactory.*;
 
 @ExtendWith(MockitoExtension.class)
 class DiaryServiceTest {
@@ -35,28 +36,6 @@ class DiaryServiceTest {
     private OwnerRepository ownerRepo;
     @InjectMocks
     private DiaryService service;
-
-    private final LocalDate birthdate = LocalDate.of(2000, 1, 1);
-    private final Owner owner = new Owner("Ivan", birthdate, "example", "abc123");
-
-    private DiaryInfoDTO getDiaryInfoDTO1() {
-        return new DiaryInfoDTO(null,"d1", "about1", 0, LocalDate.now());
-    }
-    private DiaryInfoDTO getDiaryInfoDTO2() {
-        return new DiaryInfoDTO(null,"d2", "about2", 0, LocalDate.now());
-    }
-    private Diary getDiary1() {
-        return new Diary(owner, "d1", "about1");
-    }
-    private Diary getDiary2() {
-        return new Diary(owner, "d2", "about2");
-    }
-    private DiaryCreateDTO getDiaryCreateDTO(Long ownerId) {
-        return new DiaryCreateDTO(ownerId, "d1", "about1");
-    }
-    private DiaryUpdateDTO getDiaryUpdateDTO() {
-        return new DiaryUpdateDTO("d2", "about2");
-    }
 
     @Test
     void testGetDiary_ExistingDiary() {

@@ -20,6 +20,7 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
+import static utils.OwnerTestFactory.*;
 
 @ExtendWith(MockitoExtension.class)
 class OwnerServiceTest {
@@ -29,20 +30,6 @@ class OwnerServiceTest {
     private PasswordEncoder encoder;
     @InjectMocks
     private OwnerService service;
-
-    private final String login = "example123";
-    private final String password = "pass123";
-    private final LocalDate birthDate = LocalDate.of(2000, 1, 1);
-
-    private OwnerInfoDTO getOwnerInfoDTO() {
-        return new OwnerInfoDTO(null,"Ivan", birthDate, login, LocalDate.now());
-    }
-    private Owner getOwner() {
-        return new Owner("Ivan", birthDate, login, password);
-    }
-    private OwnerCreateDTO getOwnerCreateDTO() {
-        return new OwnerCreateDTO("Ivan", birthDate, login, password);
-    }
 
     @Test
     void testLoginOwner_ExistingOwner() {

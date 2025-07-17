@@ -22,6 +22,7 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
+import static utils.MoodTestFactory.*;
 
 @ExtendWith(MockitoExtension.class)
 class MoodServiceTest {
@@ -31,34 +32,6 @@ class MoodServiceTest {
     private MoodRepository moodRepo;
     @InjectMocks
     private MoodService service;
-
-    private final LocalDate birthdate = LocalDate.of(2000, 1, 1);
-    private final Owner owner = new Owner("Ivan", birthdate, "example", "abc123");
-    private final LocalDateTime bedtime = LocalDateTime
-            .of(2020, 1,1, 22,30);
-    private final LocalDateTime wakeUpTime = LocalDateTime
-            .of(2020, 1,2, 8,30);
-
-    private MoodInfoDTO getMoodInfoDTO1() {
-        return new MoodInfoDTO(null, 1, 10, bedtime, wakeUpTime, LocalDate.now());
-    }
-    private MoodInfoDTO getMoodInfoDTO2() {
-        return new MoodInfoDTO(null, 2, 9, bedtime, wakeUpTime, LocalDate.now());
-    }
-
-    private Mood getMood1() {
-        return new Mood(owner, 1, 10, bedtime, wakeUpTime);
-    }
-    private Mood getMood2() {
-        return new Mood(owner, 2, 9, bedtime, wakeUpTime);
-    }
-
-    private MoodCreateDTO getMoodCreateDTO(Long ownerId) {
-        return new MoodCreateDTO(ownerId, 1, 10, bedtime, wakeUpTime);
-    }
-    private MoodUpdateDTO getMoodUpdateDTO() {
-        return new MoodUpdateDTO(1, 10, bedtime, wakeUpTime);
-    }
 
     @Test
     void testGetMood_ExistingMood() {
