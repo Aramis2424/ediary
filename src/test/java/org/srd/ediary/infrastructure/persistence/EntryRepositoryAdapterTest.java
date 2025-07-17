@@ -14,6 +14,8 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static utils.DiaryTestFactory.getDiary1;
+import static utils.OwnerTestFactory.getOwner;
 
 @DataJpaTest
 @ActiveProfiles("test")
@@ -26,8 +28,7 @@ class EntryRepositoryAdapterTest {
     private SpringEntryRepository springRepo;
     private EntryRepositoryAdapter repo;
 
-    private final LocalDate birthDate = LocalDate.of(2000, 1, 1);
-    private Owner owner = new Owner("Ivan", birthDate, "ivan01", "navi01");
+    private Owner owner = getOwner();
     private Diary diary;
 
     @BeforeEach
