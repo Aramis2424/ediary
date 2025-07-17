@@ -38,11 +38,34 @@ class EntryServiceTest {
     private final Owner owner = new Owner("Ivan", birthdate, "example", "abc123");
     private final Diary diary = new Diary(owner, "d1", "about");
 
+    private EntryInfoDTO getEntryInfoDTO1() {
+        return new EntryInfoDTO(null, "Day1", "Good day 1", LocalDate.now());
+    }
+
+    private EntryInfoDTO getEntryInfoDTO2() {
+        return new EntryInfoDTO(null, "Day2", "Good day 2", LocalDate.now());
+    }
+
+    private Entry getEntry1() {
+        return new Entry(diary, "Day1", "Good day 1");
+    }
+
+    private Entry getEntry2() {
+        return new Entry(diary, "Day2", "Good day 2");
+    }
+
+    private EntryCreateDTO getEntryCreateDTO(Long diaryId) {
+        return new EntryCreateDTO(diaryId, "Day2", "Good day 2");
+    }
+    private EntryUpdateDTO getEntryUpdateDTO() {
+        return new EntryUpdateDTO("Day2","Good day 2");
+    }
+
     @Test
     void testGetEntry_ExistingEntry() {
         final Long entryId = 1L;
-        Entry gotEntry = new Entry(diary, "Day1", "Good day");
-        EntryInfoDTO expected = new EntryInfoDTO(null, "Day1", "Good day", LocalDate.now());
+        Entry gotEntry = getEntry1();
+        EntryInfoDTO expected = getEntryInfoDTO1();
         when(entryRepo.getByID(entryId)).thenReturn(Optional.of(gotEntry));
 
         EntryInfoDTO actual = service.getEntry(entryId);
@@ -61,11 +84,11 @@ class EntryServiceTest {
     @Test
     void testGetAllEntriesByDiary_ExistingDiary() {
         final Long diaryId = 1L;
-        Entry e1 = new Entry(diary, "day1", "good1");
-        Entry e2 = new Entry(diary, "day2", "good2");
+        Entry e1 = getEntry1();
+        Entry e2 = getEntry2();
         List<Entry> gotEntries = List.of(e1, e2);
-        EntryInfoDTO entryDto1 = new EntryInfoDTO(null, "day1", "good1", LocalDate.now());
-        EntryInfoDTO entryDto2 = new EntryInfoDTO(null, "day2", "good2", LocalDate.now());
+        EntryInfoDTO entryDto1 = getEntryInfoDTO1();
+        EntryInfoDTO entryDto2 = getEntryInfoDTO2();
         List<EntryInfoDTO> expected = List.of(entryDto1, entryDto2);
         when(entryRepo.getAllByDiary(diaryId)).thenReturn(gotEntries);
 
@@ -88,9 +111,9 @@ class EntryServiceTest {
     @Test
     void testCreate_WithExistingDiary() {
         final Long diaryId = 1L;
-        EntryCreateDTO input = new EntryCreateDTO(diaryId, "day1", "good1");
-        EntryInfoDTO expected = new EntryInfoDTO(null, "day1", "good1", LocalDate.now());
-        Entry createdEntry = new Entry(diary, "day1", "good1");
+        EntryCreateDTO input = getEntryCreateDTO(diaryId);
+        EntryInfoDTO expected = getEntryInfoDTO1();
+        Entry createdEntry = getEntry1();
         when(diaryRepo.getByID(diaryId)).thenReturn(Optional.of(diary));
         when(entryRepo.save(any(Entry.class))).thenReturn(createdEntry);
 
@@ -102,7 +125,7 @@ class EntryServiceTest {
     @Test
     void testCreate_WithNonExistingDiary() {
         final Long diaryId = 1L;
-        EntryCreateDTO input = new EntryCreateDTO(diaryId, "day1", "good1");
+        EntryCreateDTO input = getEntryCreateDTO(diaryId);
         when(diaryRepo.getByID(diaryId)).thenReturn(Optional.empty());
 
         assertThrows(DiaryNotFoundException.class, () ->service.create(input));
@@ -113,10 +136,10 @@ class EntryServiceTest {
     @Test
     void testUpdate_ExistingMood() {
         final Long entryId = 1L;
-        Entry oldEntry = new Entry(diary, "day1", "good1");
-        EntryUpdateDTO updateDTO = new EntryUpdateDTO("day2", "good2");
-        Entry updatedEntry = new Entry(diary, "day2", "good2");
-        EntryInfoDTO expected = new EntryInfoDTO(null, "day2", "good2", LocalDate.now());
+        Entry oldEntry = getEntry1();
+        EntryUpdateDTO updateDTO = getEntryUpdateDTO();
+        Entry updatedEntry = getEntry2();
+        EntryInfoDTO expected = getEntryInfoDTO2();
         when(entryRepo.getByID(entryId)).thenReturn(Optional.of(oldEntry));
         when(entryRepo.save(any(Entry.class))).thenReturn(updatedEntry);
 
@@ -128,7 +151,7 @@ class EntryServiceTest {
     @Test
     void testUpdate_NonExistingMood() {
         final Long entryId = 1L;
-        EntryUpdateDTO updateDTO = new EntryUpdateDTO("day2", "good2");
+        EntryUpdateDTO updateDTO = getEntryUpdateDTO();
         when(entryRepo.getByID(entryId)).thenReturn(Optional.empty());
 
         assertThrows(EntryNotFoundException.class, () -> service.update(entryId, updateDTO));
@@ -149,7 +172,7 @@ class EntryServiceTest {
     void testCanCreateEntry_True() {
         final Long diaryId = 1L;
         final LocalDate date = LocalDate.of(2020, 1, 1);
-        Entry gotEntry = new Entry(diary, "Day1", "Good day");
+        Entry gotEntry = getEntry1();
         EntryPermission expected = new EntryPermission(false);
         when(entryRepo.getByDiaryIdAndCreatedDate(diaryId, date))
                 .thenReturn(Optional.of(gotEntry));

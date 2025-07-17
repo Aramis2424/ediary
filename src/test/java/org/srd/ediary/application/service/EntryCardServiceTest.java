@@ -25,6 +25,8 @@ class EntryCardServiceTest {
     private MoodService moodService;
     @Mock
     AuthHelper authHelper;
+    @InjectMocks
+    private EntryCardService service;
 
     private final LocalDateTime bedtime = LocalDateTime
             .of(2020, 1,1, 22,30);
@@ -39,8 +41,15 @@ class EntryCardServiceTest {
             new MoodInfoDTO(1L, 7, 8, bedtime, wakeUpTime, LocalDate.of(2020, 1, 1)),
             new MoodInfoDTO(1L, 9, 10, bedtime, wakeUpTime, LocalDate.of(2020, 3, 3))
     );
-    @InjectMocks
-    private EntryCardService service;
+
+    private EntryCardDTO getEntryCardDTO1(Long diaryId) {
+        return new EntryCardDTO(1L, diaryId, "test 01", 1, 10,
+                LocalDate.of(2020, 1, 1));
+    }
+    private EntryCardDTO getEntryCardDTO2(Long diaryId) {
+        return new EntryCardDTO(1L, diaryId, "test 02", 2, 9,
+                LocalDate.of(2020, 1, 1));
+    }
 
     @Test
     void testGetEntryCards_UsualTest() {
@@ -49,12 +58,7 @@ class EntryCardServiceTest {
         when(entryService.getAllEntriesByDiary(diaryId)).thenReturn(mockEntries);
         when(moodService.getMoodsByOwner(ownerId)).thenReturn(mockMoods);
         when(authHelper.getCurrentUserId()).thenReturn(ownerId);
-        List<EntryCardDTO> expectedCards = List.of(
-                new EntryCardDTO(1L, diaryId, "test 01", 7, 8,
-                        LocalDate.of(2020, 1, 1)),
-                new EntryCardDTO(2L, diaryId, "test 02", -1, -1,
-                        LocalDate.of(2020, 2, 2))
-        );
+        List<EntryCardDTO> expectedCards = List.of(getEntryCardDTO1(diaryId), getEntryCardDTO2(diaryId));
 
         List<EntryCardDTO> actualCards = service.getEntryCards(diaryId);
 

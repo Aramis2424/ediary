@@ -39,11 +39,30 @@ class DiaryServiceTest {
     private final LocalDate birthdate = LocalDate.of(2000, 1, 1);
     private final Owner owner = new Owner("Ivan", birthdate, "example", "abc123");
 
+    private DiaryInfoDTO getDiaryInfoDTO1() {
+        return new DiaryInfoDTO(null,"d1", "about1", 0, LocalDate.now());
+    }
+    private DiaryInfoDTO getDiaryInfoDTO2() {
+        return new DiaryInfoDTO(null,"d2", "about2", 0, LocalDate.now());
+    }
+    private Diary getDiary1() {
+        return new Diary(owner, "d1", "about1");
+    }
+    private Diary getDiary2() {
+        return new Diary(owner, "d2", "about2");
+    }
+    private DiaryCreateDTO getDiaryCreateDTO(Long ownerId) {
+        return new DiaryCreateDTO(ownerId, "d1", "about1");
+    }
+    private DiaryUpdateDTO getDiaryUpdateDTO() {
+        return new DiaryUpdateDTO("d2", "about2");
+    }
+
     @Test
     void testGetDiary_ExistingDiary() {
         final Long diaryId = 1L;
-        Diary diary = new Diary(owner, "d1", "about");
-        DiaryInfoDTO expected = new DiaryInfoDTO(null,"d1", "about", 0, LocalDate.now());
+        Diary diary = getDiary1();
+        DiaryInfoDTO expected = getDiaryInfoDTO1();
         when(diaryRepo.getByID(diaryId)).thenReturn(Optional.of(diary));
 
         DiaryInfoDTO actual = service.getDiary(1L);
@@ -56,20 +75,19 @@ class DiaryServiceTest {
         final Long diaryId = 1L;
         when(diaryRepo.getByID(diaryId)).thenReturn(Optional.empty());
 
-        assertThrows(DiaryNotFoundException.class, () -> service.getDiary(1L));
+        assertThrows(DiaryNotFoundException.class,
+                () -> service.getDiary(1L));
     }
 
     @Test
     void testGetOwnerDiaries_ExistingOwner() {
         final Long ownerId = 1L;
-        Diary d1 = new Diary(owner, "d1", "of1");
-        Diary d2 = new Diary(owner, "d2", "of2");
-        Diary d3 = new Diary(owner, "d3", "of3");
-        List<Diary> gotDiaries = List.of(d1, d2, d3);
-        DiaryInfoDTO dto1 = new DiaryInfoDTO(null,"d1", "of1", 0, LocalDate.now());
-        DiaryInfoDTO dto2 = new DiaryInfoDTO(null,"d2", "of2", 0, LocalDate.now());
-        DiaryInfoDTO dto3 = new DiaryInfoDTO(null,"d3", "of3", 0, LocalDate.now());
-        List<DiaryInfoDTO> expected = List.of(dto1, dto2, dto3);
+        Diary d1 = getDiary1();
+        Diary d2 = getDiary2();
+        List<Diary> gotDiaries = List.of(d1, d2);
+        DiaryInfoDTO dto1 = getDiaryInfoDTO1();
+        DiaryInfoDTO dto2 = getDiaryInfoDTO2();
+        List<DiaryInfoDTO> expected = List.of(dto1, dto2);
         when(diaryRepo.getAllByOwner(ownerId)).thenReturn(gotDiaries);
 
         List<DiaryInfoDTO> actual = service.getOwnerDiaries(ownerId);
@@ -91,9 +109,9 @@ class DiaryServiceTest {
     @Test
     void testCreate_WithExistingOwner() {
         final Long ownerId = 1L;
-        DiaryCreateDTO input = new DiaryCreateDTO(ownerId, "d1", "of1");
-        DiaryInfoDTO expected = new DiaryInfoDTO(null,"d1", "of1", 0, LocalDate.now());
-        Diary createdDiary = new Diary(owner, "d1", "of1");
+        DiaryCreateDTO input = getDiaryCreateDTO(ownerId);
+        DiaryInfoDTO expected = getDiaryInfoDTO1();
+        Diary createdDiary = getDiary1();
         when(ownerRepo.getByID(ownerId)).thenReturn(Optional.of(owner));
         when(diaryRepo.save(any(Diary.class))).thenReturn(createdDiary);
 
@@ -105,7 +123,7 @@ class DiaryServiceTest {
     @Test
     void testCreate_WithNonExistingOwner() {
         final Long ownerId = 1L;
-        DiaryCreateDTO input = new DiaryCreateDTO(ownerId, "d1", "of1");
+        DiaryCreateDTO input = getDiaryCreateDTO(ownerId);
         when(ownerRepo.getByID(ownerId)).thenReturn(Optional.empty());
 
         assertThrows(OwnerNotFoundException.class, () -> service.create(input));
@@ -116,10 +134,10 @@ class DiaryServiceTest {
     @Test
     void testUpdate_ExistingDiary() {
         final Long diaryId = 1L;
-        Diary gotDiary = new Diary(owner, "d1", "about");
-        DiaryUpdateDTO updateDto = new DiaryUpdateDTO("d2", "of");
-        Diary updatedDiary = new Diary(owner, "d2", "of");
-        DiaryInfoDTO expected = new DiaryInfoDTO(null,"d2", "of", 0, LocalDate.now());
+        Diary gotDiary = getDiary1();
+        DiaryUpdateDTO updateDto = getDiaryUpdateDTO();
+        Diary updatedDiary = getDiary2();
+        DiaryInfoDTO expected = getDiaryInfoDTO2();
         when(diaryRepo.getByID(diaryId)).thenReturn(Optional.of(gotDiary));
         when(diaryRepo.save(any(Diary.class))).thenReturn(updatedDiary);
 
@@ -131,7 +149,7 @@ class DiaryServiceTest {
     @Test
     void testUpdate_NonExistingDiary() {
         final Long diaryId = 1L;
-        DiaryUpdateDTO updateDto = new DiaryUpdateDTO("d2", "of");
+        DiaryUpdateDTO updateDto = getDiaryUpdateDTO();
         when(diaryRepo.getByID(diaryId)).thenReturn(Optional.empty());
 
         assertThrows(DiaryNotFoundException.class, () -> service.update(diaryId, updateDto));
@@ -140,7 +158,7 @@ class DiaryServiceTest {
     @Test
     void testRemove_ExistingDiaryWithEntries() {
         final Long diaryId = 1L;
-        Diary removingDiary = new Diary(owner, "d1", "about");
+        Diary removingDiary = getDiary1();
         Entry e1 = new Entry(removingDiary, "e1", "about e1");
         Entry e2 = new Entry(removingDiary, "e2", "about e2");
         List<Entry> diaryEntries = List.of(e1, e2);
