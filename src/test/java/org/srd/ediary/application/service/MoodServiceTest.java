@@ -22,6 +22,7 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
+import static utils.MoodTestFactory.*;
 
 @ExtendWith(MockitoExtension.class)
 class MoodServiceTest {
@@ -32,19 +33,11 @@ class MoodServiceTest {
     @InjectMocks
     private MoodService service;
 
-    private final LocalDate birthdate = LocalDate.of(2000, 1, 1);
-    private final Owner owner = new Owner("Ivan", birthdate, "example", "abc123");
-    private final LocalDateTime bedtime = LocalDateTime
-            .of(2020, 1,1, 22,30);
-    private final LocalDateTime wakeUpTime = LocalDateTime
-            .of(2020, 1,2, 8,30);
-
     @Test
     void testGetMood_ExistingMood() {
         final Long moodId = 1L;
-        Mood gotMood = new Mood(owner, 7, 7, bedtime, wakeUpTime);
-        MoodInfoDTO expected = new MoodInfoDTO(null, 7, 7,
-                bedtime, wakeUpTime, LocalDate.now());
+        Mood gotMood = getMood1();
+        MoodInfoDTO expected = getMoodInfoDTO1();
         when(moodRepo.getByID(moodId)).thenReturn(Optional.of(gotMood));
 
         MoodInfoDTO actual = service.getMood(moodId);
@@ -63,13 +56,11 @@ class MoodServiceTest {
     @Test
     void testGetMoodsByOwner_ExistingOwner() {
         final Long ownerId = 1L;
-        Mood m1 = new Mood(owner, 5, 5, bedtime, wakeUpTime);
-        Mood m2 = new Mood(owner, 7, 7, bedtime, wakeUpTime);
+        Mood m1 = getMood1();
+        Mood m2 = getMood2();
         List<Mood> gotMoods = List.of(m1, m2);
-        MoodInfoDTO moodDto1 = new MoodInfoDTO(null, 5, 5,
-                bedtime, wakeUpTime, LocalDate.now());
-        MoodInfoDTO moodDto2 = new MoodInfoDTO(null, 7, 7,
-                bedtime, wakeUpTime, LocalDate.now());
+        MoodInfoDTO moodDto1 = getMoodInfoDTO1();
+        MoodInfoDTO moodDto2 = getMoodInfoDTO2();
         List<MoodInfoDTO> expected = List.of(moodDto1, moodDto2);
         when(moodRepo.getAllByOwner(ownerId)).thenReturn(gotMoods);
 
@@ -92,10 +83,9 @@ class MoodServiceTest {
     @Test
     void testCreate_WithExistingOwner() {
         final Long ownerId = 1L;
-        MoodCreateDTO input = new MoodCreateDTO(ownerId, 7, 7, bedtime, wakeUpTime);
-        MoodInfoDTO expected = new MoodInfoDTO(null, 7, 7,
-                bedtime, wakeUpTime, LocalDate.now());
-        Mood createdMood = new Mood(owner, 7, 7, bedtime, wakeUpTime);
+        MoodCreateDTO input = getMoodCreateDTO(ownerId);
+        MoodInfoDTO expected = getMoodInfoDTO1();
+        Mood createdMood = getMood1();
         when(ownerRepo.getByID(ownerId)).thenReturn(Optional.of(owner));
         when(moodRepo.save(any(Mood.class))).thenReturn(createdMood);
 
@@ -107,7 +97,7 @@ class MoodServiceTest {
     @Test
     void testCreate_WithNonExistingOwner() {
         final Long ownerId = 1L;
-        MoodCreateDTO input = new MoodCreateDTO(ownerId, 7, 7, bedtime, wakeUpTime);
+        MoodCreateDTO input = getMoodCreateDTO(ownerId);
         when(ownerRepo.getByID(ownerId)).thenReturn(Optional.empty());
 
         assertThrows(OwnerNotFoundException.class, () -> service.create(input));
@@ -118,11 +108,10 @@ class MoodServiceTest {
     @Test
     void testUpdate_ExistingMood() {
         final Long moodId = 1L;
-        Mood oldMood = new Mood(owner, 7, 7, bedtime, wakeUpTime);
-        MoodUpdateDTO updateDTO = new MoodUpdateDTO(8, 8, bedtime, wakeUpTime);
-        Mood updatedMood = new Mood(owner, 8, 8, bedtime, wakeUpTime);
-        MoodInfoDTO expected = new MoodInfoDTO(null, 8, 8,
-                bedtime, wakeUpTime, LocalDate.now());
+        Mood oldMood = getMood1();
+        MoodUpdateDTO updateDTO = getMoodUpdateDTO();
+        Mood updatedMood = getMood2();
+        MoodInfoDTO expected = getMoodInfoDTO2();
         when(moodRepo.getByID(moodId)).thenReturn(Optional.of(oldMood));
         when(moodRepo.save(any(Mood.class))).thenReturn(updatedMood);
 
@@ -134,7 +123,7 @@ class MoodServiceTest {
     @Test
     void testUpdate_NonExistingMood() {
         final Long moodId = 1L;
-        MoodUpdateDTO updateDTO = new MoodUpdateDTO(8, 8, bedtime, wakeUpTime);
+        MoodUpdateDTO updateDTO = getMoodUpdateDTO();
         when(moodRepo.getByID(moodId)).thenReturn(Optional.empty());
 
         assertThrows(MoodNotFoundException.class, () -> service.update(moodId, updateDTO));
@@ -154,7 +143,7 @@ class MoodServiceTest {
     void testCanCreateMood_True() {
         final Long ownerId = 1L;
         final LocalDate date = LocalDate.of(2020, 1, 1);
-        Mood gotMood = new Mood(owner, 7, 7, bedtime, wakeUpTime);
+        Mood gotMood = getMood1();
         MoodPermission expected = new MoodPermission(false);
         when(moodRepo.getByOwnerIdAndCreatedDate(ownerId, date))
                 .thenReturn(Optional.of(gotMood));

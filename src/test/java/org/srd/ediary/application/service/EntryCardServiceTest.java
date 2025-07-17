@@ -16,6 +16,12 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
+import static utils.EntryCardTestFactory.getEntryCardDTO1;
+import static utils.EntryCardTestFactory.getEntryCardDTO2;
+import static utils.EntryTestFactory.getEntryInfoDTO1;
+import static utils.EntryTestFactory.getEntryInfoDTO2;
+import static utils.MoodTestFactory.getMoodInfoDTO1;
+import static utils.MoodTestFactory.getMoodInfoDTO2;
 
 @ExtendWith(MockitoExtension.class)
 class EntryCardServiceTest {
@@ -25,22 +31,11 @@ class EntryCardServiceTest {
     private MoodService moodService;
     @Mock
     AuthHelper authHelper;
-
-    private final LocalDateTime bedtime = LocalDateTime
-            .of(2020, 1,1, 22,30);
-    private final LocalDateTime wakeUpTime = LocalDateTime
-            .of(2020, 1,2, 8,30);
-
-    private final List<EntryInfoDTO> mockEntries = List.of(
-            new EntryInfoDTO(1L, "test 01", "Testing 01", LocalDate.of(2020, 1, 1)),
-            new EntryInfoDTO(2L, "test 02", "Testing 02", LocalDate.of(2020, 2, 2))
-    );
-    private final List<MoodInfoDTO> mockMoods = List.of(
-            new MoodInfoDTO(1L, 7, 8, bedtime, wakeUpTime, LocalDate.of(2020, 1, 1)),
-            new MoodInfoDTO(1L, 9, 10, bedtime, wakeUpTime, LocalDate.of(2020, 3, 3))
-    );
     @InjectMocks
     private EntryCardService service;
+
+    private final List<EntryInfoDTO> mockEntries = List.of(getEntryInfoDTO1(), getEntryInfoDTO1());
+    private final List<MoodInfoDTO> mockMoods = List.of(getMoodInfoDTO1(), getMoodInfoDTO1());
 
     @Test
     void testGetEntryCards_UsualTest() {
@@ -49,12 +44,7 @@ class EntryCardServiceTest {
         when(entryService.getAllEntriesByDiary(diaryId)).thenReturn(mockEntries);
         when(moodService.getMoodsByOwner(ownerId)).thenReturn(mockMoods);
         when(authHelper.getCurrentUserId()).thenReturn(ownerId);
-        List<EntryCardDTO> expectedCards = List.of(
-                new EntryCardDTO(1L, diaryId, "test 01", 7, 8,
-                        LocalDate.of(2020, 1, 1)),
-                new EntryCardDTO(2L, diaryId, "test 02", -1, -1,
-                        LocalDate.of(2020, 2, 2))
-        );
+        List<EntryCardDTO> expectedCards = List.of(getEntryCardDTO1(diaryId), getEntryCardDTO1(diaryId));
 
         List<EntryCardDTO> actualCards = service.getEntryCards(diaryId);
 
