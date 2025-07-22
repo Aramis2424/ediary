@@ -5,7 +5,8 @@ services:
     image: nginx:alpine
     container_name: ediary-nginx
     ports:
-      - "8080:80"
+      - "8080:2323"
     volumes:
-      - ./index.html:/usr/share/nginx/html/index.html
+      - ./nginx.conf:/etc/nginx/nginx.conf
       - ./default.conf:/etc/nginx/conf.d/default.conf
+      - ./index.html:/usr/share/nginx/html/index.html
