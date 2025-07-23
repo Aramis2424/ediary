@@ -21,6 +21,7 @@ import org.srd.ediary.application.security.access.MoodAccess;
 import org.srd.ediary.domain.model.Mood;
 import org.srd.ediary.domain.model.Owner;
 import org.srd.ediary.domain.repository.MoodRepository;
+import org.srd.ediary.domain.repository.OwnerRepository;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -43,6 +44,8 @@ public class MoodSecurityTest {
     private MoodAccess moodAccess;
     @MockBean
     private MoodRepository moodRepo;
+    @MockBean
+    private OwnerRepository ownerRepo;
 
     private JacksonTester<MoodCreateDTO> creationJson;
     private JacksonTester<MoodUpdateDTO> updateJson;
@@ -151,6 +154,7 @@ public class MoodSecurityTest {
         Long ownerId = validOwnerId;
         MoodCreateDTO input = new MoodCreateDTO(ownerId, 7,7, bedtime, wakeUpTime);
         when(moodRepo.save(any(Mood.class))).thenReturn(moodFromRepo);
+        when(ownerRepo.getByID(validOwnerId)).thenReturn(Optional.of(owner));
 
         mockMvc.perform(post("/api/v1/moods")
                         .contentType(MediaType.APPLICATION_JSON)

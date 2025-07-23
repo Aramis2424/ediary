@@ -23,6 +23,7 @@ import org.srd.ediary.domain.model.Entry;
 import org.srd.ediary.domain.model.Owner;
 import org.srd.ediary.domain.repository.EntryRepository;
 import org.srd.ediary.domain.repository.MoodRepository;
+import org.srd.ediary.domain.repository.DiaryRepository;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -44,6 +45,8 @@ public class EntrySecurityTest {
     private EntryAccess entryAccess;
     @MockBean
     private EntryRepository entryRepo;
+    @MockBean
+    private DiaryRepository diaryRepo;
 
     private JacksonTester<EntryCreateDTO> creationJson;
     private JacksonTester<EntryUpdateDTO> updateJson;
@@ -156,6 +159,7 @@ public class EntrySecurityTest {
         EntryCreateDTO input = new EntryCreateDTO(diaryId, "day1", "good1");
         when(entryRepo.save(any(Entry.class))).thenReturn(entryFromRepo);
         when(entryAccess.isDiaryBelongsOwner(diaryId, validOwnerId)).thenReturn(true);
+        when(diaryRepo.getByID(diaryId)).thenReturn(Optional.of(diary));
 
         mockMvc.perform(post("/api/v1/entries")
                         .contentType(MediaType.APPLICATION_JSON)
