@@ -8,6 +8,7 @@ public class EnvLoaderConfig {
         Dotenv dotenv = Dotenv.configure()
                 .directory("./")
                 .filename("dev.env")
+                .ignoreIfMissing()
                 .load();
         dotenv.entries().forEach(entry -> {
             String key = entry.getKey();
