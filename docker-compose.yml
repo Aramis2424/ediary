@@ -3,7 +3,7 @@ version: '3.9'
 services:
   db:
     image: postgres
-    container_name: ediary-postgres
+    container_name: ediary-postgres-master
     environment:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
@@ -12,6 +12,16 @@ services:
       - "5432:5432"
     volumes:
       - ediary-volume:/var/lib/postgresql/data
+  
+  back1:
+    build: ./backend
+    container_name: ediary-back-1
+    env_file:
+      - ./backend/back1.env
+    ports:
+      - "2424:2424"
+    depends_on:
+      - db
 
 volumes:
   ediary-volume:
