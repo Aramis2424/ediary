@@ -13,8 +13,22 @@ services:
     volumes:
       - ediary-volume:/var/lib/postgresql/data
   
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: ediary-pgadmin
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD}
+    ports:
+      - "5050:80"
+    volumes:
+      - pgadmin_data:/var/lib/pgadmin
+    depends_on:
+      - db
+      
   back1:
     build: ./backend
+    image: ediary-backend
     container_name: ediary-back-1
     env_file:
       - ./backend/back1.env
@@ -25,3 +39,4 @@ services:
 
 volumes:
   ediary-volume:
+  pgadmin_data:
