@@ -20,8 +20,8 @@ public class JwtUtils {
     private final String jwtSecret;
     private final int jwtExpirationMs;
 
-    public JwtUtils(@Value("${jwt.secret}") String jwtSecret,
-                    @Value("${jwt.expiration}") int jwtExpirationMs) {
+    public JwtUtils(@Value("${JWT_SECRET}") String jwtSecret,
+                    @Value("${JWT_EXPIRATION}") int jwtExpirationMs) {
         this.jwtSecret = Base64.getEncoder().encodeToString(jwtSecret.getBytes());
         this.jwtExpirationMs = jwtExpirationMs;
     }
