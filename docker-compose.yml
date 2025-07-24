@@ -20,7 +20,7 @@ services:
       PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL}
       PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD}
     ports:
-      - "5050:80"
+      - "5050:5050"
     volumes:
       - pgadmin_data:/var/lib/pgadmin
     depends_on:
@@ -35,6 +35,23 @@ services:
       - ./metaData/diagrams:/input/metaData/diagrams
       - ./nginx/readme:/output
     command: /entrypoint.sh
+  
+  nginx:
+    image: nginx:alpine
+    container_name: ediary-nginx
+    ports:
+      - "2323:2323"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
+      - ./nginx/index.html:/usr/share/nginx/html/index.html
+      - ./nginx/swagger.conf:/etc/nginx/includes/swagger.conf
+      - ./nginx/readme:/usr/share/nginx/html/readme:ro
+      - ./frontend/ediary_vue/dist/:/usr/share/nginx/html/legacy
+    depends_on:
+      - md-to-html
+      - pgadmin
+      - back1
       
   back1:
     build: ./backend
