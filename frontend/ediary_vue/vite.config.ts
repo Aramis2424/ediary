@@ -12,6 +12,7 @@ export default defineConfig({
     }
   },
   //base: '/legacy/',
+  base: '/',
   server: {
     port: 2525,
   },
