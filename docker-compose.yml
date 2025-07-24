@@ -37,7 +37,8 @@ services:
     command: /entrypoint.sh
   
   nginx:
-    image: nginx:alpine
+    build: ./nginx
+    image: ediary-nginx:latest
     container_name: ediary-nginx
     ports:
       - "2323:2323"
