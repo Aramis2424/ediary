@@ -44,10 +44,10 @@ services:
     volumes:
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf
       - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
-      - ./nginx/index.html:/usr/share/nginx/html/index.html
       - ./nginx/swagger.conf:/etc/nginx/includes/swagger.conf
       - ./nginx/readme:/usr/share/nginx/html/readme:ro
       - ./frontend/ediary_vue/dist_legacy/:/usr/share/nginx/html/legacy
+      - ./frontend/ediary_vue/dist/:/usr/share/nginx/html
     depends_on:
       - md-to-html
       - pgadmin
