@@ -25,6 +25,16 @@ services:
       - pgadmin_data:/var/lib/pgadmin
     depends_on:
       - db
+  
+  md-to-html:
+    build: ./mdtohtml
+    image: pandoc
+    container_name: ediary-pandoc
+    volumes:
+      - ./README.md:/input/index.md
+      - ./metaData/diagrams:/input/metaData/diagrams
+      - ./nginx/readme:/output
+    command: /entrypoint.sh
       
   back1:
     build: ./backend

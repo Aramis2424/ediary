@@ -1,6 +1,9 @@
 # Fake data
 metaData/fakeDataGenerator/data/
 
+# Html svg files
+nginx/readme/metaData/diagrams/*.svg
+
 # secrets properties file
 secrets.properties
 .env
