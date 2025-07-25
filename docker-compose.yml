@@ -54,6 +54,8 @@ services:
       - md-to-html
       - pgadmin
       - back-master
+      - back-ro-1
+      - back-ro-2
 
   back-master:
     build: ./backend
@@ -63,6 +65,32 @@ services:
       - ./backend/back-master.env
     ports:
       - "2424:2424"
+    depends_on:
+      - db
+  
+  back-ro-1:
+    build: ./backend
+    image: ediary-backend
+    container_name: ediary-back-ro-1
+    environment:
+        SPRING_JPA_HIBERNATE_DDL_AUTO: none
+    env_file:
+      - ./backend/back-ro.env
+    ports:
+      - "2421:2424"
+    depends_on:
+      - db
+  
+  back-ro-2:
+    build: ./backend
+    image: ediary-backend
+    container_name: ediary-back-ro-2
+    environment:
+      SPRING_JPA_HIBERNATE_DDL_AUTO: none
+    env_file:
+      - ./backend/back-ro.env
+    ports:
+      - "2422:2424"
     depends_on:
       - db
 
