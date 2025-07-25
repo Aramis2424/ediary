@@ -11,8 +11,9 @@ services:
     ports:
       - "5432:5432"
     volumes:
-      - ediary-volume:/var/lib/postgresql/data
-  
+      - ediary-volume-master:/var/lib/postgresql/data
+      - ./backend/src/main/resources/db/roles:/docker-entrypoint-initdb.d
+
   pgadmin:
     image: dpage/pgadmin4
     container_name: ediary-pgadmin
@@ -25,7 +26,7 @@ services:
       - pgadmin_data:/var/lib/pgadmin
     depends_on:
       - db
-  
+
   md-to-html:
     build: ./mdtohtml
     image: pandoc
@@ -35,7 +36,7 @@ services:
       - ./metaData/diagrams:/input/metaData/diagrams
       - ./nginx/readme:/output
     command: /entrypoint.sh
-  
+
   nginx:
     build: ./nginx
     image: ediary-nginx:latest
@@ -52,19 +53,19 @@ services:
     depends_on:
       - md-to-html
       - pgadmin
-      - back1
-      
-  back1:
+      - back-master
+
+  back-master:
     build: ./backend
     image: ediary-backend
-    container_name: ediary-back-1
+    container_name: ediary-back-master
     env_file:
-      - ./backend/back1.env
+      - ./backend/back-master.env
     ports:
       - "2424:2424"
     depends_on:
       - db
 
 volumes:
-  ediary-volume:
+  ediary-volume-master:
   pgadmin_data:
