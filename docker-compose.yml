@@ -74,12 +74,14 @@ services:
     container_name: ediary-back-ro-1
     environment:
         SPRING_JPA_HIBERNATE_DDL_AUTO: none
+        SPRING_SQL_INIT_MODE: never
     env_file:
       - ./backend/back-ro.env
     ports:
       - "2421:2424"
     depends_on:
       - db
+      - back-master
   
   back-ro-2:
     build: ./backend
@@ -87,12 +89,14 @@ services:
     container_name: ediary-back-ro-2
     environment:
       SPRING_JPA_HIBERNATE_DDL_AUTO: none
+      SPRING_SQL_INIT_MODE: never
     env_file:
       - ./backend/back-ro.env
     ports:
       - "2422:2424"
     depends_on:
       - db
+      - back-master
 
 volumes:
   ediary-volume-master:
