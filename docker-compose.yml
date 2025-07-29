@@ -108,9 +108,25 @@ services:
     ports:
       - "2422:2424"
     depends_on:
-      - db
+      - db-master
+      - back-master
+  
+  back-mirror:
+    build: ./backend
+    image: ediary-backend
+    container_name: ediary-back-mirror
+    environment:
+        SPRING_JPA_HIBERNATE_DDL_AUTO: none
+        SPRING_SQL_INIT_MODE: never
+    env_file:
+      - ./backend/back-mirror.env
+    ports:
+      - "2425:2424"
+    depends_on:
+      - db-master
       - back-master
 
 volumes:
   ediary-volume-master:
+  ediary-volume-slave:
   pgadmin_data:
