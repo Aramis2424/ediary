@@ -11,6 +11,8 @@ export default defineConfig({
       '@': fileURLToPath(new URL('./src', import.meta.url))
     }
   },
+  //base: '/legacy/',
+  base: '/',
   server: {
     port: 2525,
   },

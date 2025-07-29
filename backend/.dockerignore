@@ -1,0 +1,25 @@
+# Gradle
+.gradle/
+build/**
+!build/libs/
+!build/libs/ediary-0.0.1-SNAPSHOT.jar
+
+
+# IntelliJ / IDE
+.idea/
+*.iml
+
+# Logs
+*.log
+*.tmp
+
+# Git
+.git
+.gitignore
+.gitattributes
+
+# Secrets
+.env
+*.key
+*.pem
+*.md

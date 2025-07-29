@@ -1,9 +1,9 @@
 version: '3.9'
 
 services:
-  db:
-    image: postgres
-    container_name: ediary-postgres
+  db-master:
+    build: ./postgre/master
+    container_name: ediary-postgres-master
     environment:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
@@ -11,7 +11,122 @@ services:
     ports:
       - "5432:5432"
     volumes:
-      - ediary-volume:/var/lib/postgresql/data
+      - ediary-volume-master:/var/lib/postgresql/data
+      - ./postgre/master/scripts:/docker-entrypoint-initdb.d
+
+  db-slave:
+    build: ./postgre/slave
+    container_name: ediary-postgres-slave
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    ports:
+      - "5433:5432"
+    volumes:
+      - ediary-volume-slave:/var/lib/postgresql/data
+    depends_on:
+      - db-master
+
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: ediary-pgadmin
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD}
+    ports:
+      - "5050:80"
+    volumes:
+      - pgadmin_data:/var/lib/pgadmin
+    depends_on:
+      - db-master
+
+  md-to-html:
+    build: ./mdtohtml
+    image: pandoc
+    container_name: ediary-pandoc
+    volumes:
+      - ./README.md:/input/index.md
+      - ./metaData/diagrams:/input/metaData/diagrams
+      - ./nginx/readme:/output
+    command: /entrypoint.sh
+
+  nginx:
+    build: ./nginx
+    image: ediary-nginx:latest
+    container_name: ediary-nginx
+    ports:
+      - "2323:2323"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
+      - ./nginx/swagger.conf:/etc/nginx/includes/swagger.conf
+      - ./nginx/readme:/usr/share/nginx/html/readme:ro
+      - ./frontend/ediary_vue/dist_legacy/:/usr/share/nginx/html/legacy
+      - ./frontend/ediary_vue/dist/:/usr/share/nginx/html
+    depends_on:
+      - md-to-html
+      - pgadmin
+      - back-master
+      - back-ro-1
+      - back-ro-2
+
+  back-master:
+    build: ./backend
+    image: ediary-backend
+    container_name: ediary-back-master
+    env_file:
+      - ./backend/back-master.env
+    ports:
+      - "2424:2424"
+    depends_on:
+      - db-master
+  
+  back-ro-1:
+    build: ./backend
+    image: ediary-backend
+    container_name: ediary-back-ro-1
+    environment:
+        SPRING_JPA_HIBERNATE_DDL_AUTO: none
+        SPRING_SQL_INIT_MODE: never
+    env_file:
+      - ./backend/back-ro.env
+    ports:
+      - "2421:2424"
+    depends_on:
+      - db-master
+      - back-master
+  
+  back-ro-2:
+    build: ./backend
+    image: ediary-backend
+    container_name: ediary-back-ro-2
+    environment:
+      SPRING_JPA_HIBERNATE_DDL_AUTO: none
+      SPRING_SQL_INIT_MODE: never
+    env_file:
+      - ./backend/back-ro.env
+    ports:
+      - "2422:2424"
+    depends_on:
+      - db-master
+      - back-master
+  
+  back-mirror:
+    build: ./backend
+    image: ediary-backend
+    container_name: ediary-back-mirror
+    environment:
+        SPRING_JPA_HIBERNATE_DDL_AUTO: none
+        SPRING_SQL_INIT_MODE: never
+    env_file:
+      - ./backend/back-mirror.env
+    ports:
+      - "2425:2424"
+    depends_on:
+      - db-master
+      - back-master
 
 volumes:
-  ediary-volume:
+  ediary-volume-master:
+  ediary-volume-slave:
+  pgadmin_data:

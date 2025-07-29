@@ -64,9 +64,9 @@
 
 ## BPMN диаграмма
 
-![BPMN диаграмма](D:\2424\_blacksmith\ediary\metaData\diagrams\bpmn01.svg)
+![BPMN диаграмма](./metaData/diagrams/bpmn01.svg)
 
-![BPMN диаграмма](D:\2424\_blacksmith\ediary\metaData\diagrams\bpmn02.svg)
+![BPMN диаграмма](./metaData/diagrams/bpmn02.svg)
 
 ### Верхнеуровневое разбиение на компоненты
 
@@ -86,6 +86,5 @@
 ## RESTFul api
 
 [Внешнее API в формате OpenAPI]: ./OPENAPI.md
-
 
 
