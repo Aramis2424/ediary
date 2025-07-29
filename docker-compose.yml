@@ -1,8 +1,8 @@
 version: '3.9'
 
 services:
-  db:
-    image: postgres
+  db-master:
+    build: ./postgre/master
     container_name: ediary-postgres-master
     environment:
       POSTGRES_USER: ${POSTGRES_USER}
@@ -12,7 +12,20 @@ services:
       - "5432:5432"
     volumes:
       - ediary-volume-master:/var/lib/postgresql/data
-      - ./backend/src/main/resources/db/roles:/docker-entrypoint-initdb.d
+      - ./postgre/master/scripts:/docker-entrypoint-initdb.d
+
+  db-slave:
+    build: ./postgre/slave
+    container_name: ediary-postgres-slave
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    ports:
+      - "5433:5432"
+    volumes:
+      - ediary-volume-slave:/var/lib/postgresql/data
+    depends_on:
+      - db-master
 
   pgadmin:
     image: dpage/pgadmin4
@@ -25,7 +38,7 @@ services:
     volumes:
       - pgadmin_data:/var/lib/pgadmin
     depends_on:
-      - db
+      - db-master
 
   md-to-html:
     build: ./mdtohtml
@@ -66,7 +79,7 @@ services:
     ports:
       - "2424:2424"
     depends_on:
-      - db
+      - db-master
   
   back-ro-1:
     build: ./backend
@@ -80,7 +93,7 @@ services:
     ports:
       - "2421:2424"
     depends_on:
-      - db
+      - db-master
       - back-master
   
   back-ro-2:
