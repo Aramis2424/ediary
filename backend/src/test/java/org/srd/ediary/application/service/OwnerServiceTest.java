@@ -87,7 +87,8 @@ class OwnerServiceTest {
         when(encoder.encode(anyString())).thenReturn(anyString());
         when(ownerRepo.getByLogin(login)).thenReturn(Optional.of(existingOwner));
 
-        assertThrows(OwnerAlreadyExistException.class, () -> service.registerOwner(createDto));
+        assertThrows(OwnerAlreadyExistException.class,
+                () -> service.registerOwner(createDto));
 
         verify(ownerRepo, never()).save(Mockito.any(Owner.class));
     }
@@ -109,6 +110,7 @@ class OwnerServiceTest {
         Long nonExistingId = 0L;
         when(ownerRepo.getByID(nonExistingId)).thenReturn(Optional.empty());
 
-        assertThrows(InvalidCredentialsException.class, () -> service.fetchOwner(nonExistingId));
+        assertThrows(InvalidCredentialsException.class,
+                () -> service.fetchOwner(nonExistingId));
     }
 }

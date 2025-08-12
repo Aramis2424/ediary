@@ -49,18 +49,21 @@ class MoodServiceTest {
         final Long moodId = 1L;
         when(moodRepo.getByID(moodId)).thenReturn(Optional.empty());
 
-        assertThrows(MoodNotFoundException.class, () -> service.getMood(moodId));
+        assertThrows(MoodNotFoundException.class,
+                () -> service.getMood(moodId));
     }
 
     @Test
     void testGetMoodsByOwner_ExistingOwner() {
         final Long ownerId = 1L;
-        Mood m1 = getMood1();
-        Mood m2 = getMood2();
-        List<Mood> gotMoods = List.of(m1, m2);
-        MoodInfoDTO moodDto1 = getMoodInfoDTO1();
-        MoodInfoDTO moodDto2 = getMoodInfoDTO2();
-        List<MoodInfoDTO> expected = List.of(moodDto1, moodDto2);
+        List<Mood> gotMoods = List.of(
+                getMood1(),
+                getMood2()
+        );
+        List<MoodInfoDTO> expected = List.of(
+                getMoodInfoDTO1(),
+                getMoodInfoDTO2()
+        );
         when(moodRepo.getAllByOwner(ownerId)).thenReturn(gotMoods);
 
         List<MoodInfoDTO> actual = service.getMoodsByOwner(ownerId);
@@ -99,7 +102,8 @@ class MoodServiceTest {
         MoodCreateDTO input = getMoodCreateDTO(ownerId);
         when(ownerRepo.getByID(ownerId)).thenReturn(Optional.empty());
 
-        assertThrows(OwnerNotFoundException.class, () -> service.create(input));
+        assertThrows(OwnerNotFoundException.class,
+                () -> service.create(input));
 
         verify(moodRepo, never()).save(any(Mood.class));
     }
@@ -125,7 +129,8 @@ class MoodServiceTest {
         MoodUpdateDTO updateDTO = getMoodUpdateDTO();
         when(moodRepo.getByID(moodId)).thenReturn(Optional.empty());
 
-        assertThrows(MoodNotFoundException.class, () -> service.update(moodId, updateDTO));
+        assertThrows(MoodNotFoundException.class,
+                () -> service.update(moodId, updateDTO));
     }
 
     @Test

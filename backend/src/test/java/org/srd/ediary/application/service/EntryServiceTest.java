@@ -58,12 +58,14 @@ class EntryServiceTest {
     @Test
     void testGetAllEntriesByDiary_ExistingDiary() {
         final Long diaryId = 1L;
-        Entry e1 = getEntry1();
-        Entry e2 = getEntry2();
-        List<Entry> gotEntries = List.of(e1, e2);
-        EntryInfoDTO entryDto1 = getEntryInfoDTO1();
-        EntryInfoDTO entryDto2 = getEntryInfoDTO2();
-        List<EntryInfoDTO> expected = List.of(entryDto1, entryDto2);
+        List<Entry> gotEntries = List.of(
+                getEntry1(),
+                getEntry2()
+        );
+        List<EntryInfoDTO> expected = List.of(
+                getEntryInfoDTO1(),
+                getEntryInfoDTO2()
+        );
         when(entryRepo.getAllByDiary(diaryId)).thenReturn(gotEntries);
 
         List<EntryInfoDTO> actual = service.getAllEntriesByDiary(diaryId);
@@ -102,7 +104,8 @@ class EntryServiceTest {
         EntryCreateDTO input = getEntryCreateDTO(diaryId);
         when(diaryRepo.getByID(diaryId)).thenReturn(Optional.empty());
 
-        assertThrows(DiaryNotFoundException.class, () ->service.create(input));
+        assertThrows(DiaryNotFoundException.class,
+                () ->service.create(input));
 
         verify(entryRepo, never()).save(any(Entry.class));
     }
@@ -128,7 +131,8 @@ class EntryServiceTest {
         EntryUpdateDTO updateDTO = getEntryUpdateDTO();
         when(entryRepo.getByID(entryId)).thenReturn(Optional.empty());
 
-        assertThrows(EntryNotFoundException.class, () -> service.update(entryId, updateDTO));
+        assertThrows(EntryNotFoundException.class,
+                () -> service.update(entryId, updateDTO));
 
     }
 
