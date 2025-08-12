@@ -17,7 +17,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static utils.OwnerTestMother.getOwner;
 
 @DataJpaTest
-@ActiveProfiles("test")
+@ActiveProfiles("integration_test")
 class EntryRepositoryAdapterTest {
     @Autowired
     private SpringOwnerRepository springOwnerRepository;

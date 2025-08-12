@@ -5,6 +5,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.test.context.ActiveProfiles;
 import org.srd.ediary.application.dto.*;
 import org.srd.ediary.application.exception.MoodNotFoundException;
 import org.srd.ediary.application.exception.OwnerNotFoundException;
@@ -22,6 +23,7 @@ import static org.mockito.Mockito.*;
 import static utils.MoodTestMother.*;
 
 @ExtendWith(MockitoExtension.class)
+@ActiveProfiles("unit_test")
 class MoodServiceTest {
     @Mock
     private OwnerRepository ownerRepo;

@@ -5,6 +5,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.test.context.ActiveProfiles;
 import org.srd.ediary.application.dto.EntryCreateDTO;
 import org.srd.ediary.application.dto.EntryInfoDTO;
 import org.srd.ediary.application.dto.EntryPermission;
@@ -25,6 +26,7 @@ import static org.mockito.Mockito.*;
 import static utils.EntryTestMother.*;
 
 @ExtendWith(MockitoExtension.class)
+@ActiveProfiles("unit_test")
 class EntryServiceTest {
     @Mock
     private EntryRepository entryRepo;

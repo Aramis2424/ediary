@@ -5,6 +5,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.test.context.ActiveProfiles;
 import org.srd.ediary.application.dto.DiaryCreateDTO;
 import org.srd.ediary.application.dto.DiaryInfoDTO;
 import org.srd.ediary.application.dto.DiaryUpdateDTO;
@@ -25,6 +26,7 @@ import static org.mockito.Mockito.*;
 import static utils.DiaryTestMother.*;
 
 @ExtendWith(MockitoExtension.class)
+@ActiveProfiles("unit_test")
 class DiaryServiceTest {
     @Mock
     private DiaryRepository diaryRepo;

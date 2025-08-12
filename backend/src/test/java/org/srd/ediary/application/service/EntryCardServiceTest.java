@@ -5,6 +5,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.test.context.ActiveProfiles;
 import org.srd.ediary.application.dto.EntryCardDTO;
 import org.srd.ediary.application.dto.EntryInfoDTO;
 import org.srd.ediary.application.dto.MoodInfoDTO;
@@ -19,6 +20,7 @@ import static utils.EntryTestMother.getEntryInfoDTO1;
 import static utils.MoodTestMother.getMoodInfoDTO1;
 
 @ExtendWith(MockitoExtension.class)
+@ActiveProfiles("unit_test")
 class EntryCardServiceTest {
     @Mock
     private EntryService entryService;

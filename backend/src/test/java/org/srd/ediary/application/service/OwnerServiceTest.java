@@ -7,6 +7,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.test.context.ActiveProfiles;
 import org.srd.ediary.application.dto.OwnerCreateDTO;
 import org.srd.ediary.application.dto.OwnerInfoDTO;
 import org.srd.ediary.application.exception.InvalidCredentialsException;
@@ -22,6 +23,7 @@ import static org.mockito.Mockito.*;
 import static utils.OwnerTestMother.*;
 
 @ExtendWith(MockitoExtension.class)
+@ActiveProfiles("unit_test")
 class OwnerServiceTest {
     @Mock
     private OwnerRepository ownerRepo;

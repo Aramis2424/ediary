@@ -14,7 +14,7 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.*;
 
 @DataJpaTest
-@ActiveProfiles("test")
+@ActiveProfiles("integration_test")
 class OwnerRepositoryAdapterTest {
     @Autowired
     private SpringOwnerRepository springRepo;
