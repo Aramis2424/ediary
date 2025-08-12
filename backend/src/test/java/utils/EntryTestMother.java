@@ -9,10 +9,10 @@ import org.srd.ediary.domain.model.Owner;
 
 import java.time.LocalDate;
 
-import static utils.DiaryTestFactory.getDiary1;
-import static utils.OwnerTestFactory.getOwner;
+import static utils.DiaryTestMother.getDiary1;
+import static utils.OwnerTestMother.getOwner;
 
-public class EntryTestFactory {
+public class EntryTestMother {
     public static final Owner owner = getOwner();
     public static final Diary diary = getDiary1();
 

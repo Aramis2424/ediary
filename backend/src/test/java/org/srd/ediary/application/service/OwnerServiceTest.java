@@ -14,13 +14,12 @@ import org.srd.ediary.application.exception.OwnerAlreadyExistException;
 import org.srd.ediary.domain.model.Owner;
 import org.srd.ediary.domain.repository.OwnerRepository;
 
-import java.time.LocalDate;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
-import static utils.OwnerTestFactory.*;
+import static utils.OwnerTestMother.*;
 
 @ExtendWith(MockitoExtension.class)
 class OwnerServiceTest {

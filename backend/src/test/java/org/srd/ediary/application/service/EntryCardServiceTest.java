@@ -10,18 +10,13 @@ import org.srd.ediary.application.dto.EntryInfoDTO;
 import org.srd.ediary.application.dto.MoodInfoDTO;
 import org.srd.ediary.application.security.utils.AuthHelper;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
-import static utils.EntryCardTestFactory.getEntryCardDTO1;
-import static utils.EntryCardTestFactory.getEntryCardDTO2;
-import static utils.EntryTestFactory.getEntryInfoDTO1;
-import static utils.EntryTestFactory.getEntryInfoDTO2;
-import static utils.MoodTestFactory.getMoodInfoDTO1;
-import static utils.MoodTestFactory.getMoodInfoDTO2;
+import static utils.EntryCardTestMother.getEntryCardDTO1;
+import static utils.EntryTestMother.getEntryInfoDTO1;
+import static utils.MoodTestMother.getMoodInfoDTO1;
 
 @ExtendWith(MockitoExtension.class)
 class EntryCardServiceTest {

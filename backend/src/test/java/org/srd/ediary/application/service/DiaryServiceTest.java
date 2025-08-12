@@ -12,19 +12,17 @@ import org.srd.ediary.application.exception.DiaryNotFoundException;
 import org.srd.ediary.application.exception.OwnerNotFoundException;
 import org.srd.ediary.domain.model.Diary;
 import org.srd.ediary.domain.model.Entry;
-import org.srd.ediary.domain.model.Owner;
 import org.srd.ediary.domain.repository.DiaryRepository;
 import org.srd.ediary.domain.repository.EntryRepository;
 import org.srd.ediary.domain.repository.OwnerRepository;
 
-import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
-import static utils.DiaryTestFactory.*;
+import static utils.DiaryTestMother.*;
 
 @ExtendWith(MockitoExtension.class)
 class DiaryServiceTest {

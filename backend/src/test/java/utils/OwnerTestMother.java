@@ -6,7 +6,7 @@ import org.srd.ediary.domain.model.Owner;
 
 import java.time.LocalDate;
 
-public class OwnerTestFactory {
+public class OwnerTestMother {
     public static final String login = "example123";
     public static final String password = "pass123";
     private static final LocalDate birthDate = LocalDate.of(2000, 1, 1);

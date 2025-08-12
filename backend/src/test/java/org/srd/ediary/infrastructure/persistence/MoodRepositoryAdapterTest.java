@@ -5,7 +5,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.context.ActiveProfiles;
-import org.srd.ediary.domain.model.Entry;
 import org.srd.ediary.domain.model.Mood;
 import org.srd.ediary.domain.model.Owner;
 
@@ -15,7 +14,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static utils.OwnerTestFactory.getOwner;
+import static utils.OwnerTestMother.getOwner;
 
 @DataJpaTest
 @ActiveProfiles("test")

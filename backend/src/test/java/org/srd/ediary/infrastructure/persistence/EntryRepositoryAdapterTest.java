@@ -14,8 +14,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static utils.DiaryTestFactory.getDiary1;
-import static utils.OwnerTestFactory.getOwner;
+import static utils.OwnerTestMother.getOwner;
 
 @DataJpaTest
 @ActiveProfiles("test")

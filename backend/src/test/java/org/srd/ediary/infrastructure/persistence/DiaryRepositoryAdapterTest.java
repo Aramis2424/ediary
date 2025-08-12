@@ -8,12 +8,11 @@ import org.springframework.test.context.ActiveProfiles;
 import org.srd.ediary.domain.model.Diary;
 import org.srd.ediary.domain.model.Owner;
 
-import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static utils.OwnerTestFactory.getOwner;
+import static utils.OwnerTestMother.getOwner;
 
 @DataJpaTest
 @ActiveProfiles("test")

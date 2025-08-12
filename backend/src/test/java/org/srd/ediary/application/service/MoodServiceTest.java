@@ -8,21 +8,18 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.srd.ediary.application.dto.*;
 import org.srd.ediary.application.exception.MoodNotFoundException;
 import org.srd.ediary.application.exception.OwnerNotFoundException;
-import org.srd.ediary.domain.model.Entry;
 import org.srd.ediary.domain.model.Mood;
-import org.srd.ediary.domain.model.Owner;
 import org.srd.ediary.domain.repository.MoodRepository;
 import org.srd.ediary.domain.repository.OwnerRepository;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
-import static utils.MoodTestFactory.*;
+import static utils.MoodTestMother.*;
 
 @ExtendWith(MockitoExtension.class)
 class MoodServiceTest {

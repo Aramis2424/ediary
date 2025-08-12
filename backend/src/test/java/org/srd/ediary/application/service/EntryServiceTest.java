@@ -11,9 +11,7 @@ import org.srd.ediary.application.dto.EntryPermission;
 import org.srd.ediary.application.dto.EntryUpdateDTO;
 import org.srd.ediary.application.exception.DiaryNotFoundException;
 import org.srd.ediary.application.exception.EntryNotFoundException;
-import org.srd.ediary.domain.model.Diary;
 import org.srd.ediary.domain.model.Entry;
-import org.srd.ediary.domain.model.Owner;
 import org.srd.ediary.domain.repository.DiaryRepository;
 import org.srd.ediary.domain.repository.EntryRepository;
 
@@ -24,7 +22,7 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
-import static utils.EntryTestFactory.*;
+import static utils.EntryTestMother.*;
 
 @ExtendWith(MockitoExtension.class)
 class EntryServiceTest {
