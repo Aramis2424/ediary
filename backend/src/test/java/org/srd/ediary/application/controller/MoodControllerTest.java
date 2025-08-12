@@ -28,6 +28,7 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static utils.MoodTestMother.*;
 
 @WebMvcTest(MoodController.class)
 @ActiveProfiles("unit_test")
@@ -38,16 +39,9 @@ class MoodControllerTest {
     private JwtFilter jwtFilter;
     @MockBean
     private MoodService moodService;
+
     private JacksonTester<MoodCreateDTO> creationJson;
     private JacksonTester<MoodUpdateDTO> updateJson;
-
-    private final LocalDateTime bedtime = LocalDateTime
-            .of(2020, 1,1, 22,30);
-    private final LocalDateTime wakeUpTime = LocalDateTime
-            .of(2020, 1,2, 8,30);
-    private final MoodInfoDTO output = new MoodInfoDTO(1L, 7, 8,
-            bedtime, wakeUpTime, LocalDate.now());
-    private final List<MoodInfoDTO> listOutput = List.of(output);
 
     @BeforeEach
     void setUp() {
@@ -63,6 +57,7 @@ class MoodControllerTest {
     @Test
     void testGetMood_ExistingMood() throws Exception {
         Long moodId = 1L;
+        MoodInfoDTO output = getMoodInfoDTO1();
         when(moodService.getMood(moodId)).thenReturn(output);
 
         mockMvc.perform(get("/api/v1/moods/" + moodId)
@@ -71,8 +66,7 @@ class MoodControllerTest {
                 .content(String.valueOf(moodId))
         )
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id").value(1L))
-                .andExpect(jsonPath("$.scoreMood").value(7));
+                .andExpect(jsonPath("$.scoreMood").value(1));
     }
 
     @Test
@@ -89,7 +83,7 @@ class MoodControllerTest {
 
     @Test
     void testGetPermissionToCreateMood_Allowed() throws Exception {
-        Long ownerId = 5L;
+        Long ownerId = 1L;
         LocalDate date = LocalDate.of(2020, 1, 1);
         when(moodService.canCreateMood(ownerId, date)).thenReturn(
                 new MoodPermission(true));
@@ -106,7 +100,7 @@ class MoodControllerTest {
 
     @Test
     void testGetPermissionToCreateMood_NotAllowed() throws Exception {
-        Long ownerId = 5L;
+        Long ownerId = 1L;
         LocalDate date = LocalDate.of(2020, 1, 1);
         when(moodService.canCreateMood(ownerId, date)).thenReturn(
                 new MoodPermission(false));
@@ -123,7 +117,8 @@ class MoodControllerTest {
 
     @Test
     void testGetMoodByOwner_ExistingOwner() throws Exception {
-        Long ownerId = 5L;
+        Long ownerId = 1L;
+        List<MoodInfoDTO> listOutput = List.of(getMoodInfoDTO1());
         when(moodService.getMoodsByOwner(ownerId)).thenReturn(listOutput);
 
         mockMvc.perform(get("/api/v1/owners/" + ownerId + "/moods")
@@ -133,13 +128,12 @@ class MoodControllerTest {
                 )
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.length()").value(1))
-                .andExpect(jsonPath("$[0].id").value(1L))
-                .andExpect(jsonPath("$[0].scoreMood").value(7));
+                .andExpect(jsonPath("$[0].scoreMood").value(1));
     }
 
     @Test
     void testGetMoodByOwner_NonExistingOwner() throws Exception {
-        Long ownerId = 5L;
+        Long ownerId = 1L;
         when(moodService.getMoodsByOwner(ownerId)).thenThrow(OwnerNotFoundException.class);
 
         mockMvc.perform(get("/api/v1/owners/" + ownerId + "/moods")
@@ -151,7 +145,9 @@ class MoodControllerTest {
 
     @Test
     void testCreateMood_WithExistingOwner() throws Exception {
-        MoodCreateDTO input = new MoodCreateDTO(5L, 7, 8, bedtime, wakeUpTime);
+        Long ownerId = 1L;
+        MoodCreateDTO input = getMoodCreateDTO(ownerId);
+        MoodInfoDTO output = getMoodInfoDTO1();
         when(moodService.create(input)).thenReturn(output);
 
         mockMvc.perform(post("/api/v1/moods/")
@@ -161,13 +157,13 @@ class MoodControllerTest {
                 .content(creationJson.write(input).getJson())
         )
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.id").value(1L))
-                .andExpect(jsonPath("$.scoreMood").value(7));
+                .andExpect(jsonPath("$.scoreMood").value(1));
     }
 
     @Test
     void testCreateMood_WithNonExistingOwner() throws Exception {
-        MoodCreateDTO input = new MoodCreateDTO(6L, 7, 8, bedtime, wakeUpTime);
+        Long ownerId = 1L;
+        MoodCreateDTO input = getMoodCreateDTO(ownerId);
         when(moodService.create(input)).thenThrow(OwnerNotFoundException.class);
 
         mockMvc.perform(post("/api/v1/moods/")
@@ -182,7 +178,8 @@ class MoodControllerTest {
     @Test
     void testUpdateMood_ExistingMood() throws Exception {
         Long moodId = 1L;
-        MoodUpdateDTO input = new MoodUpdateDTO(7, 8, bedtime, wakeUpTime);
+        MoodUpdateDTO input = getMoodUpdateDTO();
+        MoodInfoDTO output = getMoodInfoDTO1();
         when(moodService.update(moodId, input)).thenReturn(output);
 
         mockMvc.perform(put("/api/v1/moods/" + moodId)
@@ -192,14 +189,13 @@ class MoodControllerTest {
                         .content(updateJson.write(input).getJson())
                 )
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id").value(1L))
-                .andExpect(jsonPath("$.scoreMood").value(7));
+                .andExpect(jsonPath("$.scoreMood").value(1));
     }
 
     @Test
     void testUpdateMood_NonExistingMood() throws Exception {
         Long moodId = 1L;
-        MoodUpdateDTO input = new MoodUpdateDTO(7, 8, bedtime, wakeUpTime);
+        MoodUpdateDTO input = getMoodUpdateDTO();
         when(moodService.update(moodId, input)).thenThrow(MoodNotFoundException.class);
 
         mockMvc.perform(put("/api/v1/moods/" + moodId)

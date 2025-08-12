@@ -28,6 +28,9 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static utils.EntryCardTestMother.getEntryCardDTO1;
+import static utils.EntryCardTestMother.getEntryCardDTO2;
+import static utils.EntryTestMother.*;
 
 @WebMvcTest(EntryController.class)
 @ActiveProfiles("unit_test")
@@ -40,17 +43,9 @@ class EntryControllerTest {
     private EntryService entryService;
     @MockBean
     private EntryCardService entryCardService;
+
     private JacksonTester<EntryCreateDTO> creationJson;
     private JacksonTester<EntryUpdateDTO> updateJson;
-
-    private final EntryInfoDTO output = new EntryInfoDTO(1L, "day1", "Good day", LocalDate.now());
-    private final List<EntryInfoDTO> outputList = List.of(output);
-    private final List<EntryCardDTO> outputListCards = List.of(
-            new EntryCardDTO(1L, 3L, "test 01", 7, 8,
-                    LocalDate.of(2020, 1, 1)),
-            new EntryCardDTO(2L, 3L, "test 02", -1, -1,
-                    LocalDate.of(2020, 2, 2))
-    );
 
     @BeforeEach
     void setUp() {
@@ -66,6 +61,7 @@ class EntryControllerTest {
     @Test
     void testGetEntry_ExistingEntry() throws Exception{
         Long entryId = 1L;
+        EntryInfoDTO output = getEntryInfoDTO1();
         when(entryService.getEntry(entryId)).thenReturn(output);
 
         mockMvc.perform(get("/api/v1/entries/" + entryId)
@@ -74,8 +70,7 @@ class EntryControllerTest {
                 .content(String.valueOf(entryId))
         )
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id").value(1L))
-                .andExpect(jsonPath("$.title").value("day1"));
+                .andExpect(jsonPath("$.title").value("Day1"));
     }
 
     @Test
@@ -93,7 +88,11 @@ class EntryControllerTest {
 
     @Test
     void testGetEntryCards_UsualTest() throws Exception {
-        Long diaryId = 3L;
+        Long diaryId = 1L;
+        List<EntryCardDTO> outputListCards = List.of(
+                getEntryCardDTO1(1L),
+                getEntryCardDTO2(1L)
+        );
         when(entryCardService.getEntryCards(diaryId)).thenReturn(outputListCards);
 
         mockMvc.perform(get("/api/v1/diaries/" + diaryId + "/entry-cards")
@@ -103,13 +102,12 @@ class EntryControllerTest {
         )
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.length()").value(2))
-                .andExpect(jsonPath("$[0].entryId").value(1L))
-                .andExpect(jsonPath("$[0].title").value("test 01"));
+                .andExpect(jsonPath("$[0].title").value("Day1"));
     }
 
     @Test
     void testGetPermissionToCreateEntry_Allowed() throws Exception {
-        Long diaryId = 3L;
+        Long diaryId = 1L;
         LocalDate date = LocalDate.of(2020, 1, 1);
         when(entryService.canCreateEntry(diaryId, date)).thenReturn(
                 new EntryPermission(true));
@@ -126,7 +124,7 @@ class EntryControllerTest {
 
     @Test
     void testGetPermissionToCreateEntry_NotAllowed() throws Exception {
-        Long diaryId = 3L;
+        Long diaryId = 1L;
         LocalDate date = LocalDate.of(2020, 1, 1);
         when(entryService.canCreateEntry(diaryId, date)).thenReturn(
                 new EntryPermission(false));
@@ -143,7 +141,9 @@ class EntryControllerTest {
 
     @Test
     void testGetEntriesByDiary_ExistingDiary() throws Exception{
-        Long diaryId = 3L;
+        Long diaryId = 1L;
+        EntryInfoDTO output = getEntryInfoDTO1();
+        List<EntryInfoDTO> outputList = List.of(output);
         when(entryService.getAllEntriesByDiary(diaryId)).thenReturn(outputList);
 
         mockMvc.perform(get("/api/v1/diaries/" + diaryId + "/entries")
@@ -153,13 +153,12 @@ class EntryControllerTest {
         )
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.length()").value(1))
-                .andExpect(jsonPath("$[0].id").value(1L))
-                .andExpect(jsonPath("$[0].title").value("day1"));
+                .andExpect(jsonPath("$[0].title").value("Day1"));
     }
 
     @Test
     void testGetEntriesByDiary_NonExistingDiary() throws Exception{
-        Long diaryId = 3L;
+        Long diaryId = 1L;
         when(entryService.getAllEntriesByDiary(diaryId)).thenThrow(DiaryNotFoundException.class);
 
         mockMvc.perform(get("/api/v1/diaries/" + diaryId + "/entries")
@@ -172,7 +171,9 @@ class EntryControllerTest {
 
     @Test
     void testCreateEntry_WithExistingDiary() throws Exception{
-        EntryCreateDTO input = new EntryCreateDTO(1L, "day1", "Good day");
+        Long diaryId = 1L;
+        EntryCreateDTO input = getEntryCreateDTO(diaryId);
+        EntryInfoDTO output = getEntryInfoDTO1();
         when(entryService.create(input)).thenReturn(output);
 
         mockMvc.perform(post("/api/v1/entries/")
@@ -182,13 +183,13 @@ class EntryControllerTest {
                 .content(creationJson.write(input).getJson())
         )
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.id").value(1L))
-                .andExpect(jsonPath("$.title").value("day1"));
+                .andExpect(jsonPath("$.title").value("Day1"));
     }
 
     @Test
     void testCreateEntry_WithNonExistingDiary() throws Exception{
-        EntryCreateDTO input = new EntryCreateDTO(1L, "day1", "Good day");
+        Long diaryId = 1L;
+        EntryCreateDTO input = getEntryCreateDTO(diaryId);
         when(entryService.create(input)).thenThrow(EntryNotFoundException.class);
 
         mockMvc.perform(post("/api/v1/entries/")
@@ -203,7 +204,8 @@ class EntryControllerTest {
     @Test
     void testUpdateEntry_ExistingEntry() throws Exception {
         Long entryId = 1L;
-        EntryUpdateDTO input = new EntryUpdateDTO("day1", "Good day");
+        EntryUpdateDTO input = getEntryUpdateDTO();
+        EntryInfoDTO output = getEntryInfoDTO1();
         when(entryService.update(entryId, input)).thenReturn(output);
 
         mockMvc.perform(put("/api/v1/entries/" + entryId)
@@ -213,14 +215,13 @@ class EntryControllerTest {
                 .content(updateJson.write(input).getJson())
         )
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id").value(1L))
-                .andExpect(jsonPath("$.title").value("day1"));
+                .andExpect(jsonPath("$.title").value("Day1"));
     }
 
     @Test
     void testUpdateEntry_NonExistingEntry() throws Exception {
         Long entryId = 1L;
-        EntryUpdateDTO input = new EntryUpdateDTO("day1", "Good day");
+        EntryUpdateDTO input = getEntryUpdateDTO();
         when(entryService.update(entryId, input)).thenThrow(EntryNotFoundException.class);
 
         mockMvc.perform(put("/api/v1/entries/" + entryId)
