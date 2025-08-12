@@ -52,12 +52,15 @@ class OwnerServiceTest {
 
     @Test
     void testLoginOwner_IncorrectPassword() {
-        Owner gotOwner = getOwner();
-        when(encoder.matches(password, password)).thenReturn(false);
+        String incorrectPassword = "abc123";
+        Owner gotOwner = getOwnerBuilder()
+                .withPassword(incorrectPassword)
+                .build();
+        when(encoder.matches(incorrectPassword, incorrectPassword)).thenReturn(false);
         when(ownerRepo.getByLogin(login)).thenReturn(Optional.of(gotOwner));
 
         assertThrows(InvalidCredentialsException.class,
-                () -> service.loginOwner(login, password));
+                () -> service.loginOwner(login, incorrectPassword));
     }
 
     @Test

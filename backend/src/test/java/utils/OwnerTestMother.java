@@ -15,7 +15,10 @@ public class OwnerTestMother {
         return new OwnerInfoDTO(null,"Ivan", birthDate, login, LocalDate.now());
     }
     public static Owner getOwner() {
-        return new Owner("Ivan", birthDate, login, password);
+        return new OwnerTestBuilder().build();
+    }
+    public static OwnerTestBuilder getOwnerBuilder() {
+        return new OwnerTestBuilder();
     }
     public static OwnerCreateDTO getOwnerCreateDTO() {
         return new OwnerCreateDTO("Ivan", birthDate, login, password);
