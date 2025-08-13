@@ -4,6 +4,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.test.context.ActiveProfiles;
 import org.srd.ediary.domain.model.Diary;
 import org.srd.ediary.domain.model.Entry;
@@ -42,7 +44,7 @@ class EntryRepositoryAdapterTest {
     }
 
     @Test
-    void testSave() {
+    void testSave_Correct() {
         Entry entry = getEntry1();
         entry.setDiary(diary);
 
@@ -54,7 +56,17 @@ class EntryRepositoryAdapterTest {
     }
 
     @Test
-    void testGetByID() {
+    void testSave_NullTitle() {
+        Entry entry = getEntry1();
+        entry.setDiary(diary);
+        entry.setTitle(null);
+
+        assertThrows(DataIntegrityViolationException.class,
+                () -> repoEntry.save(entry));
+    }
+
+    @Test
+    void testGetByID_Exist() {
         Entry entry = getEntry1();
         entry.setDiary(diary);
         Entry savedEntry = repoEntry.save(entry);
@@ -67,7 +79,16 @@ class EntryRepositoryAdapterTest {
     }
 
     @Test
-    void testDelete() {
+    void testGetByID_NonExist() {
+        Long nonExistingEntryId = -1L;
+
+        Optional<Entry> gotEntry = repoEntry.getByID(nonExistingEntryId);
+
+        assertTrue(gotEntry.isEmpty());
+    }
+
+    @Test
+    void testDelete_Correct() {
         Entry entry = getEntry1();
         entry.setDiary(diary);
         Entry savedEntry = repoEntry.save(entry);
@@ -79,7 +100,7 @@ class EntryRepositoryAdapterTest {
     }
 
     @Test
-    void testGetAllByDiary() {
+    void testGetAllByDiary_Exist() {
         Entry entry1 = getEntry1();
         entry1.setDiary(diary);
         Entry entry2 = getEntry1();
@@ -90,6 +111,15 @@ class EntryRepositoryAdapterTest {
         List<Entry> entries = repoEntry.getAllByDiary(diary.getId());
 
         assertEquals(2, entries.size());
+    }
+
+    @Test
+    void testGetAllByDiary_NonExist() {
+        Long diaryId = -1L;
+
+        List<Entry> entries = repoEntry.getAllByDiary(diaryId);
+
+        assertEquals(0, entries.size());
     }
 
     @Test

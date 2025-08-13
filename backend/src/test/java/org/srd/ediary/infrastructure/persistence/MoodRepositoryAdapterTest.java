@@ -4,6 +4,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.test.context.ActiveProfiles;
 import org.srd.ediary.domain.model.Mood;
 import org.srd.ediary.domain.model.Owner;
@@ -35,7 +36,7 @@ class MoodRepositoryAdapterTest {
     }
 
     @Test
-    void testSave() {
+    void testSave_Correct() {
         Mood mood = getMood1();
         mood.setOwner(owner);
 
@@ -47,7 +48,16 @@ class MoodRepositoryAdapterTest {
     }
 
     @Test
-    void testGetByID() {
+    void testSave_NullOwner() {
+        Mood mood = getMood1();
+        mood.setOwner(null);
+
+        assertThrows(DataIntegrityViolationException.class,
+                () -> repoMood.save(mood));
+    }
+
+    @Test
+    void testGetByID_Exist() {
         Mood mood = getMood1();
         mood.setOwner(owner);
         Mood savedMood = repoMood.save(mood);
@@ -60,7 +70,16 @@ class MoodRepositoryAdapterTest {
     }
 
     @Test
-    void testDelete() {
+    void testGetByID_NonExist() {
+        Long nonExistingMoodId = -1L;
+
+        Optional<Mood> gotMood = repoMood.getByID(nonExistingMoodId);
+
+        assertTrue(gotMood.isEmpty());
+    }
+
+    @Test
+    void testDelete_Correct() {
         Mood mood = getMood1();
         mood.setOwner(owner);
         Mood savedMood = repoMood.save(mood);
@@ -72,7 +91,7 @@ class MoodRepositoryAdapterTest {
     }
 
     @Test
-    void testGetAllByOwner() {
+    void testGetAllByOwner_ExistingOwner() {
         Mood mood1 = getMood1();
         mood1.setOwner(owner);
         Mood mood2 = getMood1();
@@ -83,6 +102,15 @@ class MoodRepositoryAdapterTest {
         List<Mood> moods = repoMood.getAllByOwner(owner.getId());
 
         assertEquals(2, moods.size());
+    }
+
+    @Test
+    void testGetAllByOwner_NonExistingOwner() {
+        Long ownerId = -1L;
+
+        List<Mood> moods = repoMood.getAllByOwner(ownerId);
+
+        assertEquals(0, moods.size());
     }
 
     @Test

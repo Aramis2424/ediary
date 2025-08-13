@@ -4,6 +4,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.test.context.ActiveProfiles;
 import org.srd.ediary.domain.model.Diary;
 import org.srd.ediary.domain.model.Owner;
@@ -33,7 +34,7 @@ class DiaryRepositoryAdapterTest {
     }
 
     @Test
-    void testSave() {
+    void testSave_Correct() {
         Diary diary = getDiary1();
         diary.setOwner(owner);
 
@@ -45,7 +46,15 @@ class DiaryRepositoryAdapterTest {
     }
 
     @Test
-    void testGetByID() {
+    void testSave_UnsavedTransientOwner() {
+        Diary diary = getDiary1();
+
+        assertThrows(InvalidDataAccessApiUsageException.class,
+                () -> repoDiary.save(diary));
+    }
+
+    @Test
+    void testGetByID_Exist() {
         Diary diary = getDiary1();
         diary.setOwner(owner);
         Diary savedDiary = repoDiary.save(diary);
@@ -58,7 +67,16 @@ class DiaryRepositoryAdapterTest {
     }
 
     @Test
-    void testDelete() {
+    void testGetByID_NonExist() {
+        Long nonExistingDiaryId = -1L;
+
+        Optional<Diary> gotDiary = repoDiary.getByID(nonExistingDiaryId);
+
+        assertTrue(gotDiary.isEmpty());
+    }
+
+    @Test
+    void testDelete_Correct() {
         Diary diary = getDiary1();
         diary.setOwner(owner);
         Diary savedDiary = repoDiary.save(diary);
@@ -70,7 +88,7 @@ class DiaryRepositoryAdapterTest {
     }
 
     @Test
-    void testGetAllByOwner() {
+    void testGetAllByOwner_Exist() {
         Diary diary1 = getDiary1();
         diary1.setOwner(owner);
         Diary diary2 = getDiary1();
@@ -81,5 +99,14 @@ class DiaryRepositoryAdapterTest {
         List<Diary> diaries = repoDiary.getAllByOwner(owner.getId());
 
         assertEquals(2, diaries.size());
+    }
+
+    @Test
+    void testGetAllByOwner_nonExist() {
+        Long ownerId = -1L;
+
+        List<Diary> diaries = repoDiary.getAllByOwner(ownerId);
+
+        assertEquals(0, diaries.size());
     }
 }
