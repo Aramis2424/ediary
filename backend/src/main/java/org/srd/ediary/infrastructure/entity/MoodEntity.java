@@ -21,17 +21,17 @@ public class MoodEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "mood_id")
     private Long id;
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "owner_fk")
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "owner_fk", nullable = false)
     private OwnerEntity owner;
-    @Column(name = "score_mood")
+    @Column(name = "score_mood", nullable = false)
     private int scoreMood;
-    @Column(name = "score_productivity")
+    @Column(name = "score_productivity", nullable = false)
     private int scoreProductivity;
-    @Column(name = "bedtime")
+    @Column(name = "bedtime", nullable = false)
     private LocalDateTime bedtime;
-    @Column(name = "wake_up_time")
+    @Column(name = "wake_up_time", nullable = false)
     private LocalDateTime wakeUpTime;
-    @Column(name = "created_date")
+    @Column(name = "created_date", nullable = false)
     private LocalDate createdAt;
 }

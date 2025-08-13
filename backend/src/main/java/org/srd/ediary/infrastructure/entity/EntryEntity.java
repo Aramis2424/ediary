@@ -21,12 +21,13 @@ public class EntryEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "entry_id")
     private Long id;
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "diary_fk")
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "diary_fk", nullable = false)
     private DiaryEntity diary;
+    @Column(length = 63, nullable = false)
     private String title;
     @Column(columnDefinition = "TEXT")
     private String content;
-    @Column(name = "created_date")
+    @Column(name = "created_date", nullable = false)
     private LocalDate createdDate;
 }

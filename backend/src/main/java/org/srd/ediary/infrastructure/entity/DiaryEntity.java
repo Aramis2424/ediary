@@ -20,15 +20,15 @@ public class DiaryEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "diary_id")
     private Long id;
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "owner_fk")
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "owner_fk", nullable = false)
     private OwnerEntity owner;
-    @Column(length = 255)
+    @Column(length = 63, nullable = false)
     private String title;
-    @Column(length = 255)
+    @Column(length = 127)
     private String description;
-    @Column(name = "cnt_entries")
+    @Column(name = "cnt_entries", nullable = false)
     private int cntEntry;
-    @Column(name = "created_date")
+    @Column(name = "created_date", nullable = false)
     private LocalDate createdDate;
 }
