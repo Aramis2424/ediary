@@ -36,7 +36,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest(classes = EdiaryApplication.class)
 @AutoConfigureMockMvc
-@ActiveProfiles("integrationTest")
+@ActiveProfiles("integration_test")
 public class MoodSecurityTest {
     @Autowired
     private MockMvc mockMvc;
