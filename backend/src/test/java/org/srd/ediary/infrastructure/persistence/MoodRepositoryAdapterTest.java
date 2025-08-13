@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static utils.MoodTestMother.getMood1;
 import static utils.OwnerTestMother.getOwner;
 
 @DataJpaTest
@@ -22,63 +23,64 @@ class MoodRepositoryAdapterTest {
     @Autowired
     private SpringOwnerRepository springOwnerRepo;
     @Autowired
-    private SpringMoodRepository springRepo;
-    private MoodRepositoryAdapter repo;
+    private SpringMoodRepository springMoodRepo;
+    private MoodRepositoryAdapter repoMood;
 
     private Owner owner = getOwner();
-    private final LocalDateTime bedtime = LocalDateTime
-            .of(2020, 1,1, 22,30);
-    private final LocalDateTime wakeUpTime = LocalDateTime
-            .of(2020, 1,2, 8,30);
 
     @BeforeEach
     void setUp() {
-        repo = new MoodRepositoryAdapter(springRepo);
+        repoMood = new MoodRepositoryAdapter(springMoodRepo);
         owner = new OwnerRepositoryAdapter(springOwnerRepo).save(owner);
     }
 
     @Test
     void testSave() {
-        Mood mood = new Mood(owner, 7, 8, bedtime, wakeUpTime);
+        Mood mood = getMood1();
+        mood.setOwner(owner);
 
-        Mood savedMood = repo.save(mood);
+        Mood savedMood = repoMood.save(mood);
 
         assertNotNull(savedMood.getId());
-        assertEquals(7, savedMood.getScoreMood());
-        assertEquals(8, savedMood.getScoreProductivity());
+        assertEquals(1, savedMood.getScoreMood());
+        assertEquals(10, savedMood.getScoreProductivity());
     }
 
     @Test
     void testGetByID() {
-        Mood mood = new Mood(owner, 7, 8, bedtime, wakeUpTime);
-        Mood savedMood = repo.save(mood);
+        Mood mood = getMood1();
+        mood.setOwner(owner);
+        Mood savedMood = repoMood.save(mood);
 
-        Optional<Mood> gotMood = repo.getByID(savedMood.getId());
+        Optional<Mood> gotMood = repoMood.getByID(savedMood.getId());
 
         assertTrue(gotMood.isPresent());
-        assertEquals(7, savedMood.getScoreMood());
-        assertEquals(8, savedMood.getScoreProductivity());
+        assertEquals(1, savedMood.getScoreMood());
+        assertEquals(10, savedMood.getScoreProductivity());
     }
 
     @Test
     void testDelete() {
-        Mood mood = new Mood(owner, 7, 8, bedtime, wakeUpTime);
-        Mood savedMood = repo.save(mood);
+        Mood mood = getMood1();
+        mood.setOwner(owner);
+        Mood savedMood = repoMood.save(mood);
 
-        repo.delete(savedMood.getId());
+        repoMood.delete(savedMood.getId());
 
-        Optional<Mood> gotMood = repo.getByID(savedMood.getId());
+        Optional<Mood> gotMood = repoMood.getByID(savedMood.getId());
         assertTrue(gotMood.isEmpty());
     }
 
     @Test
     void testGetAllByOwner() {
-        Mood mood1 = new Mood(owner, 7, 8, bedtime, wakeUpTime);
-        Mood mood2 = new Mood(owner, 5, 6, bedtime, wakeUpTime);
-        repo.save(mood1);
-        repo.save(mood2);
+        Mood mood1 = getMood1();
+        mood1.setOwner(owner);
+        Mood mood2 = getMood1();
+        mood2.setOwner(owner);
+        repoMood.save(mood1);
+        repoMood.save(mood2);
 
-        List<Mood> moods = repo.getAllByOwner(owner.getId());
+        List<Mood> moods = repoMood.getAllByOwner(owner.getId());
 
         assertEquals(2, moods.size());
     }
@@ -86,21 +88,22 @@ class MoodRepositoryAdapterTest {
     @Test
     void testGetByOwnerIdAndCreatedDate_Exist() {
         LocalDate date = LocalDate.now();
-        Mood mood = new Mood(owner, 7, 8, bedtime, wakeUpTime);
-        repo.save(mood);
+        Mood mood = getMood1();
+        mood.setOwner(owner);
+        repoMood.save(mood);
 
-        Optional<Mood> gotMood = repo.getByOwnerIdAndCreatedDate(owner.getId(), date);
+        Optional<Mood> gotMood = repoMood.getByOwnerIdAndCreatedDate(owner.getId(), date);
 
         assertTrue(gotMood.isPresent());
-        assertEquals(7, gotMood.get().getScoreMood());
-        assertEquals(8, gotMood.get().getScoreProductivity());
+        assertEquals(1, gotMood.get().getScoreMood());
+        assertEquals(10, gotMood.get().getScoreProductivity());
     }
 
     @Test
     void testGetByDiaryIdAndCreatedDate_NonExist() {
         LocalDate date = LocalDate.now();
 
-        Optional<Mood> gotMood = repo.getByOwnerIdAndCreatedDate(owner.getId(), date);
+        Optional<Mood> gotMood = repoMood.getByOwnerIdAndCreatedDate(owner.getId(), date);
 
         assertTrue(gotMood.isEmpty());
     }

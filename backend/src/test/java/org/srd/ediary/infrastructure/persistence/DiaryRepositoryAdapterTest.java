@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static utils.DiaryTestMother.getDiary1;
 import static utils.OwnerTestMother.getOwner;
 
 @DataJpaTest
@@ -20,59 +21,64 @@ class DiaryRepositoryAdapterTest {
     @Autowired
     private SpringOwnerRepository springOwnerRepo;
     @Autowired
-    private SpringDiaryRepository springRepo;
-    private DiaryRepositoryAdapter repo;
+    private SpringDiaryRepository springDiaryRepo;
+    private DiaryRepositoryAdapter repoDiary;
 
     private Owner owner = getOwner();
 
     @BeforeEach
     void setUp() {
-        repo = new DiaryRepositoryAdapter(springRepo);
+        repoDiary = new DiaryRepositoryAdapter(springDiaryRepo);
         owner = new OwnerRepositoryAdapter(springOwnerRepo).save(owner);
     }
 
     @Test
     void testSave() {
-        Diary diary = new Diary(owner, "diary", "about");
+        Diary diary = getDiary1();
+        diary.setOwner(owner);
 
-        Diary savedDiary = repo.save(diary);
+        Diary savedDiary = repoDiary.save(diary);
 
         assertNotNull(savedDiary.getId());
-        assertEquals("diary", savedDiary.getTitle());
-        assertEquals("about", savedDiary.getDescription());
+        assertEquals("d1", savedDiary.getTitle());
+        assertEquals("about1", savedDiary.getDescription());
     }
 
     @Test
     void testGetByID() {
-        Diary diary = new Diary(owner, "diary", "about");
-        Diary savedDiary = repo.save(diary);
+        Diary diary = getDiary1();
+        diary.setOwner(owner);
+        Diary savedDiary = repoDiary.save(diary);
 
-        Optional<Diary> gotDiary = repo.getByID(savedDiary.getId());
+        Optional<Diary> gotDiary = repoDiary.getByID(savedDiary.getId());
 
         assertTrue(gotDiary.isPresent());
-        assertEquals("diary", gotDiary.get().getTitle());
-        assertEquals("about", gotDiary.get().getDescription());
+        assertEquals("d1", gotDiary.get().getTitle());
+        assertEquals("about1", gotDiary.get().getDescription());
     }
 
     @Test
     void testDelete() {
-        Diary diary = new Diary(owner, "diary", "about");
-        Diary savedDiary = repo.save(diary);
+        Diary diary = getDiary1();
+        diary.setOwner(owner);
+        Diary savedDiary = repoDiary.save(diary);
 
-        repo.delete(savedDiary.getId());
+        repoDiary.delete(savedDiary.getId());
 
-        Optional<Diary> gotDiary = repo.getByID(savedDiary.getId());
+        Optional<Diary> gotDiary = repoDiary.getByID(savedDiary.getId());
         assertTrue(gotDiary.isEmpty());
     }
 
     @Test
     void testGetAllByOwner() {
-        Diary diary1 = new Diary(owner, "diary1", "about1");
-        Diary diary2 = new Diary(owner, "diary2", "about2");
-        repo.save(diary1);
-        repo.save(diary2);
+        Diary diary1 = getDiary1();
+        diary1.setOwner(owner);
+        Diary diary2 = getDiary1();
+        diary2.setOwner(owner);
+        repoDiary.save(diary1);
+        repoDiary.save(diary2);
 
-        List<Diary> diaries = repo.getAllByOwner(owner.getId());
+        List<Diary> diaries = repoDiary.getAllByOwner(owner.getId());
 
         assertEquals(2, diaries.size());
     }

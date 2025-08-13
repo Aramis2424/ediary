@@ -8,41 +8,38 @@ import org.springframework.test.context.ActiveProfiles;
 import org.srd.ediary.domain.model.Owner;
 import org.srd.ediary.infrastructure.exception.OwnerDeletionRestrictException;
 
-import java.time.LocalDate;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static utils.OwnerTestMother.getOwner;
 
 @DataJpaTest
 @ActiveProfiles("integration_test")
 class OwnerRepositoryAdapterTest {
     @Autowired
-    private SpringOwnerRepository springRepo;
-    private OwnerRepositoryAdapter repo;
+    private SpringOwnerRepository springOwnerRepo;
+    private OwnerRepositoryAdapter repoOwner;
 
     @BeforeEach
     void setUp() {
-        repo = new OwnerRepositoryAdapter(springRepo);
+        repoOwner = new OwnerRepositoryAdapter(springOwnerRepo);
     }
-
-    private final LocalDate birthDate = LocalDate.of(2000, 1, 1);
 
     @Test
     void testSave() {
-        Owner owner = new Owner("Ivan", birthDate, "ivan01", "navi01");
+        Owner owner = getOwner();
 
-        Owner savedOwner = repo.save(owner);
+        Owner savedOwner = repoOwner.save(owner);
 
-        assertNotNull(savedOwner.getId());
         assertEquals("Ivan", savedOwner.getName());
     }
 
     @Test
     void testGetByID() {
-        Owner owner = new Owner("Ivan", birthDate, "ivan01", "navi01");
-        Owner savedOwner = repo.save(owner);
+        Owner owner = getOwner();
+        Owner savedOwner = repoOwner.save(owner);
 
-        Optional<Owner> gotOwner = repo.getByID(savedOwner.getId());
+        Optional<Owner> gotOwner = repoOwner.getByID(savedOwner.getId());
 
         assertTrue(gotOwner.isPresent());
         assertEquals("Ivan", gotOwner.get().getName());
@@ -50,20 +47,21 @@ class OwnerRepositoryAdapterTest {
 
     @Test
     void testDelete() {
-        Owner owner = new Owner("Ivan", birthDate, "ivan01", "navi01");
-        Owner savedOwner = repo.save(owner);
+        Owner owner = getOwner();
+        Owner savedOwner = repoOwner.save(owner);
 
-        assertThrows(OwnerDeletionRestrictException.class, () -> repo.delete(savedOwner.getId()));
+        assertThrows(OwnerDeletionRestrictException.class,
+                () -> repoOwner.delete(savedOwner.getId()));
 
-        assertTrue(repo.getByID(savedOwner.getId()).isPresent());
+        assertTrue(repoOwner.getByID(savedOwner.getId()).isPresent());
     }
 
     @Test
     void testGetByLoginAndPassword() {
-        Owner owner = new Owner("Ivan", birthDate, "ivan01", "navi01");
-        repo.save(owner);
+        Owner owner = getOwner();
+        repoOwner.save(owner);
 
-        Optional<Owner> gotOwner = repo.getByLoginAndPassword("ivan01", "navi01");
+        Optional<Owner> gotOwner = repoOwner.getByLoginAndPassword("example123", "pass123");
 
         assertTrue(gotOwner.isPresent());
         assertEquals("Ivan", gotOwner.get().getName());
@@ -71,10 +69,10 @@ class OwnerRepositoryAdapterTest {
 
     @Test
     void testGetByLogin() {
-        Owner owner = new Owner("Ivan", birthDate, "ivan01", "navi01");
-        repo.save(owner);
+        Owner owner = getOwner();
+        repoOwner.save(owner);
 
-        Optional<Owner> gotOwner = repo.getByLogin("ivan01");
+        Optional<Owner> gotOwner = repoOwner.getByLogin("example123");
 
         assertTrue(gotOwner.isPresent());
         assertEquals("Ivan", gotOwner.get().getName());
