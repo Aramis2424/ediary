@@ -33,6 +33,8 @@ import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static utils.DiaryTestMother.*;
+import static utils.OwnerTestMother.getOwner;
 
 @SpringBootTest(classes = EdiaryApplication.class)
 @AutoConfigureMockMvc
@@ -50,9 +52,8 @@ public class DiarySecurityTest {
     private JacksonTester<DiaryCreateDTO> creationJson;
     private JacksonTester<DiaryUpdateDTO> updateJson;
 
-    private final LocalDate birthdate = LocalDate.of(2000, 1, 1);
-    private final Owner owner = new Owner("Ivan", birthdate, "ivan01", "abc123");
-    private final Diary diaryFromRepo = new Diary(owner, "d1", "of1");
+    private final Owner owner = getOwner();
+    private final Diary diaryFromRepo = getDiary1();
     private final List<Diary> listDiaryFromRepo = List.of(diaryFromRepo);
     private final static long validOwnerId = 1L;
     private final static long invalidOwnerId = 2L;
@@ -80,7 +81,7 @@ public class DiarySecurityTest {
                 )
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.title").value("d1"))
-                .andExpect(jsonPath("$.description").value("of1"));
+                .andExpect(jsonPath("$.description").value("about1"));
 
         verify(diaryAccess, times(1)).isAllowed(diaryId, validOwnerId);
     }
@@ -129,7 +130,7 @@ public class DiarySecurityTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.length()").value(1))
                 .andExpect(jsonPath("$[0].title").value("d1"))
-                .andExpect(jsonPath("$[0].description").value("of1"));
+                .andExpect(jsonPath("$[0].description").value("about1"));
     }
 
     @Test
@@ -150,7 +151,7 @@ public class DiarySecurityTest {
     @WithMockOwnerDetails(id = validOwnerId)
     void testCreateDiary_WithAccess() throws Exception {
         Long ownerId = validOwnerId;
-        DiaryCreateDTO input = new DiaryCreateDTO(ownerId, "d1", "of1");
+        DiaryCreateDTO input = getDiaryCreateDTO(ownerId);
         when(diaryRepo.save(any(Diary.class))).thenReturn(diaryFromRepo);
         when(ownerRepo.getByID(validOwnerId)).thenReturn(Optional.of(owner));
 
@@ -162,7 +163,7 @@ public class DiarySecurityTest {
                 )
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.title").value("d1"))
-                .andExpect(jsonPath("$.description").value("of1"));
+                .andExpect(jsonPath("$.description").value("about1"));
 
         verify(diaryRepo, times(1)).save(any(Diary.class));
     }
@@ -171,7 +172,7 @@ public class DiarySecurityTest {
     @WithMockOwnerDetails(id = validOwnerId)
     void testCreateDiary_WithNoAccess() throws Exception {
         Long ownerId = invalidOwnerId;
-        DiaryCreateDTO input = new DiaryCreateDTO(ownerId, "d1", "of1");
+        DiaryCreateDTO input = getDiaryCreateDTO(ownerId);
         when(diaryRepo.save(any(Diary.class))).thenReturn(diaryFromRepo);
 
         mockMvc.perform(post("/api/v1/diaries")
@@ -189,7 +190,7 @@ public class DiarySecurityTest {
     @WithMockOwnerDetails(id = validOwnerId)
     void testUpdateDiary_WithAccess() throws Exception {
         Long diaryId = 1L;
-        DiaryUpdateDTO input = new DiaryUpdateDTO("d1", "of1");
+        DiaryUpdateDTO input = getDiaryUpdateDTO();
         when(diaryRepo.getByID(diaryId)).thenReturn(Optional.of(diaryFromRepo));
         when(diaryRepo.save(any(Diary.class))).thenReturn(diaryFromRepo);
         when(diaryAccess.isAllowed(diaryId, validOwnerId)).thenReturn(true);
@@ -201,8 +202,8 @@ public class DiarySecurityTest {
                         .content(updateJson.write(input).getJson())
                 )
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.title").value("d1"))
-                .andExpect(jsonPath("$.description").value("of1"));
+                .andExpect(jsonPath("$.title").value("d2"))
+                .andExpect(jsonPath("$.description").value("about2"));
 
         verify(diaryRepo, times(1)).save(any(Diary.class));
     }
@@ -211,7 +212,7 @@ public class DiarySecurityTest {
     @WithMockOwnerDetails(id = invalidOwnerId)
     void testUpdateDiary_WithNoAccess() throws Exception {
         Long diaryId = 1L;
-        DiaryUpdateDTO input = new DiaryUpdateDTO("d1", "of1");
+        DiaryUpdateDTO input = getDiaryUpdateDTO();
         when(diaryRepo.getByID(diaryId)).thenReturn(Optional.of(diaryFromRepo));
         when(diaryRepo.save(any(Diary.class))).thenReturn(diaryFromRepo);
         when(diaryAccess.isAllowed(diaryId, invalidOwnerId)).thenReturn(false);

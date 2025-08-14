@@ -29,12 +29,15 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static utils.OwnerTestMother.getOwner;
+import static utils.OwnerTestMother.getOwnerBuilder;
 
 @SpringBootTest(classes = EdiaryApplication.class)
 @AutoConfigureMockMvc
 @ActiveProfiles("integration_test")
 public class TokenGenerationTest {
     @Autowired
+
     private MockMvc mockMvc;
     @MockBean
     private OwnerRepository ownerRepo;
@@ -42,11 +45,13 @@ public class TokenGenerationTest {
     private final PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
     private JacksonTester<TokenRequest> requestJson;
 
-    private final String login = "ivan01";
-    private final String password = "abc123";
-    private final LocalDate birthDate = LocalDate.of(2000, 1, 1);
+    private final String login = "example123";
+    private final String password = "pass123";
+    private final Owner owner = getOwnerBuilder()
+            .withLogin(login)
+            .withPassword(passwordEncoder.encode(password))
+            .build();
     private final TokenRequest tokenRequest = new TokenRequest(login, password);
-    private final Owner owner = new Owner("Ivan", birthDate, login, passwordEncoder.encode(password));
 
     @BeforeEach
     void setUp() {

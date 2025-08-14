@@ -33,6 +33,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static utils.MoodTestMother.*;
+import static utils.OwnerTestMother.getOwner;
 
 @SpringBootTest(classes = EdiaryApplication.class)
 @AutoConfigureMockMvc
@@ -50,13 +52,8 @@ public class MoodSecurityTest {
     private JacksonTester<MoodCreateDTO> creationJson;
     private JacksonTester<MoodUpdateDTO> updateJson;
 
-    private final LocalDateTime bedtime = LocalDateTime
-            .of(2020, 1,1, 22,30);
-    private final LocalDateTime wakeUpTime = LocalDateTime
-            .of(2020, 1,2, 8,30);
-    private final LocalDate birthdate = LocalDate.of(2000, 1, 1);
-    private final Owner owner = new Owner("Ivan", birthdate, "ivan01", "abc123");
-    private final Mood moodFromRepo = new Mood(owner, 7, 7, bedtime, wakeUpTime);
+    private final Owner owner = getOwner();
+    private final Mood moodFromRepo = getMood1();
     private final List<Mood> listMoodFromRepo = List.of(moodFromRepo);
     private final static long validOwnerId = 1L;
     private final static long invalidOwnerId = 2L;
@@ -83,7 +80,7 @@ public class MoodSecurityTest {
                         .content(String.valueOf(moodId))
                 )
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.scoreMood").value("7"));
+                .andExpect(jsonPath("$.scoreMood").value("1"));
 
         verify(moodAccess, times(1)).isAllowed(moodId, validOwnerId);
     }
@@ -131,7 +128,7 @@ public class MoodSecurityTest {
                 )
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.length()").value(1))
-                .andExpect(jsonPath("$[0].scoreMood").value(7));
+                .andExpect(jsonPath("$[0].scoreMood").value(1));
     }
 
     @Test
@@ -152,7 +149,7 @@ public class MoodSecurityTest {
     @WithMockOwnerDetails(id = validOwnerId)
     void testCreateMood_WithAccess() throws Exception {
         Long ownerId = validOwnerId;
-        MoodCreateDTO input = new MoodCreateDTO(ownerId, 7,7, bedtime, wakeUpTime);
+        MoodCreateDTO input = getMoodCreateDTO(ownerId);
         when(moodRepo.save(any(Mood.class))).thenReturn(moodFromRepo);
         when(ownerRepo.getByID(validOwnerId)).thenReturn(Optional.of(owner));
 
@@ -163,7 +160,7 @@ public class MoodSecurityTest {
                         .content(creationJson.write(input).getJson())
                 )
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.scoreMood").value(7));
+                .andExpect(jsonPath("$.scoreMood").value(1));
 
         verify(moodRepo, times(1)).save(any(Mood.class));
     }
@@ -172,7 +169,7 @@ public class MoodSecurityTest {
     @WithMockOwnerDetails(id = validOwnerId)
     void testCreateMood_WithNoAccess() throws Exception {
         Long ownerId = invalidOwnerId;
-        MoodCreateDTO input = new MoodCreateDTO(ownerId, 7,7, bedtime, wakeUpTime);
+        MoodCreateDTO input = getMoodCreateDTO(ownerId);
         when(moodRepo.save(any(Mood.class))).thenReturn(moodFromRepo);
 
         mockMvc.perform(post("/api/v1/moods")
@@ -190,7 +187,7 @@ public class MoodSecurityTest {
     @WithMockOwnerDetails(id = validOwnerId)
     void testUpdateMood_WithAccess() throws Exception {
         Long moodId = 1L;
-        MoodUpdateDTO input = new MoodUpdateDTO(7,7, bedtime, wakeUpTime);
+        MoodUpdateDTO input = getMoodUpdateDTO();
         when(moodRepo.getByID(moodId)).thenReturn(Optional.of(moodFromRepo));
         when(moodRepo.save(any(Mood.class))).thenReturn(moodFromRepo);
         when(moodAccess.isAllowed(moodId, validOwnerId)).thenReturn(true);
@@ -202,7 +199,7 @@ public class MoodSecurityTest {
                         .content(updateJson.write(input).getJson())
                 )
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.scoreMood").value(7));
+                .andExpect(jsonPath("$.scoreMood").value(1));
 
         verify(moodRepo, times(1)).save(any(Mood.class));
     }
@@ -211,7 +208,7 @@ public class MoodSecurityTest {
     @WithMockOwnerDetails(id = invalidOwnerId)
     void testUpdateMood_WithNoAccess() throws Exception {
         Long moodId = 1L;
-        MoodUpdateDTO input = new MoodUpdateDTO(7,7, bedtime, wakeUpTime);
+        MoodUpdateDTO input = getMoodUpdateDTO();
         when(moodRepo.getByID(moodId)).thenReturn(Optional.of(moodFromRepo));
         when(moodRepo.save(any(Mood.class))).thenReturn(moodFromRepo);
         when(moodAccess.isAllowed(moodId, invalidOwnerId)).thenReturn(false);
