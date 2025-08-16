@@ -2,7 +2,7 @@ package integration.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import integration.security.context.WithMockOwnerDetails;
+import integration.context.WithMockOwnerDetails;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,12 +17,9 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.srd.ediary.EdiaryApplication;
 import org.srd.ediary.application.dto.*;
 import org.srd.ediary.application.security.access.EntryAccess;
-import org.srd.ediary.application.security.access.MoodAccess;
 import org.srd.ediary.domain.model.Diary;
 import org.srd.ediary.domain.model.Entry;
-import org.srd.ediary.domain.model.Owner;
 import org.srd.ediary.domain.repository.EntryRepository;
-import org.srd.ediary.domain.repository.MoodRepository;
 import org.srd.ediary.domain.repository.DiaryRepository;
 
 import java.time.LocalDate;
@@ -36,7 +33,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static utils.DiaryTestMother.getDiary1;
 import static utils.EntryTestMother.*;
-import static utils.OwnerTestMother.getOwner;
 
 @SpringBootTest(classes = EdiaryApplication.class)
 @AutoConfigureMockMvc

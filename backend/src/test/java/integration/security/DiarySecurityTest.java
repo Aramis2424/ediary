@@ -2,7 +2,7 @@ package integration.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import integration.security.context.WithMockOwnerDetails;
+import integration.context.WithMockOwnerDetails;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,13 +10,11 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.json.JacksonTester;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithAnonymousUser;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.srd.ediary.EdiaryApplication;
-import org.srd.ediary.application.config.SecurityConfig;
 import org.srd.ediary.application.dto.DiaryCreateDTO;
 import org.srd.ediary.application.dto.DiaryUpdateDTO;
 import org.srd.ediary.application.security.access.DiaryAccess;
@@ -25,7 +23,6 @@ import org.srd.ediary.domain.model.Owner;
 import org.srd.ediary.domain.repository.DiaryRepository;
 import org.srd.ediary.domain.repository.OwnerRepository;
 
-import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 

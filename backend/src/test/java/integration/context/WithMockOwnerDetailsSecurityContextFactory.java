@@ -1,4 +1,4 @@
-package integration.security.context;
+package integration.context;
 
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;

@@ -2,7 +2,7 @@ package integration.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import integration.security.context.WithMockOwnerDetails;
+import integration.context.WithMockOwnerDetails;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +24,6 @@ import org.srd.ediary.domain.repository.MoodRepository;
 import org.srd.ediary.domain.repository.OwnerRepository;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 

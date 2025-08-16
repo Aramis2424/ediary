@@ -1,6 +1,6 @@
 package integration.security;
 
-import integration.security.context.WithMockOwnerDetails;
+import integration.context.WithMockOwnerDetails;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -15,8 +15,6 @@ import org.srd.ediary.application.security.access.EntryAccess;
 import org.srd.ediary.application.service.EntryService;
 import org.srd.ediary.application.service.MoodService;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 
 import static org.mockito.Mockito.*;
