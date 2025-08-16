@@ -9,7 +9,7 @@ import java.time.LocalDate;
 public class OwnerTestMother {
     public static final String login = "example123";
     public static final String password = "pass123";
-    private static final LocalDate birthDate = LocalDate.of(2000, 1, 1);
+    public static final LocalDate birthDate = LocalDate.of(2000, 1, 1);
 
     public static OwnerInfoDTO getOwnerInfoDTO() {
         return new OwnerInfoDTO(null,"Ivan", birthDate, login, LocalDate.now());
