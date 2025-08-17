@@ -39,6 +39,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static utils.EntryTestMother.getEntryUpdateDTO;
 
 @SpringBootTest(classes = EdiaryApplication.class)
 @AutoConfigureMockMvc
@@ -263,5 +264,44 @@ public class EntryE2ETest {
                         .header("Authorization", "Bearer " + token)
                 )
                 .andExpect(status().isForbidden());
+    }
+
+    @Test
+    void testUpdatingEntry_FullScenario() throws Exception {
+        EntryUpdateDTO input = getEntryUpdateDTO();
+
+        MvcResult diariesResult = mockMvc.perform(get("/api/v1/owners/" + ownerId + "/diaries")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .content(String.valueOf(ownerId))
+                        .header("Authorization", "Bearer " + token)
+                )
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.length()").value(2))
+                .andReturn();
+        String diariesBody = diariesResult.getResponse().getContentAsString();
+        String diaryId = JsonPath.read(diariesBody, "$[0].id").toString();
+
+        MvcResult entriesResult = mockMvc.perform(get("/api/v1/diaries/" + diaryId + "/entries")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .content(String.valueOf(diaryId))
+                        .header("Authorization", "Bearer " + token)
+                )
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.length()").value(3))
+                .andReturn();
+        String entryBody = entriesResult.getResponse().getContentAsString();
+        String entryId = JsonPath.read(entryBody, "$[0].id").toString();
+
+        mockMvc.perform(put("/api/v1/entries/" + entryId)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .characterEncoding("UTF-8")
+                        .accept(MediaType.APPLICATION_JSON)
+                        .content(updateJson.write(input).getJson())
+                        .header("Authorization", "Bearer " + token)
+                )
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.content").value("Good day 2"));
     }
 }
