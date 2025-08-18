@@ -40,6 +40,33 @@ jacocoTestReport {
 	}
 }
 
+tasks.register('uTest', Test) {
+	group = 'verification'
+	description = 'Runs only unit tests'
+	useJUnitPlatform()
+	testClassesDirs = sourceSets.test.output.classesDirs
+	classpath = sourceSets.test.runtimeClasspath
+	include '**/org/srd/ediary/**'
+}
+
+tasks.register('iTest', Test) {
+	group = 'verification'
+	description = 'Runs only integration tests'
+	useJUnitPlatform()
+	testClassesDirs = sourceSets.test.output.classesDirs
+	classpath = sourceSets.test.runtimeClasspath
+	include '**/integration/**'
+}
+
+tasks.register('eTest', Test) {
+	group = 'verification'
+	description = 'Runs only e2e tests'
+	useJUnitPlatform()
+	testClassesDirs = sourceSets.test.output.classesDirs
+	classpath = sourceSets.test.runtimeClasspath
+	include '**/e2e/**'
+}
+
 tasks.named('test', Test) {
 	useJUnitPlatform()
 	finalizedBy jacocoTestReport
