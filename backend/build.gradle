@@ -30,7 +30,7 @@ configurations {
 }
 
 def allureVersion = "2.25.0"
-def allurePath = 'allure.bat'
+def allurePath = System.getProperty("os.name").toLowerCase().contains("win") ? "allure.bat" : "allure"
 
 jacocoTestReport {
 	dependsOn test
@@ -82,6 +82,13 @@ tasks.register('alreport') {
 			commandLine allurePath, 'generate', '--clean', "build/allure-results",
 					'-o', "build/allure-report"
 		}
+	}
+}
+
+tasks.register('viewAllureReport') {
+	group = 'Verification'
+	description = 'Open allure report'
+	doLast {
 		exec {
 			commandLine allurePath, 'open', "build/allure-report"
 		}
