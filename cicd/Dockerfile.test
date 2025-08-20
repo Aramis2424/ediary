@@ -1,15 +1,23 @@
 FROM eclipse-temurin:20-jdk
 
+RUN apt-get update && apt-get install -y wget unzip \
+    && wget https://github.com/allure-framework/allure2/releases/download/2.25.0/allure-2.25.0.zip -O /tmp/allure.zip \
+    && unzip /tmp/allure.zip -d /opt/ \
+    && rm /tmp/allure.zip
+ENV PATH="/opt/allure-2.25.0/bin:${PATH}"
+
 WORKDIR /app
 
 COPY backend/gradlew backend/gradlew.bat backend/settings.gradle backend/build.gradle.kts* backend/build.gradle /app/
 COPY backend/gradle /app/gradle
 
-COPY backend/src /app/src
-
-COPY cicd /app/cicd
-
 RUN chmod +x ./gradlew
+
+ENV GRADLE_USER_HOME=/app/.gradle
+RUN ./gradlew --no-daemon build -x test || true
+
+COPY backend/src /app/src
+COPY cicd /app/cicd
 RUN chmod +x cicd/entrypoint.sh
 
 ENTRYPOINT ["./cicd/entrypoint.sh"]

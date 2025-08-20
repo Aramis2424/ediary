@@ -9,6 +9,9 @@ secrets.properties
 .env
 frontend/ediary_cli/gradle.properties
 
+# allure reports from cicd
+cicd/allure*/
+
 # Compiled class file
 *.class
 
