@@ -1,0 +1,15 @@
+version: "3.9"
+services:
+  app-test:
+    build:
+      context: ..
+      dockerfile: ./cicd/Dockerfile.test
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    env_file: 
+      - ../backend/dev.env
+    environment:
+      - TEST_TYPE=E2E
+      - TESTCONTAINERS_DOCKER_SOCKET_OVERRIDE=/var/run/docker.sock
+      - TESTCONTAINERS_HOST_OVERRIDE=host.docker.internal
+      - DOCKER_HOST=unix:///var/run/docker.sock
