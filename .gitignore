@@ -11,6 +11,7 @@ frontend/ediary_cli/gradle.properties
 
 # allure reports from cicd
 cicd/allure*/
+cicd/reports/
 
 # Compiled class file
 *.class
