@@ -2,6 +2,8 @@ package org.srd.ediary.application.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import io.qameta.allure.Epic;
+import io.qameta.allure.Feature;
 import lombok.NonNull;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -40,6 +42,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static utils.OwnerTestMother.getOwnerCreateDTO;
 import static utils.OwnerTestMother.getOwnerInfoDTO;
 
+@Epic("Unit Tests")
+@Feature("Controllers")
 @WebMvcTest(OwnerController.class)
 @ActiveProfiles("unit_test")
 class OwnerControllerTest {

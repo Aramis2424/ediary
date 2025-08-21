@@ -1,6 +1,8 @@
 package integration.service;
 
 import integration.context.WithMockOwnerDetails;
+import io.qameta.allure.Epic;
+import io.qameta.allure.Feature;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authorization.AuthorizationDeniedException;
@@ -14,6 +16,8 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 import static utils.DiaryTestMother.*;
 
+@Epic("Integration Tests")
+@Feature("Service")
 @WithMockOwnerDetails()
 public class DiaryServiceIT extends BaseIT {
     @Autowired

@@ -2,6 +2,8 @@ package org.srd.ediary.application.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import io.qameta.allure.Epic;
+import io.qameta.allure.Feature;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +34,8 @@ import static utils.EntryCardTestMother.getEntryCardDTO1;
 import static utils.EntryCardTestMother.getEntryCardDTO2;
 import static utils.EntryTestMother.*;
 
+@Epic("Unit Tests")
+@Feature("Controllers")
 @WebMvcTest(EntryController.class)
 @ActiveProfiles("unit_test")
 class EntryControllerTest {

@@ -1,6 +1,8 @@
 package integration.security;
 
 import integration.context.WithMockOwnerDetails;
+import io.qameta.allure.Epic;
+import io.qameta.allure.Feature;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -26,6 +28,8 @@ import static utils.EntryTestMother.getEntryInfoDTO2;
 import static utils.MoodTestMother.getMoodInfoDTO1;
 import static utils.MoodTestMother.getMoodInfoDTO2;
 
+@Epic("Integration Tests")
+@Feature("Security")
 @SpringBootTest(classes = EdiaryApplication.class)
 @AutoConfigureMockMvc
 @ActiveProfiles("integration_test")

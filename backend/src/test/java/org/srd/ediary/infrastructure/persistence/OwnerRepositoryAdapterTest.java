@@ -1,5 +1,7 @@
 package org.srd.ediary.infrastructure.persistence;
 
+import io.qameta.allure.Epic;
+import io.qameta.allure.Feature;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,7 +9,6 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.jdbc.Sql;
 import org.srd.ediary.domain.model.Owner;
 import org.srd.ediary.infrastructure.exception.OwnerDeletionRestrictException;
 
@@ -17,6 +18,8 @@ import static org.junit.jupiter.api.Assertions.*;
 import static utils.OwnerTestMother.getOwner;
 import static utils.OwnerTestMother.getOwnerBuilder;
 
+@Epic("Integration Tests")
+@Feature("Database")
 @DataJpaTest
 @ActiveProfiles("integration_test")
 class OwnerRepositoryAdapterTest {

@@ -1,5 +1,7 @@
 package org.srd.ediary.application.controller;
 
+import io.qameta.allure.Epic;
+import io.qameta.allure.Feature;
 import lombok.NonNull;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -26,6 +28,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+@Epic("Unit Tests")
+@Feature("Controllers")
 @WebMvcTest(AppController.class)
 @ActiveProfiles("unit_test")
 class AppControllerTest {

@@ -1,6 +1,8 @@
 package integration.service;
 
 import integration.context.WithMockOwnerDetails;
+import io.qameta.allure.Epic;
+import io.qameta.allure.Feature;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authorization.AuthorizationDeniedException;
@@ -16,6 +18,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static utils.OwnerTestMother.*;
 
+@Epic("Integration Tests")
+@Feature("Service")
 public class OwnerServiceIT extends BaseIT {
     @Autowired
     private OwnerService service;

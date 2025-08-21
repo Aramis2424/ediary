@@ -1,5 +1,7 @@
 package org.srd.ediary.application.service;
 
+import io.qameta.allure.Epic;
+import io.qameta.allure.Feature;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -25,6 +27,8 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 import static utils.EntryTestMother.*;
 
+@Epic("Unit Tests")
+@Feature("Business logic")
 @ExtendWith(MockitoExtension.class)
 @ActiveProfiles("unit_test")
 class EntryServiceTest {

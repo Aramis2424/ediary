@@ -1,5 +1,7 @@
 package org.srd.ediary.infrastructure.persistence;
 
+import io.qameta.allure.Epic;
+import io.qameta.allure.Feature;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +18,8 @@ import static org.junit.jupiter.api.Assertions.*;
 import static utils.DiaryTestMother.getDiary1;
 import static utils.OwnerTestMother.getOwner;
 
+@Epic("Integration Tests")
+@Feature("Database")
 @DataJpaTest
 @ActiveProfiles("integration_test")
 class DiaryRepositoryAdapterTest {

@@ -1,5 +1,7 @@
 package org.srd.ediary.application.service;
 
+import io.qameta.allure.Epic;
+import io.qameta.allure.Feature;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -19,6 +21,8 @@ import static utils.EntryCardTestMother.getEntryCardDTO1;
 import static utils.EntryTestMother.getEntryInfoDTO1;
 import static utils.MoodTestMother.getMoodInfoDTO1;
 
+@Epic("Unit Tests")
+@Feature("Business logic")
 @ExtendWith(MockitoExtension.class)
 @ActiveProfiles("unit_test")
 class EntryCardServiceTest {

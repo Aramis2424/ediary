@@ -3,6 +3,8 @@ package integration.security;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import integration.context.WithMockOwnerDetails;
+import io.qameta.allure.Epic;
+import io.qameta.allure.Feature;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,6 +36,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static utils.DiaryTestMother.getDiary1;
 import static utils.EntryTestMother.*;
 
+@Epic("Integration Tests")
+@Feature("Security")
 @SpringBootTest(classes = EdiaryApplication.class)
 @AutoConfigureMockMvc
 @ActiveProfiles("integration_test")
