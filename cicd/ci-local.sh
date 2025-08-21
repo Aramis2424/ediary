@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -e
 
-COMPOSE="docker-compose -f ./docker-compose.test.yml -p ediary_cicd"
+COMPOSE="docker compose -f ./docker-compose.test.yml -p ediary_cicd"
 
 UNIT_OK=false
 INTEGRATION_OK=false
