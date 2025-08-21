@@ -16,7 +16,6 @@ RUN chmod +x ./gradlew
 ENV GRADLE_USER_HOME=/app/.gradle
 RUN ./gradlew --no-daemon build -x test || true
 
-COPY backend/src /app/src
 COPY cicd /app/cicd
 RUN chmod +x cicd/entrypoint.sh
 
