@@ -8,71 +8,29 @@ INTEGRATION_OK=false
 E2E_OK=false
 FAILED=false
 
-generate_skipped() {
-  local TEST_NAME=$1
-  local REASON=$2
-  local UUID_RESULT=$(uuidgen)
-  local UUID_CONTAINER=$(uuidgen)
-  local NOW=$(date +%s%3N)
+TEST_TYPE="$1"
 
-  cat > ./allure-results/${UUID_RESULT}-result.json <<EOF
-{
-  "uuid": "${UUID_RESULT}",
-  "historyId": "${TEST_NAME// /_}_history",
-  "testCaseId": "${TEST_NAME}.fakeSkippedTest",
-  "testCaseName": "fakeSkippedTest",
-  "fullName": "${TEST_NAME}.fakeSkippedTest",
-  "labels": [
-    {"name": "package", "value": "org.fake"},
-    {"name": "testClass", "value": "${TEST_NAME}Class"},
-    {"name": "testMethod", "value": "fakeSkippedTest"},
-    {"name": "suite", "value": "${TEST_NAME}"}
-  ],
-  "name": "${TEST_NAME}",
-  "status": "skipped",
-  "statusDetails": {
-    "message": "${REASON}"
-  },
-  "stage": "finished",
-  "start": ${NOW},
-  "stop": ${NOW}
-}
-EOF
-
-  cat > ./allure-results/${UUID_CONTAINER}-container.json <<EOF
-{
-  "uuid": "${UUID_CONTAINER}",
-  "children": ["${UUID_RESULT}"],
-  "befores": [],
-  "afters": [],
-  "start": ${NOW},
-  "stop": ${NOW}
-}
-EOF
+run_unit() {
+  echo "=== Running Unit tests ==="
+  if $COMPOSE run --rm -e TEST_TYPE=Unit app-test; then
+    UNIT_OK=true
+  else
+    echo "Unit tests failed, skipping integration & e2e"
+    FAILED=true
+  fi
 }
 
-echo "=== Running Unit tests ==="
-if $COMPOSE run --rm -e TEST_TYPE=Unit app-test; then
-  UNIT_OK=true
-else
-  echo "Unit tests failed, skipping integration & e2e"
-  generate_skipped "Integration tests" "Skipped because Unit tests failed"
-  generate_skipped "E2E tests" "Skipped because Unit tests failed"
-  FAILED=true
-fi
-
-if [ "$FAILED" = false ]; then
+run_integration() {
   echo "=== Running Integration tests ==="
   if $COMPOSE run --rm -e TEST_TYPE=Integration app-test; then
     INTEGRATION_OK=true
   else
     echo "Integration tests failed, skipping e2e"
-	generate_skipped "E2E tests" "Skipped because Integration tests failed"
     FAILED=true
   fi
-fi
+}
 
-if [ "$FAILED" = false ]; then
+run_e2e() {
   echo "=== Running E2E tests ==="
   if $COMPOSE run --rm -e TEST_TYPE=E2E app-test; then
     E2E_OK=true
@@ -80,10 +38,42 @@ if [ "$FAILED" = false ]; then
     echo "E2E tests failed"
     FAILED=true
   fi
-fi
+}
 
-echo "=== Generating Allure report ==="
-$COMPOSE run --rm -e TEST_TYPE=Allure app-test || true
+run_allure() {
+  echo "=== Generating Allure report ==="
+  $COMPOSE run --rm -e TEST_TYPE=Allure app-test || true
+}
+
+case "$TEST_TYPE" in
+  u)
+    run_unit
+    ;;
+  i)
+    run_integration
+    ;;
+  e)
+    run_e2e
+    ;;
+  a)
+    run_allure
+    ;;
+  "" )
+    run_unit
+    if [ "$FAILED" = false ]; then
+      run_integration
+    fi
+    if [ "$FAILED" = false ]; then
+      run_e2e
+    fi
+    run_allure
+    ;;
+  *)
+    echo "Unknown test type: $TEST_TYPE"
+    echo "Valid options: u=Unit, i=Integration, e=E2E, a=Allure"
+    exit 1
+    ;;
+esac
 
 echo "=== Summary ==="
 echo "Unit:        $UNIT_OK"
