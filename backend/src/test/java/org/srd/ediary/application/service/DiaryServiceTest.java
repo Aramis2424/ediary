@@ -46,7 +46,7 @@ class DiaryServiceTest {
     @Test
     void testGetDiary_ExistingDiary() {
         final Long diaryId = 1L;
-        Diary diary = getDiary2();
+        Diary diary = getDiary1();
         DiaryInfoDTO expected = getDiaryInfoDTO1();
         when(diaryRepo.getByID(diaryId)).thenReturn(Optional.of(diary));
 
