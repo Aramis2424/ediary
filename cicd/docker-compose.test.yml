@@ -15,3 +15,7 @@ services:
       - TESTCONTAINERS_DOCKER_SOCKET_OVERRIDE=/var/run/docker.sock
       - TESTCONTAINERS_HOST_OVERRIDE=host.docker.internal
       - DOCKER_HOST=unix:///var/run/docker.sock
+    user: root
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
