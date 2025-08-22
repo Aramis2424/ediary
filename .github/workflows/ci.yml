@@ -13,34 +13,6 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
-        
-      - name: Cache Gradle
-        uses: actions/cache@v4
-        with:
-          path: |
-            ~/.gradle/caches
-            ~/.gradle/wrapper
-            gradlew
-            gradlew.bat
-            gradle/wrapper/gradle-wrapper.properties
-            gradle/wrapper/gradle-wrapper.jar
-          key: gradle-${{ runner.os }}-${{ hashFiles('**/*.gradle*', '**/settings.gradle*') }}
-          restore-keys: |
-            gradle-${{ runner.os }}-
-
-      - name: Generate Gradle wrapper
-        working-directory: backend
-        run: |
-          if [ ! -f gradlew ]; then
-            gradle wrapper --gradle-version 8.10.2
-          fi
-        shell: bash
-        
-      - name: Make gradlew executable
-        run: chmod +x backend/gradlew
-
-      - name: Verify Gradle wrapper
-        run: ./backend/gradlew --version
 
       - name: Set up Docker
         uses: docker/setup-buildx-action@v2
