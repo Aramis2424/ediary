@@ -9,6 +9,9 @@ services:
       - ./allure-results:/app/build/allure-results
       - ./reports:/app/build/reports
       - ../backend/src:/app/src 
+      - ediary-cicd-gradle-cache:/app/.gradle
+      - ediary-cicd-build-cache:/app/build  
+
     env_file: 
       - ./cicd.env
     environment:
@@ -19,3 +22,6 @@ services:
     extra_hosts:
       - "host.docker.internal:host-gateway"
 
+volumes:
+  ediary-cicd-gradle-cache:
+  ediary-cicd-build-cache:

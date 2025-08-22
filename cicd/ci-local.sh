@@ -3,12 +3,23 @@ set -e
 
 COMPOSE="docker compose -f ./cicd/docker-compose.test.yml -p ediary_cicd"
 
+BUILD_OK=false
 UNIT_OK=false
 INTEGRATION_OK=false
 E2E_OK=false
 FAILED=false
 
 TEST_TYPE="$1"
+
+run_build() {
+  echo "=== Build application ==="
+  if $COMPOSE run --rm -e TEST_TYPE=Build app-test; then
+    BUILD_OK=true
+  else
+    echo "Building failed, skipping unit & integration & e2e"
+    FAILED=true
+  fi
+}
 
 run_unit() {
   echo "=== Running Unit tests ==="
@@ -46,6 +57,9 @@ run_allure() {
 }
 
 case "$TEST_TYPE" in
+  b)
+    run_build
+    ;;
   u)
     run_unit
     ;;
@@ -59,7 +73,10 @@ case "$TEST_TYPE" in
     run_allure
     ;;
   "" )
-    run_unit
+    run_build
+	if [ "$FAILED" = false ]; then
+		run_unit
+	fi
     if [ "$FAILED" = false ]; then
       run_integration
     fi
@@ -76,6 +93,7 @@ case "$TEST_TYPE" in
 esac
 
 echo "=== Summary ==="
+echo "Build:       $BUILD_OK"
 echo "Unit:        $UNIT_OK"
 echo "Integration: $INTEGRATION_OK"
 echo "E2E:         $E2E_OK"

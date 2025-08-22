@@ -4,6 +4,9 @@ set -e
 echo ">>> Run tests: $TEST_TYPE"
 
 case $TEST_TYPE in
+  Build)
+    ./gradlew build -x test --no-daemon
+    ;;
   Unit)
     ./gradlew uTest --no-daemon
     ;;
