@@ -20,10 +20,24 @@ jobs:
       - name: Build test image
         run: docker compose -f cicd/docker-compose.test.yml build
 
-      - name: Run CI pipeline (tests + report)
-        run: |
-          chmod +x cicd/ci-local.sh
-          ./cicd/ci-local.sh || true
+      - name: Building application
+        run: ./cicd/ci-local.sh b
+        
+      - name: Run Unit tests
+        run: ./cicd/ci-local.sh u
+        if: success()
+
+      - name: Run Integration tests
+        run: ./cicd/ci-local.sh i
+        if: success()
+
+      - name: Run E2E tests
+        run: ./cicd/ci-local.sh e
+        if: success()
+
+      - name: Generate Allure report
+        run: ./cicd/ci-local.sh a
+        if: always()
 
       - name: Upload Allure Report
         uses: actions/upload-artifact@v4
