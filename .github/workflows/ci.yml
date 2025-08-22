@@ -19,6 +19,9 @@ jobs:
 
       - name: Build test image
         run: docker compose -f cicd/docker-compose.test.yml build
+        
+      - name: Prepare CI scripts
+        run: chmod +x cicd/ci-local.sh
 
       - name: Building application
         run: ./cicd/ci-local.sh b
