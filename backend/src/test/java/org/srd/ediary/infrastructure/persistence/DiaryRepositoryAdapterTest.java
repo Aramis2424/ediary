@@ -1,80 +1,116 @@
 package org.srd.ediary.infrastructure.persistence;
 
+import io.qameta.allure.Epic;
+import io.qameta.allure.Feature;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.test.context.ActiveProfiles;
 import org.srd.ediary.domain.model.Diary;
 import org.srd.ediary.domain.model.Owner;
 
-import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static utils.OwnerTestFactory.getOwner;
+import static utils.DiaryTestMother.getDiary1;
+import static utils.OwnerTestMother.getOwner;
 
+@Epic("Integration Tests")
+@Feature("Database")
 @DataJpaTest
-@ActiveProfiles("test")
+@ActiveProfiles("integration_test")
 class DiaryRepositoryAdapterTest {
     @Autowired
     private SpringOwnerRepository springOwnerRepo;
     @Autowired
-    private SpringDiaryRepository springRepo;
-    private DiaryRepositoryAdapter repo;
+    private SpringDiaryRepository springDiaryRepo;
+    private DiaryRepositoryAdapter repoDiary;
 
     private Owner owner = getOwner();
 
     @BeforeEach
     void setUp() {
-        repo = new DiaryRepositoryAdapter(springRepo);
+        repoDiary = new DiaryRepositoryAdapter(springDiaryRepo);
         owner = new OwnerRepositoryAdapter(springOwnerRepo).save(owner);
     }
 
     @Test
-    void testSave() {
-        Diary diary = new Diary(owner, "diary", "about");
+    void testSave_Correct() {
+        Diary diary = getDiary1();
+        diary.setOwner(owner);
 
-        Diary savedDiary = repo.save(diary);
+        Diary savedDiary = repoDiary.save(diary);
 
         assertNotNull(savedDiary.getId());
-        assertEquals("diary", savedDiary.getTitle());
-        assertEquals("about", savedDiary.getDescription());
+        assertEquals("d1", savedDiary.getTitle());
+        assertEquals("about1", savedDiary.getDescription());
     }
 
     @Test
-    void testGetByID() {
-        Diary diary = new Diary(owner, "diary", "about");
-        Diary savedDiary = repo.save(diary);
+    void testSave_UnsavedTransientOwner() {
+        Diary diary = getDiary1();
 
-        Optional<Diary> gotDiary = repo.getByID(savedDiary.getId());
+        assertThrows(InvalidDataAccessApiUsageException.class,
+                () -> repoDiary.save(diary));
+    }
+
+    @Test
+    void testGetByID_Exist() {
+        Diary diary = getDiary1();
+        diary.setOwner(owner);
+        Diary savedDiary = repoDiary.save(diary);
+
+        Optional<Diary> gotDiary = repoDiary.getByID(savedDiary.getId());
 
         assertTrue(gotDiary.isPresent());
-        assertEquals("diary", gotDiary.get().getTitle());
-        assertEquals("about", gotDiary.get().getDescription());
+        assertEquals("d1", gotDiary.get().getTitle());
+        assertEquals("about1", gotDiary.get().getDescription());
     }
 
     @Test
-    void testDelete() {
-        Diary diary = new Diary(owner, "diary", "about");
-        Diary savedDiary = repo.save(diary);
+    void testGetByID_NonExist() {
+        Long nonExistingDiaryId = -1L;
 
-        repo.delete(savedDiary.getId());
+        Optional<Diary> gotDiary = repoDiary.getByID(nonExistingDiaryId);
 
-        Optional<Diary> gotDiary = repo.getByID(savedDiary.getId());
         assertTrue(gotDiary.isEmpty());
     }
 
     @Test
-    void testGetAllByOwner() {
-        Diary diary1 = new Diary(owner, "diary1", "about1");
-        Diary diary2 = new Diary(owner, "diary2", "about2");
-        repo.save(diary1);
-        repo.save(diary2);
+    void testDelete_Correct() {
+        Diary diary = getDiary1();
+        diary.setOwner(owner);
+        Diary savedDiary = repoDiary.save(diary);
 
-        List<Diary> diaries = repo.getAllByOwner(owner.getId());
+        repoDiary.delete(savedDiary.getId());
+
+        Optional<Diary> gotDiary = repoDiary.getByID(savedDiary.getId());
+        assertTrue(gotDiary.isEmpty());
+    }
+
+    @Test
+    void testGetAllByOwner_Exist() {
+        Diary diary1 = getDiary1();
+        diary1.setOwner(owner);
+        Diary diary2 = getDiary1();
+        diary2.setOwner(owner);
+        repoDiary.save(diary1);
+        repoDiary.save(diary2);
+
+        List<Diary> diaries = repoDiary.getAllByOwner(owner.getId());
 
         assertEquals(2, diaries.size());
+    }
+
+    @Test
+    void testGetAllByOwner_nonExist() {
+        Long ownerId = -1L;
+
+        List<Diary> diaries = repoDiary.getAllByOwner(ownerId);
+
+        assertEquals(0, diaries.size());
     }
 }

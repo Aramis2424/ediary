@@ -1,5 +1,7 @@
 package integration.security;
 
+import io.qameta.allure.Epic;
+import io.qameta.allure.Feature;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -12,9 +14,11 @@ import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+@Epic("Integration Tests")
+@Feature("Security")
 @SpringBootTest(classes = EdiaryApplication.class)
 @AutoConfigureMockMvc
-@ActiveProfiles("integrationTest")
+@ActiveProfiles("integration_test")
 public class SwaggerSecurityTest {
     @Autowired
     private MockMvc mockMvc;

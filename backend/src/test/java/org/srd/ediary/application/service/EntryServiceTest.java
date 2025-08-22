@@ -1,19 +1,20 @@
 package org.srd.ediary.application.service;
 
+import io.qameta.allure.Epic;
+import io.qameta.allure.Feature;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.test.context.ActiveProfiles;
 import org.srd.ediary.application.dto.EntryCreateDTO;
 import org.srd.ediary.application.dto.EntryInfoDTO;
 import org.srd.ediary.application.dto.EntryPermission;
 import org.srd.ediary.application.dto.EntryUpdateDTO;
 import org.srd.ediary.application.exception.DiaryNotFoundException;
 import org.srd.ediary.application.exception.EntryNotFoundException;
-import org.srd.ediary.domain.model.Diary;
 import org.srd.ediary.domain.model.Entry;
-import org.srd.ediary.domain.model.Owner;
 import org.srd.ediary.domain.repository.DiaryRepository;
 import org.srd.ediary.domain.repository.EntryRepository;
 
@@ -24,9 +25,12 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
-import static utils.EntryTestFactory.*;
+import static utils.EntryTestMother.*;
 
+@Epic("Unit Tests")
+@Feature("Business logic")
 @ExtendWith(MockitoExtension.class)
+@ActiveProfiles("unit_test")
 class EntryServiceTest {
     @Mock
     private EntryRepository entryRepo;
@@ -58,12 +62,14 @@ class EntryServiceTest {
     @Test
     void testGetAllEntriesByDiary_ExistingDiary() {
         final Long diaryId = 1L;
-        Entry e1 = getEntry1();
-        Entry e2 = getEntry2();
-        List<Entry> gotEntries = List.of(e1, e2);
-        EntryInfoDTO entryDto1 = getEntryInfoDTO1();
-        EntryInfoDTO entryDto2 = getEntryInfoDTO2();
-        List<EntryInfoDTO> expected = List.of(entryDto1, entryDto2);
+        List<Entry> gotEntries = List.of(
+                getEntry1(),
+                getEntry2()
+        );
+        List<EntryInfoDTO> expected = List.of(
+                getEntryInfoDTO1(),
+                getEntryInfoDTO2()
+        );
         when(entryRepo.getAllByDiary(diaryId)).thenReturn(gotEntries);
 
         List<EntryInfoDTO> actual = service.getAllEntriesByDiary(diaryId);
@@ -102,7 +108,8 @@ class EntryServiceTest {
         EntryCreateDTO input = getEntryCreateDTO(diaryId);
         when(diaryRepo.getByID(diaryId)).thenReturn(Optional.empty());
 
-        assertThrows(DiaryNotFoundException.class, () ->service.create(input));
+        assertThrows(DiaryNotFoundException.class,
+                () ->service.create(input));
 
         verify(entryRepo, never()).save(any(Entry.class));
     }
@@ -128,7 +135,8 @@ class EntryServiceTest {
         EntryUpdateDTO updateDTO = getEntryUpdateDTO();
         when(entryRepo.getByID(entryId)).thenReturn(Optional.empty());
 
-        assertThrows(EntryNotFoundException.class, () -> service.update(entryId, updateDTO));
+        assertThrows(EntryNotFoundException.class,
+                () -> service.update(entryId, updateDTO));
 
     }
 

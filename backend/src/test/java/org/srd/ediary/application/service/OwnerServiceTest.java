@@ -1,5 +1,7 @@
 package org.srd.ediary.application.service;
 
+import io.qameta.allure.Epic;
+import io.qameta.allure.Feature;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -7,6 +9,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.test.context.ActiveProfiles;
 import org.srd.ediary.application.dto.OwnerCreateDTO;
 import org.srd.ediary.application.dto.OwnerInfoDTO;
 import org.srd.ediary.application.exception.InvalidCredentialsException;
@@ -14,15 +17,17 @@ import org.srd.ediary.application.exception.OwnerAlreadyExistException;
 import org.srd.ediary.domain.model.Owner;
 import org.srd.ediary.domain.repository.OwnerRepository;
 
-import java.time.LocalDate;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
-import static utils.OwnerTestFactory.*;
+import static utils.OwnerTestMother.*;
 
+@Epic("Unit Tests")
+@Feature("Business logic")
 @ExtendWith(MockitoExtension.class)
+@ActiveProfiles("unit_test")
 class OwnerServiceTest {
     @Mock
     private OwnerRepository ownerRepo;
@@ -53,12 +58,15 @@ class OwnerServiceTest {
 
     @Test
     void testLoginOwner_IncorrectPassword() {
-        Owner gotOwner = getOwner();
-        when(encoder.matches(password, password)).thenReturn(false);
+        String incorrectPassword = "abc123";
+        Owner gotOwner = getOwnerBuilder()
+                .withPassword(incorrectPassword)
+                .build();
+        when(encoder.matches(incorrectPassword, incorrectPassword)).thenReturn(false);
         when(ownerRepo.getByLogin(login)).thenReturn(Optional.of(gotOwner));
 
         assertThrows(InvalidCredentialsException.class,
-                () -> service.loginOwner(login, password));
+                () -> service.loginOwner(login, incorrectPassword));
     }
 
     @Test
@@ -83,7 +91,8 @@ class OwnerServiceTest {
         when(encoder.encode(anyString())).thenReturn(anyString());
         when(ownerRepo.getByLogin(login)).thenReturn(Optional.of(existingOwner));
 
-        assertThrows(OwnerAlreadyExistException.class, () -> service.registerOwner(createDto));
+        assertThrows(OwnerAlreadyExistException.class,
+                () -> service.registerOwner(createDto));
 
         verify(ownerRepo, never()).save(Mockito.any(Owner.class));
     }
@@ -105,6 +114,7 @@ class OwnerServiceTest {
         Long nonExistingId = 0L;
         when(ownerRepo.getByID(nonExistingId)).thenReturn(Optional.empty());
 
-        assertThrows(InvalidCredentialsException.class, () -> service.fetchOwner(nonExistingId));
+        assertThrows(InvalidCredentialsException.class,
+                () -> service.fetchOwner(nonExistingId));
     }
 }

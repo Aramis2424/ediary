@@ -1,29 +1,30 @@
 package org.srd.ediary.application.service;
 
+import io.qameta.allure.Epic;
+import io.qameta.allure.Feature;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.test.context.ActiveProfiles;
 import org.srd.ediary.application.dto.EntryCardDTO;
 import org.srd.ediary.application.dto.EntryInfoDTO;
 import org.srd.ediary.application.dto.MoodInfoDTO;
 import org.srd.ediary.application.security.utils.AuthHelper;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
-import static utils.EntryCardTestFactory.getEntryCardDTO1;
-import static utils.EntryCardTestFactory.getEntryCardDTO2;
-import static utils.EntryTestFactory.getEntryInfoDTO1;
-import static utils.EntryTestFactory.getEntryInfoDTO2;
-import static utils.MoodTestFactory.getMoodInfoDTO1;
-import static utils.MoodTestFactory.getMoodInfoDTO2;
+import static utils.EntryCardTestMother.getEntryCardDTO1;
+import static utils.EntryTestMother.getEntryInfoDTO1;
+import static utils.MoodTestMother.getMoodInfoDTO1;
 
+@Epic("Unit Tests")
+@Feature("Business logic")
 @ExtendWith(MockitoExtension.class)
+@ActiveProfiles("unit_test")
 class EntryCardServiceTest {
     @Mock
     private EntryService entryService;

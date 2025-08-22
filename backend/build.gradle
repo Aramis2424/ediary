@@ -2,18 +2,22 @@ plugins {
 	id 'java'
 	id 'org.springframework.boot' version '3.3.4'
 	id 'io.spring.dependency-management' version '1.1.6'
-	//id 'io.qameta.allure' version '2.11.2'
 	id 'jacoco'
+	//id 'io.qameta.allure' version '2.12.0'
 }
 
-group = 'org.srd'
-version = '0.0.1-SNAPSHOT'
+repositories {
+	mavenCentral()
+}
 
 java {
 	toolchain {
 		languageVersion = JavaLanguageVersion.of(20)
 	}
 }
+
+group = 'org.srd'
+version = '0.0.1-SNAPSHOT'
 
 configurations {
 	compileOnly {
@@ -25,12 +29,92 @@ configurations {
 	}
 }
 
-repositories {
-	mavenCentral()
+def allureVersion = "2.25.0"
+def allurePath = System.getProperty("os.name").toLowerCase().contains("win") ? "allure.bat" : "allure"
+
+jacocoTestReport {
+	dependsOn test
+	reports {
+		xml.required.set(false)
+		html.required.set(true)
+	}
 }
 
-def allureVersion = "2.25.0"
-def allurePath = "D:\\allure\\allure-2.32.0\\bin\\allure.bat"
+tasks.register('uTest', Test) {
+	group = 'verification'
+	description = 'Runs only unit tests'
+	useJUnitPlatform()
+	testClassesDirs = sourceSets.test.output.classesDirs
+	classpath = sourceSets.test.runtimeClasspath
+	include '**/org/srd/ediary/**'
+}
+
+tasks.register('iTest', Test) {
+	group = 'verification'
+	description = 'Runs only integration tests'
+	useJUnitPlatform()
+	testClassesDirs = sourceSets.test.output.classesDirs
+	classpath = sourceSets.test.runtimeClasspath
+	include '**/integration/**'
+}
+
+tasks.register('eTest', Test) {
+	group = 'verification'
+	description = 'Runs only e2e tests'
+	useJUnitPlatform()
+	testClassesDirs = sourceSets.test.output.classesDirs
+	classpath = sourceSets.test.runtimeClasspath
+	include '**/e2e/**'
+}
+
+tasks.named('test', Test) {
+	useJUnitPlatform()
+	finalizedBy jacocoTestReport
+}
+
+tasks.register('alreport') {
+	group = 'Verification'
+	description = 'Generates and run allure report saving history'
+
+	dependsOn copyAllureHistory
+	doLast {
+		exec {
+			commandLine allurePath, 'generate', '--clean', "build/allure-results",
+					'-o', "build/allure-report"
+		}
+	}
+}
+
+tasks.register('viewAllureReport') {
+	group = 'Verification'
+	description = 'Open allure report'
+	doLast {
+		exec {
+			commandLine allurePath, 'open', "build/allure-report"
+		}
+	}
+}
+
+tasks.register('copyAllureHistory') {
+	doFirst {
+		def reportDir = file("build/allure-report/history")
+		def resultsDir = file("build/allure-results/history")
+		if (reportDir.exists()) {
+			copy {
+				from reportDir
+				into resultsDir
+			}
+		}
+	}
+}
+
+tasks.withType(Test).configureEach {
+	jvmArgs '-Dorg.aspectj.weaver.showWeaveInfo=false',
+			'-Dorg.aspectj.weaver.avoidAjcoreFiles=true',
+			'-Dorg.aspectj.weaver.Dump.exception=false',
+			'-XX:+EnableDynamicAgentLoading',
+			'-Xshare:off'
+}
 
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
@@ -59,7 +143,8 @@ dependencies {
 	runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.11.5'
 
 	testImplementation platform("io.qameta.allure:allure-bom:$allureVersion")
-	testImplementation "io.qameta.allure:allure-junit5"
+	testImplementation 'io.qameta.allure:allure-junit5:2.25.0'
+	testImplementation 'io.qameta.allure:allure-java-commons:2.25.0'
 
 	testImplementation 'org.testcontainers:testcontainers'
 	testImplementation 'org.testcontainers:postgresql'
@@ -68,58 +153,4 @@ dependencies {
 	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.5.0'
 
 	implementation group: 'io.github.cdimascio', name: 'dotenv-java', version: '2.2.0'
-}
-
-tasks.named('test') {
-	useJUnitPlatform()
-	finalizedBy jacocoTestReport
-}
-
-test {
-	jvmArgs '-XX:+EnableDynamicAgentLoading'
-	jvmArgs '-Xshare:off'
-}
-
-jacocoTestReport {
-	dependsOn test
-	afterEvaluate {
-		classDirectories.setFrom(files(classDirectories.files.collect {
-			fileTree(dir: it, exclude: ['**/generated/**', '**/allure/**'])
-		}))
-	}
-}
-
-tasks.register('alreport') {
-	group = 'Verification'
-	description = 'Genarates and run allure report saving history'
-
-	dependsOn copyAllureHistory
-	doLast {
-		exec {
-			commandLine allurePath, 'generate', '--clean', "build/allure-results",
-					'-o', "build/allure-report"
-		}
-		exec {
-			commandLine allurePath, 'open', "build/allure-report"
-		}
-	}
-}
-
-tasks.register('copyAllureHistory') {
-	doFirst {
-		def reportDir = file("build/allure-report/history")
-		def resultsDir = file("build/allure-results/history")
-		if (reportDir.exists()) {
-			copy {
-				from reportDir
-				into resultsDir
-			}
-		}
-	}
-}
-
-tasks.withType(Test).configureEach {
-	jvmArgs '-Dorg.aspectj.weaver.showWeaveInfo=false',
-			'-Dorg.aspectj.weaver.avoidAjcoreFiles=true',
-			'-Dorg.aspectj.weaver.Dump.exception=false'
 }

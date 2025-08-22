@@ -1,10 +1,13 @@
 package org.srd.ediary.application.service;
 
+import io.qameta.allure.Epic;
+import io.qameta.allure.Feature;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.test.context.ActiveProfiles;
 import org.srd.ediary.application.dto.DiaryCreateDTO;
 import org.srd.ediary.application.dto.DiaryInfoDTO;
 import org.srd.ediary.application.dto.DiaryUpdateDTO;
@@ -12,21 +15,24 @@ import org.srd.ediary.application.exception.DiaryNotFoundException;
 import org.srd.ediary.application.exception.OwnerNotFoundException;
 import org.srd.ediary.domain.model.Diary;
 import org.srd.ediary.domain.model.Entry;
-import org.srd.ediary.domain.model.Owner;
 import org.srd.ediary.domain.repository.DiaryRepository;
 import org.srd.ediary.domain.repository.EntryRepository;
 import org.srd.ediary.domain.repository.OwnerRepository;
 
-import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
-import static utils.DiaryTestFactory.*;
+import static utils.DiaryTestMother.*;
+import static utils.EntryTestMother.getEntry1;
+import static utils.EntryTestMother.getEntry2;
 
+@Epic("Unit Tests")
+@Feature("Business logic")
 @ExtendWith(MockitoExtension.class)
+@ActiveProfiles("unit_test")
 class DiaryServiceTest {
     @Mock
     private DiaryRepository diaryRepo;
@@ -61,12 +67,14 @@ class DiaryServiceTest {
     @Test
     void testGetOwnerDiaries_ExistingOwner() {
         final Long ownerId = 1L;
-        Diary d1 = getDiary1();
-        Diary d2 = getDiary2();
-        List<Diary> gotDiaries = List.of(d1, d2);
-        DiaryInfoDTO dto1 = getDiaryInfoDTO1();
-        DiaryInfoDTO dto2 = getDiaryInfoDTO2();
-        List<DiaryInfoDTO> expected = List.of(dto1, dto2);
+        List<Diary> gotDiaries = List.of(
+                getDiary1(),
+                getDiary2()
+        );
+        List<DiaryInfoDTO> expected = List.of(
+                getDiaryInfoDTO1(),
+                getDiaryInfoDTO2()
+        );
         when(diaryRepo.getAllByOwner(ownerId)).thenReturn(gotDiaries);
 
         List<DiaryInfoDTO> actual = service.getOwnerDiaries(ownerId);
@@ -105,7 +113,8 @@ class DiaryServiceTest {
         DiaryCreateDTO input = getDiaryCreateDTO(ownerId);
         when(ownerRepo.getByID(ownerId)).thenReturn(Optional.empty());
 
-        assertThrows(OwnerNotFoundException.class, () -> service.create(input));
+        assertThrows(OwnerNotFoundException.class,
+                () -> service.create(input));
 
         verify(diaryRepo, never()).save(any(Diary.class));
     }
@@ -131,16 +140,17 @@ class DiaryServiceTest {
         DiaryUpdateDTO updateDto = getDiaryUpdateDTO();
         when(diaryRepo.getByID(diaryId)).thenReturn(Optional.empty());
 
-        assertThrows(DiaryNotFoundException.class, () -> service.update(diaryId, updateDto));
+        assertThrows(DiaryNotFoundException.class,
+                () -> service.update(diaryId, updateDto));
     }
 
     @Test
     void testRemove_ExistingDiaryWithEntries() {
         final Long diaryId = 1L;
-        Diary removingDiary = getDiary1();
-        Entry e1 = new Entry(removingDiary, "e1", "about e1");
-        Entry e2 = new Entry(removingDiary, "e2", "about e2");
-        List<Entry> diaryEntries = List.of(e1, e2);
+        List<Entry> diaryEntries = List.of(
+                getEntry1(),
+                getEntry2()
+        );
         when(entryRepo.getAllByDiary(diaryId)).thenReturn(diaryEntries);
         doNothing().when(entryRepo).delete(any());
         doNothing().when(diaryRepo).delete(diaryId);

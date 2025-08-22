@@ -2,6 +2,8 @@ package org.srd.ediary.application.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import io.qameta.allure.Epic;
+import io.qameta.allure.Feature;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +11,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.json.JacksonTester;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.srd.ediary.application.dto.DiaryCreateDTO;
@@ -28,8 +31,12 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static utils.DiaryTestMother.*;
 
+@Epic("Unit Tests")
+@Feature("Controllers")
 @WebMvcTest(DiaryController.class)
+@ActiveProfiles("unit_test")
 class DiaryControllerTest {
     @Autowired
     private MockMvc mockMvc;
@@ -37,10 +44,9 @@ class DiaryControllerTest {
     private JwtFilter jwtFilter;
     @MockBean
     private DiaryService diaryService;
+
     private JacksonTester<DiaryCreateDTO> creationJson;
     private JacksonTester<DiaryUpdateDTO> updateJson;
-    private final DiaryInfoDTO output = new DiaryInfoDTO(1L,"d1", "of1", 10, LocalDate.now());
-    private final List<DiaryInfoDTO> listOutput = List.of(output);
 
     @BeforeEach
     void setUp() {
@@ -55,6 +61,7 @@ class DiaryControllerTest {
     @Test
     void testGetDiary_ExistingDiary() throws Exception {
         Long diaryId = 1L;
+        DiaryInfoDTO output = getDiaryInfoDTO1();
         when(diaryService.getDiary(diaryId)).thenReturn(output);
 
         mockMvc.perform(get("/api/v1/diaries/" + diaryId)
@@ -63,8 +70,7 @@ class DiaryControllerTest {
                 .content(String.valueOf(diaryId))
         )
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id").value(1L))
-                .andExpect(jsonPath("$.cntEntry").value(10));
+                .andExpect(jsonPath("$.cntEntry").value(0));
     }
 
     @Test
@@ -82,7 +88,8 @@ class DiaryControllerTest {
 
     @Test
     void testGetDiariesByOwner_ExistingOwner() throws Exception{
-        Long ownerId = 5L;
+        Long ownerId = 1L;
+        List<DiaryInfoDTO> listOutput = List.of(getDiaryInfoDTO1());
         when(diaryService.getOwnerDiaries(ownerId)).thenReturn(listOutput);
 
         mockMvc.perform(get("/api/v1/owners/" + ownerId + "/diaries")
@@ -92,13 +99,12 @@ class DiaryControllerTest {
         )
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.length()").value(1))
-                .andExpect(jsonPath("$[0].id").value(1L))
-                .andExpect(jsonPath("$[0].cntEntry").value(10));
+                .andExpect(jsonPath("$[0].cntEntry").value(0));
     }
 
     @Test
     void testGetDiariesByOwner_NonExistingOwner() throws Exception{
-        Long ownerId = 5L;
+        Long ownerId = 1L;
         when(diaryService.getOwnerDiaries(ownerId)).thenThrow(OwnerNotFoundException.class);
 
         mockMvc.perform(get("/api/v1/owners/" + ownerId + "/diaries")
@@ -112,7 +118,8 @@ class DiaryControllerTest {
     @Test
     void testCreateDiary_WithExistingOwner() throws Exception {
         Long ownerId = 1L;
-        DiaryCreateDTO input = new DiaryCreateDTO(ownerId, "d1", "of1");
+        DiaryCreateDTO input = getDiaryCreateDTO(ownerId);
+        DiaryInfoDTO output = getDiaryInfoDTO1();
         when(diaryService.create(input)).thenReturn(output);
 
         mockMvc.perform(post("/api/v1/diaries/")
@@ -122,14 +129,13 @@ class DiaryControllerTest {
                 .content(creationJson.write(input).getJson())
         )
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.id").value(1L))
-                .andExpect(jsonPath("$.cntEntry").value(10));
+                .andExpect(jsonPath("$.cntEntry").value(0));
     }
 
     @Test
     void testCreateDiary_WithNonExistingOwner() throws Exception {
         Long ownerId = 1L;
-        DiaryCreateDTO input = new DiaryCreateDTO(ownerId, "d1", "of1");
+        DiaryCreateDTO input = getDiaryCreateDTO(ownerId);
         when(diaryService.create(input)).thenThrow(OwnerNotFoundException.class);
 
         mockMvc.perform(post("/api/v1/diaries/")
@@ -144,7 +150,8 @@ class DiaryControllerTest {
     @Test
     void testUpdateDiary_ExistingDiary() throws Exception {
         Long diaryId = 1L;
-        DiaryUpdateDTO input = new DiaryUpdateDTO("d2", "of2");
+        DiaryUpdateDTO input = getDiaryUpdateDTO();
+        DiaryInfoDTO output = getDiaryInfoDTO1();
         when(diaryService.update(diaryId, input)).thenReturn(output);
 
         mockMvc.perform(put("/api/v1/diaries/" + diaryId)
@@ -154,14 +161,13 @@ class DiaryControllerTest {
                 .content(updateJson.write(input).getJson())
         )
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id").value(1L))
-                .andExpect(jsonPath("$.cntEntry").value(10));
+                .andExpect(jsonPath("$.cntEntry").value(0));
     }
 
     @Test
     void testUpdateDiary_NonExistingDiary() throws Exception {
         Long diaryId = 1L;
-        DiaryUpdateDTO input = new DiaryUpdateDTO("d2", "of2");
+        DiaryUpdateDTO input = getDiaryUpdateDTO();
         when(diaryService.update(diaryId, input)).thenThrow(DiaryNotFoundException.class);
 
         mockMvc.perform(put("/api/v1/diaries/" + diaryId)

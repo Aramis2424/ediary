@@ -16,14 +16,14 @@ public class OwnerEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "owner_id")
     private Long id;
-    @Column(length = 255)
+    @Column(length = 127, nullable = false)
     private String name;
     @Column(name = "birth_date")
     private LocalDate birthDate;
-    @Column(length = 255)
+    @Column(length = 127, nullable = false, unique = true)
     private String login;
-    @Column(length = 255)
+    @Column(length = 511, nullable = false)
     private String password;
-    @Column(name = "created_date")
+    @Column(name = "created_date", nullable = false)
     private LocalDate createdDate;
 }

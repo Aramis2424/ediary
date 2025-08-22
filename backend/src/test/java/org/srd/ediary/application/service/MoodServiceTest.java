@@ -1,30 +1,33 @@
 package org.srd.ediary.application.service;
 
+import io.qameta.allure.Epic;
+import io.qameta.allure.Feature;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.test.context.ActiveProfiles;
 import org.srd.ediary.application.dto.*;
 import org.srd.ediary.application.exception.MoodNotFoundException;
 import org.srd.ediary.application.exception.OwnerNotFoundException;
-import org.srd.ediary.domain.model.Entry;
 import org.srd.ediary.domain.model.Mood;
-import org.srd.ediary.domain.model.Owner;
 import org.srd.ediary.domain.repository.MoodRepository;
 import org.srd.ediary.domain.repository.OwnerRepository;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
-import static utils.MoodTestFactory.*;
+import static utils.MoodTestMother.*;
 
+@Epic("Unit Tests")
+@Feature("Business logic")
 @ExtendWith(MockitoExtension.class)
+@ActiveProfiles("unit_test")
 class MoodServiceTest {
     @Mock
     private OwnerRepository ownerRepo;
@@ -50,18 +53,21 @@ class MoodServiceTest {
         final Long moodId = 1L;
         when(moodRepo.getByID(moodId)).thenReturn(Optional.empty());
 
-        assertThrows(MoodNotFoundException.class, () -> service.getMood(moodId));
+        assertThrows(MoodNotFoundException.class,
+                () -> service.getMood(moodId));
     }
 
     @Test
     void testGetMoodsByOwner_ExistingOwner() {
         final Long ownerId = 1L;
-        Mood m1 = getMood1();
-        Mood m2 = getMood2();
-        List<Mood> gotMoods = List.of(m1, m2);
-        MoodInfoDTO moodDto1 = getMoodInfoDTO1();
-        MoodInfoDTO moodDto2 = getMoodInfoDTO2();
-        List<MoodInfoDTO> expected = List.of(moodDto1, moodDto2);
+        List<Mood> gotMoods = List.of(
+                getMood1(),
+                getMood2()
+        );
+        List<MoodInfoDTO> expected = List.of(
+                getMoodInfoDTO1(),
+                getMoodInfoDTO2()
+        );
         when(moodRepo.getAllByOwner(ownerId)).thenReturn(gotMoods);
 
         List<MoodInfoDTO> actual = service.getMoodsByOwner(ownerId);
@@ -100,7 +106,8 @@ class MoodServiceTest {
         MoodCreateDTO input = getMoodCreateDTO(ownerId);
         when(ownerRepo.getByID(ownerId)).thenReturn(Optional.empty());
 
-        assertThrows(OwnerNotFoundException.class, () -> service.create(input));
+        assertThrows(OwnerNotFoundException.class,
+                () -> service.create(input));
 
         verify(moodRepo, never()).save(any(Mood.class));
     }
@@ -126,7 +133,8 @@ class MoodServiceTest {
         MoodUpdateDTO updateDTO = getMoodUpdateDTO();
         when(moodRepo.getByID(moodId)).thenReturn(Optional.empty());
 
-        assertThrows(MoodNotFoundException.class, () -> service.update(moodId, updateDTO));
+        assertThrows(MoodNotFoundException.class,
+                () -> service.update(moodId, updateDTO));
     }
 
     @Test

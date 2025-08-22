@@ -1,82 +1,130 @@
 package org.srd.ediary.infrastructure.persistence;
 
+import io.qameta.allure.Epic;
+import io.qameta.allure.Feature;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.ActiveProfiles;
 import org.srd.ediary.domain.model.Owner;
 import org.srd.ediary.infrastructure.exception.OwnerDeletionRestrictException;
 
-import java.time.LocalDate;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static utils.OwnerTestMother.getOwner;
+import static utils.OwnerTestMother.getOwnerBuilder;
 
+@Epic("Integration Tests")
+@Feature("Database")
 @DataJpaTest
-@ActiveProfiles("test")
+@ActiveProfiles("integration_test")
 class OwnerRepositoryAdapterTest {
     @Autowired
-    private SpringOwnerRepository springRepo;
-    private OwnerRepositoryAdapter repo;
+    private SpringOwnerRepository springOwnerRepo;
+    private OwnerRepositoryAdapter repoOwner;
+
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
 
     @BeforeEach
     void setUp() {
-        repo = new OwnerRepositoryAdapter(springRepo);
+        repoOwner = new OwnerRepositoryAdapter(springOwnerRepo);
     }
 
-    private final LocalDate birthDate = LocalDate.of(2000, 1, 1);
-
     @Test
-    void testSave() {
-        Owner owner = new Owner("Ivan", birthDate, "ivan01", "navi01");
+    void testSave_Correct() {
+        Owner owner = getOwner();
 
-        Owner savedOwner = repo.save(owner);
+        Owner savedOwner = repoOwner.save(owner);
 
-        assertNotNull(savedOwner.getId());
         assertEquals("Ivan", savedOwner.getName());
     }
 
     @Test
-    void testGetByID() {
-        Owner owner = new Owner("Ivan", birthDate, "ivan01", "navi01");
-        Owner savedOwner = repo.save(owner);
+    void testSave_NonUniqueLogin() {
+        Owner owner = getOwnerBuilder()
+                .withLogin("log1")
+                .build();
+        repoOwner.save(owner);
 
-        Optional<Owner> gotOwner = repo.getByID(savedOwner.getId());
+        assertThrows(DataIntegrityViolationException.class,
+                () -> repoOwner.save(owner));
+    }
+
+    @Test
+    void testGetByID_Existing() {
+        Owner owner = getOwner();
+        Owner savedOwner = repoOwner.save(owner);
+
+        Optional<Owner> gotOwner = repoOwner.getByID(savedOwner.getId());
 
         assertTrue(gotOwner.isPresent());
         assertEquals("Ivan", gotOwner.get().getName());
     }
 
     @Test
-    void testDelete() {
-        Owner owner = new Owner("Ivan", birthDate, "ivan01", "navi01");
-        Owner savedOwner = repo.save(owner);
+    void testGetByID_NonExisting() {
+        Long ownerId = -1L;
 
-        assertThrows(OwnerDeletionRestrictException.class, () -> repo.delete(savedOwner.getId()));
+        Optional<Owner> gotOwner = repoOwner.getByID(ownerId);
 
-        assertTrue(repo.getByID(savedOwner.getId()).isPresent());
+        assertTrue(gotOwner.isEmpty());
     }
 
     @Test
-    void testGetByLoginAndPassword() {
-        Owner owner = new Owner("Ivan", birthDate, "ivan01", "navi01");
-        repo.save(owner);
+    void testDelete_Correct() {
+        Owner owner = getOwner();
+        Owner savedOwner = repoOwner.save(owner);
 
-        Optional<Owner> gotOwner = repo.getByLoginAndPassword("ivan01", "navi01");
+        assertThrows(OwnerDeletionRestrictException.class,
+                () -> repoOwner.delete(savedOwner.getId()));
+
+        assertTrue(repoOwner.getByID(savedOwner.getId()).isPresent());
+    }
+
+    @Test
+    void testGetByLoginAndPassword_Existing() {
+        Owner owner = getOwner();
+        repoOwner.save(owner);
+
+        Optional<Owner> gotOwner = repoOwner.getByLoginAndPassword("example123", "pass123");
 
         assertTrue(gotOwner.isPresent());
         assertEquals("Ivan", gotOwner.get().getName());
     }
 
     @Test
-    void testGetByLogin() {
-        Owner owner = new Owner("Ivan", birthDate, "ivan01", "navi01");
-        repo.save(owner);
+    void testGetByLoginAndPassword_NonExisting() {
+        Owner owner = getOwner();
+        repoOwner.save(owner);
 
-        Optional<Owner> gotOwner = repo.getByLogin("ivan01");
+        Optional<Owner> gotOwner = repoOwner.getByLoginAndPassword("log1", "pass1");
+
+        assertTrue(gotOwner.isEmpty());
+    }
+
+    @Test
+    void testGetByLogin_Existing() {
+        Owner owner = getOwner();
+        repoOwner.save(owner);
+
+        Optional<Owner> gotOwner = repoOwner.getByLogin("example123");
 
         assertTrue(gotOwner.isPresent());
         assertEquals("Ivan", gotOwner.get().getName());
+    }
+
+    @Test
+    void testGetByLogin_NonExisting() {
+        Owner owner = getOwner();
+        repoOwner.save(owner);
+
+        Optional<Owner> gotOwner = repoOwner.getByLogin("log1");
+
+        assertTrue(gotOwner.isEmpty());
     }
 }

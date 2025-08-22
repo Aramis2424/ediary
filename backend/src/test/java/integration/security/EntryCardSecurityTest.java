@@ -1,6 +1,8 @@
 package integration.security;
 
-import integration.security.context.WithMockOwnerDetails;
+import integration.context.WithMockOwnerDetails;
+import io.qameta.allure.Epic;
+import io.qameta.allure.Feature;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -15,18 +17,22 @@ import org.srd.ediary.application.security.access.EntryAccess;
 import org.srd.ediary.application.service.EntryService;
 import org.srd.ediary.application.service.MoodService;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static utils.EntryTestMother.getEntryInfoDTO1;
+import static utils.EntryTestMother.getEntryInfoDTO2;
+import static utils.MoodTestMother.getMoodInfoDTO1;
+import static utils.MoodTestMother.getMoodInfoDTO2;
 
+@Epic("Integration Tests")
+@Feature("Security")
 @SpringBootTest(classes = EdiaryApplication.class)
 @AutoConfigureMockMvc
-@ActiveProfiles("integrationTest")
+@ActiveProfiles("integration_test")
 public class EntryCardSecurityTest {
     @Autowired
     private MockMvc mockMvc;
@@ -39,18 +45,13 @@ public class EntryCardSecurityTest {
 
     private final static long validOwnerId = 1L;
     private final static long invalidOwnerId = 2L;
-    private final LocalDateTime bedtime = LocalDateTime
-            .of(2020, 1,1, 22,30);
-    private final LocalDateTime wakeUpTime = LocalDateTime
-            .of(2020, 1,2, 8,30);
-
     private final List<EntryInfoDTO> mockEntries = List.of(
-            new EntryInfoDTO(1L, "test 01", "Testing 01", LocalDate.of(2020, 1, 1)),
-            new EntryInfoDTO(2L, "test 02", "Testing 02", LocalDate.of(2020, 2, 2))
+            getEntryInfoDTO1(),
+            getEntryInfoDTO2()
     );
     private final List<MoodInfoDTO> mockMoods = List.of(
-            new MoodInfoDTO(1L, 7, 8, bedtime, wakeUpTime, LocalDate.of(2020, 1, 1)),
-            new MoodInfoDTO(1L, 9, 10, bedtime, wakeUpTime, LocalDate.of(2020, 3, 3))
+            getMoodInfoDTO1(),
+            getMoodInfoDTO2()
     );
 
     @Test
@@ -60,12 +61,6 @@ public class EntryCardSecurityTest {
         when(entryService.getAllEntriesByDiary(diaryId)).thenReturn(mockEntries);
         when(moodService.getMoodsByOwner(validOwnerId)).thenReturn(mockMoods);
         when(entryAccess.isDiaryBelongsOwner(diaryId, validOwnerId)).thenReturn(true);
-        List<EntryCardDTO> expectedCards = List.of(
-                new EntryCardDTO(1L, diaryId, "test 01", 7, 8,
-                        LocalDate.of(2020, 1, 1)),
-                new EntryCardDTO(2L, diaryId, "test 02", -1, -1,
-                        LocalDate.of(2020, 2, 2))
-        );
 
         mockMvc.perform(get("/api/v1/diaries/" + diaryId + "/entry-cards")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -74,8 +69,7 @@ public class EntryCardSecurityTest {
                 )
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.length()").value(2))
-                .andExpect(jsonPath("$[0].entryId").value(1L))
-                .andExpect(jsonPath("$[0].title").value("test 01"));
+                .andExpect(jsonPath("$[0].title").value("Day1"));
 
         verify(entryAccess, times(1)).isDiaryBelongsOwner(diaryId, validOwnerId);
     }

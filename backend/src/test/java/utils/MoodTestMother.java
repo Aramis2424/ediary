@@ -9,9 +9,9 @@ import org.srd.ediary.domain.model.Owner;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
-import static utils.OwnerTestFactory.getOwner;
+import static utils.OwnerTestMother.getOwner;
 
-public class MoodTestFactory {
+public class MoodTestMother {
     private static final LocalDateTime bedtime = LocalDateTime
             .of(2020, 1,1, 22,30);
     private static final LocalDateTime wakeUpTime = LocalDateTime

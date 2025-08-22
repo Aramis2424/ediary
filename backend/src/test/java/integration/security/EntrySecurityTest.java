@@ -2,7 +2,9 @@ package integration.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import integration.security.context.WithMockOwnerDetails;
+import integration.context.WithMockOwnerDetails;
+import io.qameta.allure.Epic;
+import io.qameta.allure.Feature;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,12 +19,9 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.srd.ediary.EdiaryApplication;
 import org.srd.ediary.application.dto.*;
 import org.srd.ediary.application.security.access.EntryAccess;
-import org.srd.ediary.application.security.access.MoodAccess;
 import org.srd.ediary.domain.model.Diary;
 import org.srd.ediary.domain.model.Entry;
-import org.srd.ediary.domain.model.Owner;
 import org.srd.ediary.domain.repository.EntryRepository;
-import org.srd.ediary.domain.repository.MoodRepository;
 import org.srd.ediary.domain.repository.DiaryRepository;
 
 import java.time.LocalDate;
@@ -34,10 +33,14 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static utils.DiaryTestMother.getDiary1;
+import static utils.EntryTestMother.*;
 
+@Epic("Integration Tests")
+@Feature("Security")
 @SpringBootTest(classes = EdiaryApplication.class)
 @AutoConfigureMockMvc
-@ActiveProfiles("integrationTest")
+@ActiveProfiles("integration_test")
 public class EntrySecurityTest {
     @Autowired
     private MockMvc mockMvc;
@@ -51,10 +54,8 @@ public class EntrySecurityTest {
     private JacksonTester<EntryCreateDTO> creationJson;
     private JacksonTester<EntryUpdateDTO> updateJson;
 
-    private final LocalDate birthdate = LocalDate.of(2000, 1, 1);
-    private final Owner owner = new Owner("Ivan", birthdate, "ivan01", "abc123");
-    private final Diary diary = new Diary(owner, "d1", "of1");
-    private final Entry entryFromRepo = new Entry(diary, "day1", "good1");
+    private final Diary diary = getDiary1();
+    private final Entry entryFromRepo = getEntry1();
     private final List<Entry> listEntryFromRepo = List.of(entryFromRepo);
     private final static long validOwnerId = 1L;
     private final static long invalidOwnerId = 2L;
@@ -81,8 +82,8 @@ public class EntrySecurityTest {
                         .content(String.valueOf(entryId))
                 )
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.title").value("day1"))
-                .andExpect(jsonPath("$.content").value("good1"));
+                .andExpect(jsonPath("$.title").value("Day1"))
+                .andExpect(jsonPath("$.content").value("Good day 1"));
 
         verify(entryAccess, times(1)).isAllowed(entryId, validOwnerId);
     }
@@ -131,8 +132,8 @@ public class EntrySecurityTest {
                 )
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.length()").value(1))
-                .andExpect(jsonPath("$[0].title").value("day1"))
-                .andExpect(jsonPath("$[0].content").value("good1"));
+                .andExpect(jsonPath("$[0].title").value("Day1"))
+                .andExpect(jsonPath("$[0].content").value("Good day 1"));
         verify(entryAccess, times(1)).isDiaryBelongsOwner(diaryId, validOwnerId);
     }
 
@@ -156,7 +157,7 @@ public class EntrySecurityTest {
     @WithMockOwnerDetails(id = validOwnerId)
     void testCreateEntry_WithAccess() throws Exception {
         Long diaryId = 1L;
-        EntryCreateDTO input = new EntryCreateDTO(diaryId, "day1", "good1");
+        EntryCreateDTO input = getEntryCreateDTO(diaryId);
         when(entryRepo.save(any(Entry.class))).thenReturn(entryFromRepo);
         when(entryAccess.isDiaryBelongsOwner(diaryId, validOwnerId)).thenReturn(true);
         when(diaryRepo.getByID(diaryId)).thenReturn(Optional.of(diary));
@@ -168,8 +169,8 @@ public class EntrySecurityTest {
                         .content(creationJson.write(input).getJson())
                 )
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.title").value("day1"))
-                .andExpect(jsonPath("$.content").value("good1"));
+                .andExpect(jsonPath("$.title").value("Day1"))
+                .andExpect(jsonPath("$.content").value("Good day 1"));
 
         verify(entryRepo, times(1)).save(any(Entry.class));
         verify(entryAccess, times(1)).isDiaryBelongsOwner(diaryId, validOwnerId);
@@ -179,7 +180,7 @@ public class EntrySecurityTest {
     @WithMockOwnerDetails(id = invalidOwnerId)
     void testCreateEntry_WithNoAccess() throws Exception {
         Long diaryId = 1L;
-        EntryCreateDTO input = new EntryCreateDTO(diaryId, "day1", "good1");
+        EntryCreateDTO input = getEntryCreateDTO(diaryId);
         when(entryRepo.save(any(Entry.class))).thenReturn(entryFromRepo);
         when(entryAccess.isDiaryBelongsOwner(diaryId, invalidOwnerId)).thenReturn(false);
 
@@ -199,7 +200,7 @@ public class EntrySecurityTest {
     @WithMockOwnerDetails(id = validOwnerId)
     void testUpdateEntry_WithAccess() throws Exception {
         Long entryId = 1L;
-        EntryUpdateDTO input = new EntryUpdateDTO("day1", "good1");
+        EntryUpdateDTO input = getEntryUpdateDTO();
         when(entryRepo.getByID(entryId)).thenReturn(Optional.of(entryFromRepo));
         when(entryRepo.save(any(Entry.class))).thenReturn(entryFromRepo);
         when(entryAccess.isAllowed(entryId, validOwnerId)).thenReturn(true);
@@ -211,8 +212,8 @@ public class EntrySecurityTest {
                         .content(updateJson.write(input).getJson())
                 )
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.title").value("day1"))
-                .andExpect(jsonPath("$.content").value("good1"));
+                .andExpect(jsonPath("$.title").value("Day2"))
+                .andExpect(jsonPath("$.content").value("Good day 2"));
 
         verify(entryRepo, times(1)).save(any(Entry.class));
     }
@@ -221,7 +222,7 @@ public class EntrySecurityTest {
     @WithMockOwnerDetails(id = invalidOwnerId)
     void testUpdateEntry_WithNoAccess() throws Exception {
         Long entryId = 1L;
-        EntryUpdateDTO input = new EntryUpdateDTO("day1", "good1");
+        EntryUpdateDTO input = getEntryUpdateDTO();
         when(entryRepo.getByID(entryId)).thenReturn(Optional.of(entryFromRepo));
         when(entryRepo.save(any(Entry.class))).thenReturn(entryFromRepo);
         when(entryAccess.isAllowed(entryId, invalidOwnerId)).thenReturn(false);
@@ -277,7 +278,6 @@ public class EntrySecurityTest {
     @Test
     @WithMockOwnerDetails(id = validOwnerId)
     void testCanCreateEntry_WithAccess() throws Exception{
-        Long entryId = 1L;
         Long diaryId = 1L;
         LocalDate date = LocalDate.of(2020, 1, 1);
         when(entryRepo.getByDiaryIdAndCreatedDate(diaryId, date)).thenReturn(
@@ -300,7 +300,6 @@ public class EntrySecurityTest {
     @Test
     @WithMockOwnerDetails(id = invalidOwnerId)
     void testCanCreateEntry_WithNoAccess() throws Exception{
-        Long entryId = 1L;
         Long diaryId = 1L;
         LocalDate date = LocalDate.of(2020, 1, 1);
         when(entryRepo.getByDiaryIdAndCreatedDate(diaryId, date)).thenReturn(

@@ -3,7 +3,8 @@ package e2e;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.jayway.jsonpath.JsonPath;
-import integration.security.context.WithMockOwnerDetails;
+import io.qameta.allure.Epic;
+import io.qameta.allure.Feature;
 import jakarta.annotation.PostConstruct;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -15,7 +16,6 @@ import org.springframework.http.MediaType;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.test.context.support.WithAnonymousUser;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
@@ -26,7 +26,6 @@ import org.srd.ediary.EdiaryApplication;
 import org.srd.ediary.application.dto.EntryCreateDTO;
 import org.srd.ediary.application.dto.EntryUpdateDTO;
 import org.srd.ediary.application.security.dto.TokenRequest;
-import org.srd.ediary.domain.model.Entry;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
@@ -35,17 +34,17 @@ import org.testcontainers.utility.DockerImageName;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.Mockito.*;
-import static org.mockito.Mockito.times;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static utils.EntryTestMother.getEntryUpdateDTO;
 
+@Epic("E2E Tests")
+@Feature("Business")
 @SpringBootTest(classes = EdiaryApplication.class)
 @AutoConfigureMockMvc
 @Testcontainers
@@ -269,5 +268,44 @@ public class EntryE2ETest {
                         .header("Authorization", "Bearer " + token)
                 )
                 .andExpect(status().isForbidden());
+    }
+
+    @Test
+    void testUpdatingEntry_FullScenario() throws Exception {
+        EntryUpdateDTO input = getEntryUpdateDTO();
+
+        MvcResult diariesResult = mockMvc.perform(get("/api/v1/owners/" + ownerId + "/diaries")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .content(String.valueOf(ownerId))
+                        .header("Authorization", "Bearer " + token)
+                )
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.length()").value(2))
+                .andReturn();
+        String diariesBody = diariesResult.getResponse().getContentAsString();
+        String diaryId = JsonPath.read(diariesBody, "$[0].id").toString();
+
+        MvcResult entriesResult = mockMvc.perform(get("/api/v1/diaries/" + diaryId + "/entries")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .content(String.valueOf(diaryId))
+                        .header("Authorization", "Bearer " + token)
+                )
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.length()").value(3))
+                .andReturn();
+        String entryBody = entriesResult.getResponse().getContentAsString();
+        String entryId = JsonPath.read(entryBody, "$[0].id").toString();
+
+        mockMvc.perform(put("/api/v1/entries/" + entryId)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .characterEncoding("UTF-8")
+                        .accept(MediaType.APPLICATION_JSON)
+                        .content(updateJson.write(input).getJson())
+                        .header("Authorization", "Bearer " + token)
+                )
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.content").value("Good day 2"));
     }
 }

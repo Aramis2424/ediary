@@ -1,9 +1,13 @@
 package org.srd.ediary.infrastructure.persistence;
 
+import io.qameta.allure.Epic;
+import io.qameta.allure.Feature;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.test.context.ActiveProfiles;
 import org.srd.ediary.domain.model.Diary;
 import org.srd.ediary.domain.model.Entry;
@@ -14,96 +18,133 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static utils.DiaryTestFactory.getDiary1;
-import static utils.OwnerTestFactory.getOwner;
+import static utils.DiaryTestMother.getDiary1;
+import static utils.EntryTestMother.getEntry1;
+import static utils.OwnerTestMother.getOwner;
 
+@Epic("Integration Tests")
+@Feature("Database")
 @DataJpaTest
-@ActiveProfiles("test")
+@ActiveProfiles("integration_test")
 class EntryRepositoryAdapterTest {
     @Autowired
     private SpringOwnerRepository springOwnerRepository;
     @Autowired
     private SpringDiaryRepository springDiaryRepo;
     @Autowired
-    private SpringEntryRepository springRepo;
-    private EntryRepositoryAdapter repo;
+    private SpringEntryRepository springEntryRepo;
+    private EntryRepositoryAdapter repoEntry;
 
     private Owner owner = getOwner();
-    private Diary diary;
+    private Diary diary = getDiary1();
 
     @BeforeEach
     void setUp() {
         owner = new OwnerRepositoryAdapter(springOwnerRepository).save(owner);
-        diary = new Diary(owner, "diary", "about");
+        diary.setOwner(owner);
         diary = new DiaryRepositoryAdapter(springDiaryRepo).save(diary);
 
-        repo = new EntryRepositoryAdapter(springRepo);
+        repoEntry = new EntryRepositoryAdapter(springEntryRepo);
     }
 
     @Test
-    void testSave() {
-        Entry entry = new Entry(diary, "entry", "day day");
+    void testSave_Correct() {
+        Entry entry = getEntry1();
+        entry.setDiary(diary);
 
-        Entry savedEntry = repo.save(entry);
+        Entry savedEntry = repoEntry.save(entry);
 
         assertNotNull(savedEntry.getId());
-        assertEquals("entry", savedEntry.getTitle());
-        assertEquals("day day", savedEntry.getContent());
+        assertEquals("Day1", savedEntry.getTitle());
+        assertEquals("Good day 1", savedEntry.getContent());
     }
 
     @Test
-    void testGetByID() {
-        Entry entry = new Entry(diary, "entry", "day day");
-        Entry savedEntry = repo.save(entry);
+    void testSave_NullTitle() {
+        Entry entry = getEntry1();
+        entry.setDiary(diary);
+        entry.setTitle(null);
 
-        Optional<Entry> gotEntry = repo.getByID(savedEntry.getId());
+        assertThrows(DataIntegrityViolationException.class,
+                () -> repoEntry.save(entry));
+    }
+
+    @Test
+    void testGetByID_Exist() {
+        Entry entry = getEntry1();
+        entry.setDiary(diary);
+        Entry savedEntry = repoEntry.save(entry);
+
+        Optional<Entry> gotEntry = repoEntry.getByID(savedEntry.getId());
 
         assertTrue(gotEntry.isPresent());
-        assertEquals("entry", gotEntry.get().getTitle());
-        assertEquals("day day", gotEntry.get().getContent());
+        assertEquals("Day1", gotEntry.get().getTitle());
+        assertEquals("Good day 1", gotEntry.get().getContent());
     }
 
     @Test
-    void testDelete() {
-        Entry entry = new Entry(diary, "entry", "day day");
-        Entry savedEntry = repo.save(entry);
+    void testGetByID_NonExist() {
+        Long nonExistingEntryId = -1L;
 
-        repo.delete(savedEntry.getId());
+        Optional<Entry> gotEntry = repoEntry.getByID(nonExistingEntryId);
 
-        Optional<Entry> gotEntry = repo.getByID(savedEntry.getId());
         assertTrue(gotEntry.isEmpty());
     }
 
     @Test
-    void testGetAllByDiary() {
-        Entry entry1 = new Entry(diary, "entry1", "day day1");
-        Entry entry2 = new Entry(diary, "entry2", "day day2");
-        repo.save(entry1);
-        repo.save(entry2);
+    void testDelete_Correct() {
+        Entry entry = getEntry1();
+        entry.setDiary(diary);
+        Entry savedEntry = repoEntry.save(entry);
 
-        List<Entry> entries = repo.getAllByDiary(diary.getId());
+        repoEntry.delete(savedEntry.getId());
+
+        Optional<Entry> gotEntry = repoEntry.getByID(savedEntry.getId());
+        assertTrue(gotEntry.isEmpty());
+    }
+
+    @Test
+    void testGetAllByDiary_Exist() {
+        Entry entry1 = getEntry1();
+        entry1.setDiary(diary);
+        Entry entry2 = getEntry1();
+        entry2.setDiary(diary);
+        repoEntry.save(entry1);
+        repoEntry.save(entry2);
+
+        List<Entry> entries = repoEntry.getAllByDiary(diary.getId());
 
         assertEquals(2, entries.size());
     }
 
     @Test
+    void testGetAllByDiary_NonExist() {
+        Long diaryId = -1L;
+
+        List<Entry> entries = repoEntry.getAllByDiary(diaryId);
+
+        assertEquals(0, entries.size());
+    }
+
+    @Test
     void testGetByDiaryIdAndCreatedDate_Exist() {
         LocalDate date = LocalDate.now();
-        Entry entry = new Entry(diary, "entry", "day day");
-        repo.save(entry);
+        Entry entry = getEntry1();
+        entry.setDiary(diary);
+        repoEntry.save(entry);
 
-        Optional<Entry> gotEntry = repo.getByDiaryIdAndCreatedDate(diary.getId(), date);
+        Optional<Entry> gotEntry = repoEntry.getByDiaryIdAndCreatedDate(diary.getId(), date);
 
         assertTrue(gotEntry.isPresent());
-        assertEquals("entry", gotEntry.get().getTitle());
-        assertEquals("day day", gotEntry.get().getContent());
+        assertEquals("Day1", gotEntry.get().getTitle());
+        assertEquals("Good day 1", gotEntry.get().getContent());
     }
 
     @Test
     void testGetByDiaryIdAndCreatedDate_NonExist() {
         LocalDate date = LocalDate.now();
 
-        Optional<Entry> gotEntry = repo.getByDiaryIdAndCreatedDate(diary.getId(), date);
+        Optional<Entry> gotEntry = repoEntry.getByDiaryIdAndCreatedDate(diary.getId(), date);
 
         assertTrue(gotEntry.isEmpty());
     }

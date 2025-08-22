@@ -1,0 +1,27 @@
+services:
+  app-test:
+    build:
+      context: ..
+      dockerfile: ./cicd/Dockerfile.test
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./allure-report:/app/build/allure-report
+      - ./allure-results:/app/build/allure-results
+      - ./reports:/app/build/reports
+      - ../backend/src:/app/src 
+      - ediary-cicd-gradle-cache:/app/.gradle
+      - ediary-cicd-build-cache:/app/build  
+
+    env_file: 
+      - ./cicd.env
+    environment:
+      - TESTCONTAINERS_DOCKER_SOCKET_OVERRIDE=/var/run/docker.sock
+      - TESTCONTAINERS_HOST_OVERRIDE=host.docker.internal
+      - DOCKER_HOST=unix:///var/run/docker.sock
+    user: root
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
+volumes:
+  ediary-cicd-gradle-cache:
+  ediary-cicd-build-cache:

@@ -2,6 +2,8 @@ package org.srd.ediary.application.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import io.qameta.allure.Epic;
+import io.qameta.allure.Feature;
 import lombok.NonNull;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -12,6 +14,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.core.MethodParameter;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.Authentication;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.bind.support.WebDataBinderFactory;
@@ -36,8 +39,13 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static utils.OwnerTestMother.getOwnerCreateDTO;
+import static utils.OwnerTestMother.getOwnerInfoDTO;
 
+@Epic("Unit Tests")
+@Feature("Controllers")
 @WebMvcTest(OwnerController.class)
+@ActiveProfiles("unit_test")
 class OwnerControllerTest {
     @Autowired
     private MockMvc mockMvc;
@@ -49,10 +57,6 @@ class OwnerControllerTest {
     private OwnerService ownerService;
     private JacksonTester<OwnerCreateDTO> creationJson;
     private JacksonTester<TokenRequestDTO> loginJson;
-
-    private final LocalDate birthDate = LocalDate.of(2000, 1, 1);
-    private final OwnerInfoDTO output = new OwnerInfoDTO(1L, "Ivan",
-            birthDate, "ivan01", LocalDate.now());
 
     @BeforeEach
     void setUp() {
@@ -68,7 +72,8 @@ class OwnerControllerTest {
 
     @Test
     void testCreateOwner_WithNonExistingLogin() throws Exception {
-        OwnerCreateDTO input = new OwnerCreateDTO("Ivan", birthDate, "ivan01", "navi01");
+        OwnerCreateDTO input = getOwnerCreateDTO();
+        OwnerInfoDTO output = getOwnerInfoDTO();
         when(ownerService.registerOwner(input)).thenReturn(output);
 
         mockMvc.perform(post("/api/v1/owners/")
@@ -77,12 +82,12 @@ class OwnerControllerTest {
         )
                 .andDo(print())
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.id").value(1L));
+                .andExpect(jsonPath("$.name").value("Ivan"));
     }
 
     @Test
     void testCreateOwner_WithAlreadyExistingLogin() throws Exception {
-        OwnerCreateDTO input = new OwnerCreateDTO("Ivan", birthDate, "ivan01", "navi01");
+        OwnerCreateDTO input = getOwnerCreateDTO();
         when(ownerService.registerOwner(input)).thenThrow(OwnerAlreadyExistException.class);
 
         mockMvc.perform(post("/api/v1/owners/")
@@ -94,13 +99,14 @@ class OwnerControllerTest {
 
     @Test
     void testFetchOwner_ExistingOwner() throws Exception {
+        OwnerInfoDTO output = getOwnerInfoDTO();
         when(ownerService.fetchOwner(1L)).thenReturn(output);
 
         mockMvc.perform(get("/api/v1/owners/me")
                         .principal(authentication)
                 )
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id").value(1L));
+                .andExpect(jsonPath("$.name").value("Ivan"));
     }
 
     @Test
