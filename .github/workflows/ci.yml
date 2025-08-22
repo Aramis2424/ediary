@@ -35,6 +35,9 @@ jobs:
             gradle wrapper --gradle-version 8.10.2
           fi
         shell: bash
+        
+      - name: Make gradlew executable
+        run: chmod +x backend/gradlew
 
       - name: Verify Gradle wrapper
         run: ./backend/gradlew --version
