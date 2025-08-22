@@ -37,7 +37,7 @@ jobs:
         shell: bash
 
       - name: Verify Gradle wrapper
-        run: ./gradlew --version
+        run: ./backend/gradlew --version
 
       - name: Set up Docker
         uses: docker/setup-buildx-action@v2
