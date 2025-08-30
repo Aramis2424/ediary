@@ -52,6 +52,8 @@ public class SecurityConfig {
             req.requestMatchers("/api/v1/hello").permitAll();
 			req.requestMatchers("/api/v1/owners").permitAll();
             req.requestMatchers("/swagger-ui/**").permitAll();
+            //req.requestMatchers("/actuator/prometheus").hasRole(adminRole);
+            req.requestMatchers("/actuator/prometheus").permitAll();
             req.anyRequest().authenticated();
         });
 
