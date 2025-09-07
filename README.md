@@ -87,4 +87,28 @@
 
 [Внешнее API в формате OpenAPI]: ./OPENAPI.md
 
+### Запуск тестов
+
+Для локальной запуски тестов необходимо:
+
+```bash
+cd backend
+gradle uTest # юнит тесты
+gradle iTest # интеграционные тесты
+gradle eTest # e2e тесты
+gradle aTest # генерация allure отчета
+gradle test # запуск всех тестов
+```
+
+Для запуска ci-процесса:
+
+```bash
+./cicd/ci-local.sh # необходимо наличие docker
+```
+
+Для сборки контейнера CI:
+
+```bash
+docker-compose -f ./cicd/docker-compose.test.yml -p ediary_cicd up --build -d
+```
 
