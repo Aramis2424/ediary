@@ -68,6 +68,8 @@ tasks.register('eTest', Test) {
 }
 
 tasks.named('test', Test) {
+	maxParallelForks = 1
+	forkEvery = 0
 	useJUnitPlatform()
 	finalizedBy jacocoTestReport
 }
