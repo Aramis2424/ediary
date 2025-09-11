@@ -1,5 +1,6 @@
 # Fake data
 metaData/fakeDataGenerator/data/
+metaData/fakeDataGenerator/generatedData/
 
 # Html svg files
 nginx/readme/metaData/diagrams/*.svg
