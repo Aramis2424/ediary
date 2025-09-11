@@ -12,7 +12,7 @@ public class FakeDataGeneratorApplication {
         ConfigurableApplicationContext context =
                 SpringApplication.run(FakeDataGeneratorApplication.class, args);
 
-        Generator generator = context.getBean(Generator.class);
+        Generator generator = context.getBean("generatorBaseImpl", Generator.class);
 
         generator.run();
 	}
