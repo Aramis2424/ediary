@@ -9,12 +9,12 @@ public class BaseModel extends Model {
     private final int anyInt;
 
     @Override
-    public String getName() {
+    public String getModelName() {
         return "BaseModel";
     }
 
     @Override
     public Map<String, ?> toExport() {
-        return Map.of("Key", "value");
+        return Map.of("Key", anyInt);
     }
 }

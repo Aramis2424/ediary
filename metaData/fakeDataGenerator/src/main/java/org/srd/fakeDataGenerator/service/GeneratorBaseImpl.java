@@ -23,7 +23,7 @@ public class GeneratorBaseImpl extends Generator {
     @Override
     protected void export() {
         exporters.forEach(it -> {
-            models.forEach(m -> it.export(outputDir + m.getName(), m.toExport()));
+            models.forEach(m -> it.export(outputDir + m.getModelName(), m.toExport()));
         });
     }
 }
