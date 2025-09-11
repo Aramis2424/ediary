@@ -12,7 +12,7 @@ import java.util.Map;
 
 @Service
 public class GeneratorBaseImpl extends Generator {
-    List<Model> models;
+    private List<Model> models;
 
     public GeneratorBaseImpl(List<? extends Exporter> exporters, Faker faker, ObjectMapper mapper) {
         super(exporters, faker, mapper);
