@@ -25,10 +25,4 @@ public class BaseModel extends Model {
         content.put("Raw string", anyString);
         return content;
     }
-
-    @Override
-    public Map<String, Object> toMapByFieldNames(ObjectMapper mapper) {
-        return mapper.convertValue(this, new TypeReference<>() {
-        });
-    }
 }
