@@ -14,10 +14,6 @@ public class BaseModel extends Model {
     private final int anyInt;
     private final String anyString;
 
-    public static String getModelName() {
-        return "BaseModel";
-    }
-
     @Override
     public Map<String, Object> toMap() {
         Map<String, Object> content = new HashMap<>();

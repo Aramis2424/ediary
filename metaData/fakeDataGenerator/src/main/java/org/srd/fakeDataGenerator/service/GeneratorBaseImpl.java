@@ -19,6 +19,11 @@ public class GeneratorBaseImpl extends Generator {
     }
 
     @Override
+    public String getModelName() {
+        return "BaseModel";
+    }
+
+    @Override
     protected void generate() {
         models = List.of(
                 new BaseModel(1, faker.name().firstName()),
@@ -33,7 +38,7 @@ public class GeneratorBaseImpl extends Generator {
                         .map(Model::toMap)
                         .toList();
         exporters.forEach(it ->
-                it.export(outputDir + BaseModel.getModelName(), mapList)
+                it.export(outputDir + getModelName(), mapList)
         );
     }
 }

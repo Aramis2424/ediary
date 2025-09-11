@@ -30,6 +30,7 @@ public abstract class Generator {
         export();
     }
 
+    protected abstract String getModelName();
     protected abstract void generate();
     protected abstract void export();
 
