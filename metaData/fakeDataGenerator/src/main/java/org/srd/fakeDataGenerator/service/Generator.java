@@ -2,6 +2,7 @@ package org.srd.fakeDataGenerator.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import net.datafaker.Faker;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.srd.fakeDataGenerator.exporter.Exporter;
@@ -16,10 +17,10 @@ import java.util.List;
 @RequiredArgsConstructor
 @Log4j2
 public abstract class Generator {
-    final protected List<? extends Exporter> exporters;
-
     @Value("${config.export.outputDir: generatedData/}")
     protected String outputDir;
+    final protected List<? extends Exporter> exporters;
+    final protected Faker faker;
 
     public void run() {
         createDirIfNotExists();

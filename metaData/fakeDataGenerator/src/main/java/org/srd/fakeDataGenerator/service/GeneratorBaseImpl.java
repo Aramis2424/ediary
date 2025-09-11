@@ -1,5 +1,6 @@
 package org.srd.fakeDataGenerator.service;
 
+import net.datafaker.Faker;
 import org.springframework.stereotype.Service;
 import org.srd.fakeDataGenerator.exporter.Exporter;
 import org.srd.fakeDataGenerator.model.BaseModel;
@@ -11,13 +12,16 @@ import java.util.List;
 public class GeneratorBaseImpl extends Generator {
     List<Model> models;
 
-    public GeneratorBaseImpl(List<? extends Exporter> exporters) {
-        super(exporters);
+    public GeneratorBaseImpl(List<? extends Exporter> exporters, Faker faker) {
+        super(exporters, faker);
     }
 
     @Override
     protected void generate() {
-        models = List.of(new BaseModel(1), new BaseModel(2));
+        models = List.of(
+                new BaseModel(1, faker.name().firstName()),
+                new BaseModel(2, faker.name().firstName())
+        );
     }
 
     @Override

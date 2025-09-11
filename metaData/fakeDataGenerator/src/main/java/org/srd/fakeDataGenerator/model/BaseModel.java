@@ -7,6 +7,7 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class BaseModel extends Model {
     private final int anyInt;
+    private final String anyString;
 
     @Override
     public String getModelName() {
@@ -15,6 +16,6 @@ public class BaseModel extends Model {
 
     @Override
     public Map<String, ?> toExport() {
-        return Map.of("Key", anyInt);
+        return Map.of(anyString, anyInt);
     }
 }
