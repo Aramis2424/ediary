@@ -1,0 +1,23 @@
+spring:
+  application:
+    name: fakeDataGenerator
+
+config:
+  export:
+    outputDir: "generatedData/"
+    fileType:
+      txt: true
+      json: false
+      csv: false
+      sql: false
+
+logging:
+  level:
+    root: ERROR
+    org:
+      srd: DEBUG
+      springframework:
+        boot:
+          autoconfigure: WARN
+  file:
+    name: logs/fakeDataGenerator.log

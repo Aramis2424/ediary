@@ -2,6 +2,7 @@ package org.srd.fakeDataGenerator.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.srd.fakeDataGenerator.exporter.Exporter;
 
@@ -16,7 +17,9 @@ import java.util.List;
 @Log4j2
 public abstract class Generator {
     final protected List<? extends Exporter> exporters;
-    final protected String outputDir = "generatedData/";
+
+    @Value("${config.export.outputDir: generatedData/}")
+    protected String outputDir;
 
     public void run() {
         createDirIfNotExists();
@@ -34,7 +37,7 @@ public abstract class Generator {
             try {
                 Files.createDirectories(path);
             } catch (IOException e) {
-                log.error("Cannot create output directory: " + outputDir);
+                log.error("Cannot create output directory: {}", outputDir);
                 throw new RuntimeException("Cannot create output directory: " + outputDir);
             }
         }
