@@ -9,6 +9,8 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.StandardOpenOption;
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -16,13 +18,24 @@ import java.util.Map;
 @ConditionalOnProperty(prefix = "config.export.fileType", name = "txt", havingValue = "true")
 public class ExporterText implements Exporter {
     @Override
-    public void export(String filename, Map<String, ?> content) {
+    public void export(String filename, List<Map<String, Object>> objects) {
         String postfix = ".txt";
         Path path = Path.of(filename + postfix);
 
-        try (BufferedWriter writer = Files.newBufferedWriter(path, StandardCharsets.UTF_8)) {
-            for (var entry : content.entrySet()) {
-                writer.write(entry.getKey() + ": " + entry.getValue());
+        try {
+            clearFile(path);
+        } catch (IOException e) {
+            log.error("Cannot create or clear file: {}", filename);
+            throw new RuntimeException("Cannot create or clear file: " + filename);
+        }
+
+        try (BufferedWriter writer = Files.newBufferedWriter(path, StandardCharsets.UTF_8, StandardOpenOption.APPEND)) {
+            for (var object: objects) {
+                for (var entry : object.entrySet()) {
+                    writer.write(entry.getKey() + ": " + entry.getValue());
+                    writer.write("; ");
+                }
+                writer.write("\n");
             }
         } catch (IOException ex) {
             log.error("Cannot find file: {}", filename);

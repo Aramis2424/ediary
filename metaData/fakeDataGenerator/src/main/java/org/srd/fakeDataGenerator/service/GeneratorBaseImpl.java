@@ -7,6 +7,7 @@ import org.srd.fakeDataGenerator.model.BaseModel;
 import org.srd.fakeDataGenerator.model.Model;
 
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class GeneratorBaseImpl extends Generator {
@@ -20,14 +21,18 @@ public class GeneratorBaseImpl extends Generator {
     protected void generate() {
         models = List.of(
                 new BaseModel(1, faker.name().firstName()),
-                new BaseModel(2, faker.name().firstName())
+                new BaseModel(2, faker.name().firstName()),
+                new BaseModel(3, faker.name().firstName())
         );
     }
 
     @Override
     protected void export() {
+        List<Map<String, Object>> mapList = models.stream()
+                        .map(Model::toMap)
+                        .toList();
         exporters.forEach(it ->
-                models.forEach(m -> it.export(outputDir + m.getModelName(), m.toExport()))
+                it.export(outputDir + BaseModel.getModelName(), mapList)
         );
     }
 }
