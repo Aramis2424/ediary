@@ -1,5 +1,6 @@
 package org.srd.fakeDataGenerator.service;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import net.datafaker.Faker;
 import org.springframework.stereotype.Service;
 import org.srd.fakeDataGenerator.exporter.Exporter;
@@ -13,8 +14,8 @@ import java.util.Map;
 public class GeneratorBaseImpl extends Generator {
     List<Model> models;
 
-    public GeneratorBaseImpl(List<? extends Exporter> exporters, Faker faker) {
-        super(exporters, faker);
+    public GeneratorBaseImpl(List<? extends Exporter> exporters, Faker faker, ObjectMapper mapper) {
+        super(exporters, faker, mapper);
     }
 
     @Override

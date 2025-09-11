@@ -1,11 +1,15 @@
 package org.srd.fakeDataGenerator.model;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 import java.util.HashMap;
 import java.util.Map;
 
 @RequiredArgsConstructor
+@Getter
 public class BaseModel extends Model {
     private final int anyInt;
     private final String anyString;
@@ -20,5 +24,11 @@ public class BaseModel extends Model {
         content.put("Number", anyInt);
         content.put("Raw string", anyString);
         return content;
+    }
+
+    @Override
+    public Map<String, Object> toMapByFieldNames(ObjectMapper mapper) {
+        return mapper.convertValue(this, new TypeReference<>() {
+        });
     }
 }

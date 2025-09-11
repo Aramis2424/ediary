@@ -1,5 +1,6 @@
 package org.srd.fakeDataGenerator.service;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import net.datafaker.Faker;
@@ -21,6 +22,7 @@ public abstract class Generator {
     protected String outputDir;
     final protected List<? extends Exporter> exporters;
     final protected Faker faker;
+    final protected ObjectMapper mapper;
 
     public void run() {
         createDirIfNotExists();
