@@ -14,6 +14,15 @@ public class EntryCardTestMother {
                 2, 9, LocalDate.now());
     }
 
+    public static EntryCardDTO getEntryCardDTO1WithoutMoods(Long diaryId) {
+        return new EntryCardDTO(null, diaryId, "Day1",
+                -1, -1, LocalDate.now());
+    }
+    public static EntryCardDTO getEntryCardDTO2WithoutMoods(Long diaryId) {
+        return new EntryCardDTO(null, diaryId, "Day2",
+                -1, -1, LocalDate.now());
+    }
+
     public static EntryCardDTO getEntryCardDto1It(Long diaryId) {
         return new EntryCardDTO(1L, diaryId, "Day1",
                 1, 10, LocalDate.of(2021, 1, 1));

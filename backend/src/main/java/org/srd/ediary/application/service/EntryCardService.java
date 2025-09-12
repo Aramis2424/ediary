@@ -7,6 +7,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.srd.ediary.application.dto.EntryCardDTO;
 import org.srd.ediary.application.dto.EntryInfoDTO;
 import org.srd.ediary.application.dto.MoodInfoDTO;
+import org.srd.ediary.application.exception.EntryNotFoundException;
+import org.srd.ediary.application.exception.MoodNotFoundException;
 import org.srd.ediary.application.security.utils.AuthHelper;
 
 import java.util.ArrayList;
@@ -27,6 +29,13 @@ public class EntryCardService {
 
         List<EntryInfoDTO> diaryEntries = entryService.getAllEntriesByDiary(diaryId);
         List<MoodInfoDTO> ownerMoods = moodService.getMoodsByOwner(ownerId);
+
+        if (diaryEntries == null) {
+            throw new EntryNotFoundException("There are not any entries");
+        }
+        if (ownerMoods == null) {
+            throw new MoodNotFoundException("There are not any moods");
+        }
         List<EntryCardDTO> cards = new ArrayList<>(diaryEntries.size());
 
         for (var entry: diaryEntries) {

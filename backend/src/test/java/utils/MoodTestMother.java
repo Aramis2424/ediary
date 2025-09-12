@@ -25,6 +25,10 @@ public class MoodTestMother {
     public static MoodInfoDTO getMoodInfoDTO2() {
         return new MoodInfoDTO(null, 2, 9, bedtime, wakeUpTime, LocalDate.now());
     }
+    public static MoodInfoDTO getMoodInfoDTOWithOldDate() {
+        return new MoodInfoDTO(null, 5, 5, bedtime, wakeUpTime,
+                LocalDate.of(2000, 1, 1));
+    }
     public static Mood getMood1() {
         return new Mood(owner, 1, 10, bedtime, wakeUpTime);
     }
