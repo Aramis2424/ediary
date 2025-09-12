@@ -17,10 +17,11 @@ import java.util.Map;
 @Log4j2
 @ConditionalOnProperty(prefix = "config.export.fileType", name = "txt", havingValue = "true")
 public class ExporterText implements Exporter {
+    public static String POSTFIX = ".txt";
+
     @Override
     public void export(String filename, List<Map<String, Object>> objects) {
-        String postfix = ".txt";
-        Path path = Path.of(filename + postfix);
+        Path path = Path.of(filename + POSTFIX);
 
         try {
             clearFile(path);
