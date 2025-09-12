@@ -3,7 +3,7 @@ package org.srd.fakeDataGenerator;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ConfigurableApplicationContext;
-import org.srd.fakeDataGenerator.service.Generator;
+import org.srd.fakeDataGenerator.service.DataManager;
 
 @SpringBootApplication
 public class FakeDataGeneratorApplication {
@@ -12,7 +12,7 @@ public class FakeDataGeneratorApplication {
         ConfigurableApplicationContext context =
                 SpringApplication.run(FakeDataGeneratorApplication.class, args);
 
-        Generator generator = context.getBean("generatorBaseImpl", Generator.class);
+        DataManager generator = context.getBean("dataManagerExample", DataManager.class);
 
         generator.run();
 	}

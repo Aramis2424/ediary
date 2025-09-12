@@ -3,7 +3,6 @@ package org.srd.fakeDataGenerator.service;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import net.datafaker.Faker;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.srd.fakeDataGenerator.exporter.Exporter;
@@ -17,11 +16,10 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 @Log4j2
-public abstract class Generator {
+public abstract class DataManager {
     @Value("${config.export.outputDir: generatedData/}")
     protected String outputDir;
     final protected List<? extends Exporter> exporters;
-    final protected Faker faker;
     final protected ObjectMapper mapper;
 
     public void run() {
@@ -30,7 +28,6 @@ public abstract class Generator {
         export();
     }
 
-    protected abstract String getModelName();
     protected abstract void generate();
     protected abstract void export();
 
