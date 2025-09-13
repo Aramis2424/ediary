@@ -1,7 +1,8 @@
-package org.srd.fakeDataGenerator.model;
+package org.srd.fakeDataGenerator.model.illustration;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import org.srd.fakeDataGenerator.model.Model;
 
 import java.util.HashMap;
 import java.util.Map;

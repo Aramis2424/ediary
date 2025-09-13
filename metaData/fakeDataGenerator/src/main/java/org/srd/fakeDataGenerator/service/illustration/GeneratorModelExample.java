@@ -5,7 +5,7 @@ import net.datafaker.Faker;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Service;
 import org.srd.fakeDataGenerator.model.Model;
-import org.srd.fakeDataGenerator.model.ModelExample;
+import org.srd.fakeDataGenerator.model.illustration.ModelExample;
 import org.srd.fakeDataGenerator.service.GeneratorModel;
 
 import java.util.ArrayList;
