@@ -2,39 +2,37 @@ package org.srd.fakeDataGenerator.service;
 
 import lombok.Getter;
 import net.datafaker.Faker;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.srd.fakeDataGenerator.model.Model;
 import org.srd.fakeDataGenerator.model.ModelExample;
+import org.srd.fakeDataGenerator.model.ModelSample;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 @Service
 @Getter
-public class GeneratorModelExample extends GeneratorModel {
-    private List<ModelExample> models;
-
-    public GeneratorModelExample(Faker faker) {
-        super(faker);
+public class GeneratorModelExample extends GeneratorModel<ModelExample> {
+    public GeneratorModelExample(Faker faker, Random random) {
+        super(faker, random);
     }
 
     @Override
     public String getModelName() {
-        return "ModelExample";
+        return "examples";
     }
+
 
     @Override
-    public List<Map<String, Object>> getListMap() {
-        return models.stream()
-                .map(Model::toMap)
-                .toList();
-    }
-
-    public void generate() {
-        models = List.of(
-                new ModelExample(1, faker.name().firstName()),
-                new ModelExample(2, faker.name().firstName()),
-                new ModelExample(3, faker.name().firstName())
-        );
+    public List<ModelExample> generate(Map<String, List<? extends Model>> context) {
+        List<ModelExample> list = new ArrayList<>();
+        for (int i = 1; i <= 3; i++) {
+            list.add(new ModelExample(i, "Name" + (random.nextInt(90)+10)));
+        }
+        System.out.println("ExampleGenerator produced " + list.size() + " items");
+        return list;
     }
 }

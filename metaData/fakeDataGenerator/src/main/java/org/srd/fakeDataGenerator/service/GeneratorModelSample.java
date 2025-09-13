@@ -8,39 +8,32 @@ import org.srd.fakeDataGenerator.model.Model;
 import org.srd.fakeDataGenerator.model.ModelExample;
 import org.srd.fakeDataGenerator.model.ModelSample;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
+import java.util.*;
 
 @Service
 @Getter
-public class GeneratorModelSample extends GeneratorModel {
-    @Value("${faker.seed:0}")
-    private long seed;
-    private List<ModelSample> models;
-    private final Random random = new Random(seed);
-
-    public GeneratorModelSample(Faker faker) {
-        super(faker);
+public class GeneratorModelSample extends GeneratorModel<ModelSample> {
+    public GeneratorModelSample(Faker faker, Random random) {
+        super(faker, random);
     }
 
     @Override
     public String getModelName() {
-        return "ModelSample";
+        return "samples";
     }
 
     @Override
-    public List<Map<String, Object>> getListMap() {
-        return models.stream()
-                .map(Model::toMap)
-                .toList();
-    }
-
-    public void generate(List<ModelExample> examples) {
-        models = List.of(
-                new ModelSample(random.nextInt(), examples.getFirst().getAnyString()),
-                new ModelSample(random.nextInt(), examples.getLast().getAnyString()),
-                new ModelSample(random.nextInt(), examples.get(1).getAnyString())
-        );
+    public List<ModelSample> generate(Map<String, List<? extends Model>> context) {
+        List<? extends Model> examples = context.getOrDefault("examples", Collections.emptyList());
+        List<ModelSample> out = new ArrayList<>();
+        for (Model m : examples) {
+            Map<String,Object> mm = m.toMap();
+            int baseId = (int) mm.get("Number");
+            for (int k = 0; k < 2; k++) {
+                out.add(new ModelSample(baseId, "note-" + random.nextInt(100)));
+            }
+        }
+        System.out.println("SampleGenerator produced " + out.size() + " items (from base size " + examples.size() + ")");
+        return out;
     }
 }
