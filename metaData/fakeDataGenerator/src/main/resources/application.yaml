@@ -7,8 +7,8 @@ config:
     outputDir: "generatedData/"
     fileType:
       txt: true
-      json: false
-      csv: false
+      json: true
+      csw: true
       sql: false
 
 logging:
