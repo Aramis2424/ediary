@@ -10,6 +10,8 @@ config:
       json: true
       csw: true
       sql: false
+  generators:
+    package: "org.srd.fakeDataGenerator.service.illustration"
 
 logging:
   level:

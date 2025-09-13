@@ -1,12 +1,12 @@
-package org.srd.fakeDataGenerator.service;
+package org.srd.fakeDataGenerator.service.illustration;
 
 import lombok.Getter;
 import net.datafaker.Faker;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Service;
 import org.srd.fakeDataGenerator.model.Model;
 import org.srd.fakeDataGenerator.model.ModelExample;
-import org.srd.fakeDataGenerator.model.ModelSample;
+import org.srd.fakeDataGenerator.service.GeneratorModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,6 +15,7 @@ import java.util.Random;
 
 @Service
 @Getter
+@Order(1)
 public class GeneratorModelExample extends GeneratorModel<ModelExample> {
     public GeneratorModelExample(Faker faker, Random random) {
         super(faker, random);
