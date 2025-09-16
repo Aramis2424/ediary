@@ -3,6 +3,7 @@ package integration.service;
 import integration.context.WithMockOwnerDetails;
 import io.qameta.allure.Epic;
 import io.qameta.allure.Feature;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authorization.AuthorizationDeniedException;
@@ -11,6 +12,8 @@ import org.srd.ediary.application.dto.OwnerInfoDTO;
 import org.srd.ediary.application.exception.InvalidCredentialsException;
 import org.srd.ediary.application.exception.OwnerAlreadyExistException;
 import org.srd.ediary.application.service.OwnerService;
+import org.srd.ediary.domain.model.Owner;
+import utils.OwnerTestMother;
 
 import java.time.LocalDate;
 
@@ -26,6 +29,30 @@ public class OwnerServiceIT extends BaseIT {
 
     private final static long validOwnerId = 1L;
     private final static long invalidOwnerId = 2L;
+
+    private OwnerCreateDTO bmstuDtoSaving;
+    private OwnerInfoDTO bmstuDtoSaved;
+
+    @BeforeEach
+    void init_db() {
+        Owner newOwner = OwnerTestMother.getOwnerBuilder()
+                        .withLogin("bmstu")
+                        .withPassword("123abc")
+                        .build();
+        bmstuDtoSaving = new OwnerCreateDTO(newOwner.getName(), newOwner.getBirthDate(),
+                newOwner.getLogin(), newOwner.getPassword());
+        bmstuDtoSaved = service.registerOwner(bmstuDtoSaving);
+    }
+
+    @Test
+    @WithMockOwnerDetails(id = validOwnerId)
+    void testLoginOwner_Bmstu() {
+        OwnerInfoDTO expected = bmstuDtoSaved;
+
+        OwnerInfoDTO actual = service.loginOwner("bmstu", "123abc");
+
+        assertEquals(expected.login(), actual.login());
+    }
 
     @Test
     void testLoginOwner_ExistingOwner() {
@@ -56,7 +83,7 @@ public class OwnerServiceIT extends BaseIT {
     void testRegisterOwner_NonExistingLogin() {
         OwnerCreateDTO createDto = new OwnerCreateDTO("Ivan",
                 birthDate, "newLog", password);
-        OwnerInfoDTO expected = new OwnerInfoDTO(2L, "Ivan",
+        OwnerInfoDTO expected = new OwnerInfoDTO(3L, "Ivan",
                 birthDate, "newLog", LocalDate.now());
 
         OwnerInfoDTO actual = service.registerOwner(createDto);
