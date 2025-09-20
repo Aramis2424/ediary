@@ -20,6 +20,11 @@ public class ExporterSql implements Exporter {
 
     @Override
     public void export(String filename, List<Map<String, Object>> objects) {
+        if (objects == null || objects.isEmpty()) {
+            log.warn("No objects to export for file: {}", filename);
+            return;
+        }
+
         Path path = Path.of(filename + POSTFIX);
 
         try {
@@ -30,13 +35,13 @@ public class ExporterSql implements Exporter {
         }
 
         SqlInsertCommand builder = new SqlInsertCommand(
-                filename.split("/")[1],
+                path.getFileName().toString().split("\\.")[0],
                 objects.getFirst().keySet()
         );
 
         try (BufferedWriter writer = Files.newBufferedWriter(path, StandardCharsets.UTF_8, StandardOpenOption.APPEND)) {
             for (var object: objects) {
-                writer.write(builder.values(object).getString());
+                writer.write(builder.values(object).build());
                 writer.write("\n");
             }
         } catch (IOException ex) {
@@ -47,55 +52,41 @@ public class ExporterSql implements Exporter {
 
     private static class SqlInsertCommand {
         private final String table;
-        private final String[] columnsNames;
+        private final String[] columnNames;
         private String[] values;
 
-        public SqlInsertCommand(String tableName, Set<String> columnsNames) {
+        public SqlInsertCommand(String tableName, Set<String> columnNames) {
             this.table = tableName;
 
             int index = 0;
-            this.columnsNames = new String[columnsNames.size()];
-            for (String colName : columnsNames) {
-                this.columnsNames[index++] = colName;
+            this.columnNames = new String[columnNames.size()];
+            for (String colName : columnNames) {
+                this.columnNames[index++] = colName;
             }
         }
 
         public SqlInsertCommand values(Map<String, Object> values) {
-            int index = 0;
-            this.values = new String[values.size()];
-            for (Object value : values.values()) {
-                if (Objects.requireNonNull(value) instanceof String) {
-                    this.values[index++] =
-                            "\"" + value + "\"";
+            this.values = new String[columnNames.length];
+            for (int i = 0; i < columnNames.length; i++) {
+                Object value = values.get(columnNames[i]);
+                if (value == null) {
+                    this.values[i] = "NULL";
+                } else if (value instanceof String strVal) {
+                    this.values[i] = "'" + strVal.replace("'", "''") + "'";
                 } else {
-                    this.values[index++] = value.toString();
+                    this.values[i] = value.toString();
                 }
             }
             return this;
         }
 
-        public String getString() {
-            StringBuilder str = new StringBuilder();
-            str.append("INSERT INTO ").append(table);
-            str.append(" (");
-            insertIterable(str, columnsNames);
-            str.append(") ");
-            str.append("VALUES ");
-            str.append(" (");
-            insertIterable(str, values);
-            str.append(")");
-            str.append(";");
-            return str.toString();
-        }
-
-        private void insertIterable(StringBuilder str, String[] values) {
-            Iterator<String> columnsIterator = Arrays.stream(values).iterator();
-            while (columnsIterator.hasNext()) {
-                str.append(columnsIterator.next());
-                if (columnsIterator.hasNext()) {
-                    str.append(", ");
-                }
-            }
+        public String build() {
+            return String.format(
+                    "INSERT INTO %s (%s) VALUES (%s);",
+                    table,
+                    String.join(", ", columnNames),
+                    String.join(", ", values)
+            );
         }
     }
 }
