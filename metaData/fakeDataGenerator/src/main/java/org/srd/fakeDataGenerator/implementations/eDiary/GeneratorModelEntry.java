@@ -7,9 +7,10 @@ import org.springframework.stereotype.Service;
 import org.srd.fakeDataGenerator.model.Model;
 import org.srd.fakeDataGenerator.service.GeneratorModel;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 @Service
 @Getter
@@ -26,6 +27,56 @@ public class GeneratorModelEntry extends GeneratorModel<ModelEntry> {
 
     @Override
     public List<ModelEntry> generate(Map<String, List<? extends Model>> context) {
-        return List.of();
+        List<? extends Model> owners = context.getOrDefault("diaries", Collections.emptyList());
+        List<ModelEntry> out = new ArrayList<>();
+        int entryId = 1;
+        for (Model model : owners) {
+            if (!(model instanceof ModelDiary diary)) {
+                continue;
+            }
+            int cntEntries = diary.getCntEntry();
+            for (int i = 0; i < cntEntries; i++) {
+                LocalDate createdDate = generateLocalDateAfter(diary.getCreatedDate(), 20);
+                out.add(
+                        new ModelEntry(
+                                entryId,
+                                diary.getId(),
+                                generateSentence(3),
+                                generateSentence(20),
+                                createdDate)
+                );
+            }
+            entryId++;
+        }
+        return out;
+    }
+
+    private String generateSentence(int maxWordsCount) {
+        int wordCount = random.nextInt(maxWordsCount) + 1;
+
+        return switch (wordCount) {
+            case 2 -> capitalizeFirst(faker.lorem().word() + " " + faker.lorem().word());
+            case 3 -> capitalizeFirst(faker.lorem().word() + " " +
+                    faker.lorem().word() + " " +
+                    faker.lorem().word());
+            default -> capitalizeFirst(faker.lorem().word());
+        };
+    }
+
+    private String capitalizeFirst(String text) {
+        if (text == null || text.isEmpty()) {
+            return text;
+        }
+        return Character.toUpperCase(text.charAt(0)) + text.substring(1);
+    }
+
+    private LocalDate generateLocalDateAfter(LocalDate afterDate, int maxDaysAfter) {
+        Date startDate = Date.from(afterDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
+
+        Date futureDate = faker.date().future(maxDaysAfter, TimeUnit.DAYS, startDate);
+
+        return futureDate.toInstant()
+                .atZone(ZoneId.systemDefault())
+                .toLocalDate();
     }
 }
