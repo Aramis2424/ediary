@@ -3,6 +3,8 @@ package org.srd.fakeDataGenerator.implementations.eDiary;
 import lombok.Getter;
 import net.datafaker.Faker;
 import org.springframework.core.annotation.Order;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.srd.fakeDataGenerator.model.Model;
 import org.srd.fakeDataGenerator.service.GeneratorModel;
@@ -15,8 +17,10 @@ import java.util.*;
 @Getter
 @Order(1)
 public class GeneratorModelOwner extends GeneratorModel<ModelOwner> {
-    public GeneratorModelOwner(Faker faker, Random random) {
+    private final PasswordEncoder encoder;
+    public GeneratorModelOwner(Faker faker, Random random, PasswordEncoder encoder) {
         super(faker, random);
+        this.encoder = encoder;
     }
 
     @Override
@@ -41,7 +45,7 @@ public class GeneratorModelOwner extends GeneratorModel<ModelOwner> {
                     faker.number().numberBetween(1, 12),
                     faker.number().numberBetween(1, 28)
             );
-            out.add(new ModelOwner(id, name, birthDate, login, password, createdDate));
+            out.add(new ModelOwner(id, name, birthDate, login, encoder.encode(password), createdDate));
         }
         return out;
     }
