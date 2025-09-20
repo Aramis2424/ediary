@@ -44,8 +44,8 @@ public class GeneratorModelEntry extends GeneratorModel<ModelEntry> {
                                 Utils.generateSentence(10, 20),
                                 createdDate)
                 );
+                entryId++;
             }
-            entryId++;
         }
         return out;
     }
