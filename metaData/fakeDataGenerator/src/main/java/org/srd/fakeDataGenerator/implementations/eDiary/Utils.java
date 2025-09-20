@@ -2,6 +2,7 @@ package org.srd.fakeDataGenerator.implementations.eDiary;
 
 import lombok.RequiredArgsConstructor;
 import net.datafaker.Faker;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
@@ -12,10 +13,19 @@ import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
 @Component
-@RequiredArgsConstructor
 public class Utils {
     private static Faker faker;
     private static Random random;
+
+    @Autowired
+    public void setFaker(Faker faker) {
+        Utils.faker = faker;
+    }
+
+    @Autowired
+    public void setRandom(Random random) {
+        Utils.random = random;
+    }
 
     static LocalDate generateLocalDateAfter(LocalDate afterDate, int maxDaysAfter) {
         Date startDate = Date.from(afterDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
@@ -34,16 +44,18 @@ public class Utils {
         );
     }
 
-    static String generateSentence(int maxWordsCount) {
-        int wordCount = random.nextInt(maxWordsCount) + 1;
+    static String generateSentence(int minWordsCount, int maxWordsCount) {
+        int wordCount = random.nextInt(maxWordsCount) + minWordsCount;
 
-        return switch (wordCount) {
-            case 2 -> capitalizeFirst(faker.lorem().word() + " " + faker.lorem().word());
-            case 3 -> capitalizeFirst(faker.lorem().word() + " " +
-                    faker.lorem().word() + " " +
-                    faker.lorem().word());
-            default -> capitalizeFirst(faker.lorem().word());
-        };
+        StringBuilder sentence = new StringBuilder();
+        for (int i = 0; i < wordCount; i++) {
+            if (i > 0) {
+                sentence.append(" ");
+            }
+            sentence.append(faker.lorem().word());
+        }
+
+        return capitalizeFirst(sentence.toString());
     }
 
     static String capitalizeFirst(String text) {

@@ -40,8 +40,8 @@ public class GeneratorModelEntry extends GeneratorModel<ModelEntry> {
                         new ModelEntry(
                                 entryId,
                                 diary.getId(),
-                                Utils.generateSentence(3),
-                                Utils.generateSentence(20),
+                                Utils.generateSentence(1, 3),
+                                Utils.generateSentence(10, 20),
                                 createdDate)
                 );
             }

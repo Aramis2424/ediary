@@ -40,8 +40,8 @@ public class GeneratorModelDiary extends GeneratorModel<ModelDiary> {
                         new ModelDiary(
                                 diaryId,
                                 owner.getId(),
-                                Utils.generateSentence(3),
-                                Utils.generateSentence(5),
+                                Utils.generateSentence(1, 3),
+                                Utils.generateSentence(2, 5),
                                 faker.number().numberBetween(0, 5), createdDate)
                 );
                 diaryId++;
