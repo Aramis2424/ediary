@@ -9,7 +9,7 @@ config:
       txt: true
       json: true
       csw: true
-      sql: false
+      sql: true
   generators:
     package: "org.srd.fakeDataGenerator.service.illustration"
 
