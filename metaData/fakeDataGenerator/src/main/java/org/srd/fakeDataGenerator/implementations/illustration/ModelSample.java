@@ -1,4 +1,4 @@
-package org.srd.fakeDataGenerator.model.illustration;
+package org.srd.fakeDataGenerator.implementations.illustration;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

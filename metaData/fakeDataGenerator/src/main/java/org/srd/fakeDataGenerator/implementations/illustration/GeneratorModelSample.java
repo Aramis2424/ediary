@@ -1,11 +1,10 @@
-package org.srd.fakeDataGenerator.service.illustration;
+package org.srd.fakeDataGenerator.implementations.illustration;
 
 import lombok.Getter;
 import net.datafaker.Faker;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Service;
 import org.srd.fakeDataGenerator.model.Model;
-import org.srd.fakeDataGenerator.model.illustration.ModelSample;
 import org.srd.fakeDataGenerator.service.GeneratorModel;
 
 import java.util.*;
