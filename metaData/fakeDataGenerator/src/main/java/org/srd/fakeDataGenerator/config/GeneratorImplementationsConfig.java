@@ -13,7 +13,7 @@ import java.util.List;
 
 @Configuration
 public class GeneratorImplementationsConfig {
-    @Value("${config.generators.package:org.srd.fakeDataGenerator.service.illustration}")
+    @Value("${config.generators.package:org.srd.fakeDataGenerator.implementations.illustration}")
     private String packageName;
 
     @Bean

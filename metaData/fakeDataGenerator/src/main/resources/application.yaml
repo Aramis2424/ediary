@@ -11,7 +11,7 @@ config:
       csw: true
       sql: true
   generators:
-    package: "org.srd.fakeDataGenerator.service.illustration"
+    package: "org.srd.fakeDataGenerator.implementations.eDiary"
 
 logging:
   level:
