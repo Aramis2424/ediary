@@ -38,14 +38,12 @@ public class GeneratorModelOwner extends GeneratorModel<ModelOwner> {
                     ZoneId.systemDefault()
             );
             String login = faker.funnyName().name().replace(" ", "") + id;
-            String password = faker.lordOfTheRings().character().toLowerCase().replace(" ", "") +
-                    faker.number().numberBetween(100, 999);
             LocalDate createdDate = LocalDate.of(
                     faker.number().numberBetween(2020, 2024),
                     faker.number().numberBetween(1, 12),
                     faker.number().numberBetween(1, 28)
             );
-            out.add(new ModelOwner(id, name, birthDate, login, encoder.encode(password), createdDate));
+            out.add(new ModelOwner(id, name, birthDate, login, encoder.encode(login), createdDate));
         }
         return out;
     }
