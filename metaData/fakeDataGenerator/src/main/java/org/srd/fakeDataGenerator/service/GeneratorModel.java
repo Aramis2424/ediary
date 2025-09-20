@@ -2,6 +2,7 @@ package org.srd.fakeDataGenerator.service;
 
 import lombok.RequiredArgsConstructor;
 import net.datafaker.Faker;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.srd.fakeDataGenerator.model.Model;
 
@@ -12,6 +13,8 @@ import java.util.Random;
 @Service
 @RequiredArgsConstructor
 public abstract class GeneratorModel<T extends Model> {
+    @Value("${config.models.baseGeneratedNumber: 2}")
+    protected int baseGeneratedCount;
     protected final Faker faker;
     protected final Random random;
 

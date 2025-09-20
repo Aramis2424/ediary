@@ -12,6 +12,8 @@ config:
       sql: true
   generators:
     package: "org.srd.fakeDataGenerator.implementations.eDiary"
+  models:
+    baseGeneratedNumber: 5
 
 logging:
   level:
