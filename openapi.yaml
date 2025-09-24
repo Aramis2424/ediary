@@ -45,7 +45,7 @@ paths:
         default:
           description: Unexpected error
           content:
-            application/json:
+            application/problem+json:
               schema:
                 $ref: "#/components/schemas/Error"
   /token/create:
@@ -72,7 +72,7 @@ paths:
         default:
           description: Unexpected error
           content:
-            application/json:
+            application/problem+json:
               schema:
                 $ref: "#/components/schemas/Error"
   /owners/me:
@@ -96,7 +96,7 @@ paths:
         default:
           description: Unexpected error
           content:
-            application/json:
+            application/problem+json:
               schema:
                 $ref: '#/components/schemas/Error'
       security:
@@ -131,7 +131,7 @@ paths:
         default:
           description: Unexpected error
           content:
-            application/json:
+            application/problem+json:
               schema:
                 $ref: "#/components/schemas/Error"
       security:
@@ -163,7 +163,7 @@ paths:
         default:
           description: Unexpected error
           content:
-            application/json:
+            application/problem+json:
               schema:
                 $ref: "#/components/schemas/Error"
       security:
@@ -200,7 +200,7 @@ paths:
         default:
           description: Unexpected error
           content:
-            application/json:
+            application/problem+json:
               schema:
                 $ref: "#/components/schemas/Error"
       security:
@@ -226,7 +226,7 @@ paths:
         default:
           description: Unexpected error
           content:
-            application/json:
+            application/problem+json:
               schema:
                 $ref: "#/components/schemas/Error"
       security:
@@ -253,7 +253,7 @@ paths:
         default:
           description: Unexpected error
           content:
-            application/json:
+            application/problem+json:
               schema:
                 $ref: "#/components/schemas/Error"
       security:
@@ -288,7 +288,51 @@ paths:
         default:
           description: Unexpected error
           content:
-            application/json:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Error"
+      security:
+        - bearerAuth: []
+    head:
+      tags:
+        - entry
+      summary: get permission for creating entry
+      parameters:
+        - name: diaryId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: date
+          in: query
+          required: true
+          schema:
+            type: string
+            format: date
+      responses:
+        '200':
+          description: Can create entry
+          headers:
+            X-Creation-Allowed:
+              schema:
+                type: boolean
+                example: true
+        '404':
+          description: Diary not found
+        '403':
+          description: Access denied
+        '409':
+          description: Cannot create
+          headers:
+            X-Creation-Allowed:
+              schema:
+                type: boolean
+                example: false
+        default:
+          description: Unexpected error
+          content:
+            application/problem+json:
               schema:
                 $ref: "#/components/schemas/Error"
       security:
@@ -320,7 +364,7 @@ paths:
         default:
           description: Unexpected error
           content:
-            application/json:
+            application/problem+json:
               schema:
                 $ref: "#/components/schemas/Error"
       security:
@@ -357,7 +401,7 @@ paths:
         default:
           description: Unexpected error
           content:
-            application/json:
+            application/problem+json:
               schema:
                 $ref: "#/components/schemas/Error"
       security:
@@ -383,7 +427,7 @@ paths:
         default:
           description: Unexpected error
           content:
-            application/json:
+            application/problem+json:
               schema:
                 $ref: "#/components/schemas/Error"
       security:
@@ -410,7 +454,7 @@ paths:
         default:
           description: Unexpected error
           content:
-            application/json:
+            application/problem+json:
               schema:
                 $ref: "#/components/schemas/Error"
       security:
@@ -427,6 +471,25 @@ paths:
           schema:
             type: integer
             format: int64
+        - name: page
+          in: query
+          required: false
+          description: Page number
+          schema:
+            type: integer
+            minimum: 0
+            default: 0
+            example: 2
+        - name: size
+          in: query
+          required: false
+          description: Page size
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 10
+            default: 7
+            example: 9
       responses:
         '200':
           description: Returns all entries entry cards that belong to the specified diary.
@@ -443,46 +506,7 @@ paths:
         default:
           description: Unexpected error
           content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
-      security:
-        - bearerAuth: []
-  /diaries/{diaryId}/can-create-entry:
-    get:
-      tags:
-        - entry
-      summary: get permission for creating entry
-      parameters:
-        - name: diaryId
-          in: path
-          required: true
-          schema:
-            type: integer
-            format: int64
-        - name: date
-          in: query
-          required: true
-          schema:
-            type: string
-            format: date
-      responses:
-        '200':
-          description: Returns permission if user can create new entry
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/EntryPermissionRes'
-        '404':
-          description: Diary not found
-        '403':
-          description: Access denied
-        default:
-          description: Unexpected error
-          content:
-            application/json:
+            application/problem+json:
               schema:
                 $ref: "#/components/schemas/Error"
       security:
@@ -517,7 +541,51 @@ paths:
         default:
           description: Unexpected error
           content:
-            application/json:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Error"
+      security:
+        - bearerAuth: []
+    head:
+      tags:
+        - mood
+      summary: get permission for creating mood
+      parameters:
+        - name: ownerId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: date
+          in: query
+          required: true
+          schema:
+            type: string
+            format: date
+      responses:
+        '200':
+          description: Can create mood
+          headers:
+            X-Creation-Allowed:
+              schema:
+                type: boolean
+                example: true
+        '404':
+          description: Owner not found
+        '403':
+          description: Access denied
+        '409':
+          description: Cannot create
+          headers:
+            X-Creation-Allowed:
+              schema:
+                type: boolean
+                example: false
+        default:
+          description: Unexpected error
+          content:
+            application/problem+json:
               schema:
                 $ref: "#/components/schemas/Error"
       security:
@@ -549,7 +617,7 @@ paths:
         default:
           description: Unexpected error
           content:
-            application/json:
+            application/problem+json:
               schema:
                 $ref: "#/components/schemas/Error"
       security:
@@ -586,7 +654,7 @@ paths:
         default:
           description: Unexpected error
           content:
-            application/json:
+            application/problem+json:
               schema:
                 $ref: "#/components/schemas/Error"
       security:
@@ -612,7 +680,7 @@ paths:
         default:
           description: Unexpected error
           content:
-            application/json:
+            application/problem+json:
               schema:
                 $ref: "#/components/schemas/Error"
       security:
@@ -639,46 +707,7 @@ paths:
         default:
           description: Unexpected error
           content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
-      security:
-        - bearerAuth: []
-  /moods/{ownerId}/can-create-mood:
-    get:
-      tags:
-        - mood
-      summary: get permission for creating entry
-      parameters:
-        - name: ownerId
-          in: path
-          required: true
-          schema:
-            type: integer
-            format: int64
-        - name: date
-          in: query
-          required: true
-          schema:
-            type: string
-            format: date
-      responses:
-        '200':
-          description: Returns permission if user can create new mood
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/MoodPermissionRes'
-        '404':
-          description: Owner not found
-        '403':
-          description: Access denied
-        default:
-          description: Unexpected error
-          content:
-            application/json:
+            application/problem+json:
               schema:
                 $ref: "#/components/schemas/Error"
       security:
@@ -951,14 +980,25 @@ components:
           
     Error:
       type: object
+      required: [type, title, status]
       properties:
-        code:
+        type:
           type: string
-        message:
+          format: uri
+          example: "https://ediary.dev/errors/diary-not-found"
+        title:
           type: string
-      required:
-        - code
-        - message
+          example: "Diary not found"
+        status:
+          type: integer
+          example: 404
+        detail:
+          type: string
+          example: "Diary with ID=123 does not exist"
+        instance:
+          type: string
+          format: uri
+          example: "/diaries/123"
               
   securitySchemes:
     bearerAuth:
