@@ -21,11 +21,11 @@ tags:
     description: Access to moods
 
 paths:
-  /owners/:
+  /owners:
     post:
       tags:
         - owner
-      summary: Create user.
+      summary: Create user
       operationId: createUser
       requestBody:
         required: true
@@ -36,6 +36,12 @@ paths:
       responses:
         '201':
           description: User created successfully
+          headers:
+            Location:
+              description: URL of the created owner
+              schema:
+                type: string
+                format: uri
           content:
             application/json:
               schema:
@@ -48,11 +54,11 @@ paths:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Error"
-  /token/create:
+  /tokens:
     post:
       tags:
         - owner
-      summary: Login user.
+      summary: Login user
       operationId: loginUser
       requestBody:
         required: true
@@ -82,6 +88,8 @@ paths:
       summary: Get current authenticated user
       description: Returns information about the currently authenticated owner using the provided JWT token.
       operationId: getCurrentOwner
+      parameters:
+        - $ref: '#/components/parameters/AuthHeader'
       responses:
         '200':
           description: Successfully retrieved authenticated owner
@@ -91,8 +99,6 @@ paths:
                 $ref: '#/components/schemas/OwnerInfoDTO'
         '401':
           description: Unauthorized — invalid or expired token
-        '403':
-          description: Forbidden — access denied
         default:
           description: Unexpected error
           content:
@@ -109,6 +115,7 @@ paths:
       summary: Get all owner`s diaries
       operationId: getDiaries
       parameters:
+        - $ref: '#/components/parameters/AuthHeader'
         - name: ownerId
           in: path
           required: true
@@ -121,7 +128,7 @@ paths:
           content:
             application/json:
               schema:
-                type: array
+                type: object
                 items:
                   $ref: '#/components/schemas/DiaryInfoDTO'
         '404':
@@ -143,6 +150,7 @@ paths:
       summary: Get diary by id
       operationId: getDiary
       parameters:
+        - $ref: '#/components/parameters/AuthHeader'
         - name: diaryId
           in: path
           required: true
@@ -174,6 +182,7 @@ paths:
       summary: Update diary by id
       operationId: updateDiary
       parameters:
+        - $ref: '#/components/parameters/AuthHeader'
         - name: diaryId
           in: path
           required: true
@@ -211,6 +220,7 @@ paths:
       summary: Delete diary by id
       operationId: deleteDiary
       parameters:
+        - $ref: '#/components/parameters/AuthHeader'
         - name: diaryId
           in: path
           required: true
@@ -243,9 +253,19 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/DiaryCreateDTO'
+      parameters:
+        - $ref: '#/components/parameters/AuthHeader'
       responses:
         '201':
           description: Created diary
+          headers:
+            Location:
+              description: URL of the created diary
+              schema:
+                type: string
+                format: uri
+        '404':
+          description: Owner not found
           content:
             application/json:
               schema:
@@ -266,12 +286,19 @@ paths:
       summary: Get all owner`s entries
       operationId: getEntries
       parameters:
+        - $ref: '#/components/parameters/AuthHeader'
         - name: diaryId
           in: path
           required: true
           schema:
             type: integer
             format: int64
+        - name: title
+          in: query
+          required: false
+          schema:
+            type: string
+          description: Filter entries by title
       responses:
         '200':
           description: Returns all entries that belong to the specified diary.
@@ -298,6 +325,7 @@ paths:
         - entry
       summary: get permission for creating entry
       parameters:
+        - $ref: '#/components/parameters/AuthHeader'
         - name: diaryId
           in: path
           required: true
@@ -313,22 +341,12 @@ paths:
       responses:
         '200':
           description: Can create entry
-          headers:
-            X-Creation-Allowed:
-              schema:
-                type: boolean
-                example: true
         '404':
           description: Diary not found
         '403':
           description: Access denied
         '409':
-          description: Cannot create
-          headers:
-            X-Creation-Allowed:
-              schema:
-                type: boolean
-                example: false
+          description: Cannot create entry
         default:
           description: Unexpected error
           content:
@@ -344,6 +362,7 @@ paths:
       summary: Get entry by id
       operationId: getEntry
       parameters:
+        - $ref: '#/components/parameters/AuthHeader'
         - name: entryId
           in: path
           required: true
@@ -369,12 +388,13 @@ paths:
                 $ref: "#/components/schemas/Error"
       security:
         - bearerAuth: []
-    patch:
+    put:
       tags:
         - entry
       summary: Update partly entry by id
       operationId: updateEntry
       parameters:
+        - $ref: '#/components/parameters/AuthHeader'
         - name: entryId
           in: path
           required: true
@@ -412,6 +432,7 @@ paths:
       summary: Delete entry by id
       operationId: deleteEntry
       parameters:
+        - $ref: '#/components/parameters/AuthHeader'
         - name: entryId
           in: path
           required: true
@@ -444,13 +465,23 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/EntryCreateDTO'
+      parameters:
+        - $ref: '#/components/parameters/AuthHeader'
       responses:
         '201':
-          description: Creates a new entry and assigns it to a diary.
+          description: Creates a new entry and assigns it to a diary
+          headers:
+            Location:
+              description: URL of the created entry
+              schema:
+                type: string
+                format: uri
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/EntryInfoDTO'
+        '404':
+          description: Diary not found
         default:
           description: Unexpected error
           content:
@@ -465,6 +496,7 @@ paths:
         - entry
       summary: get entry cards representation
       parameters:
+        - $ref: '#/components/parameters/AuthHeader'
         - name: diaryId
           in: path
           required: true
@@ -519,6 +551,7 @@ paths:
       summary: Get all owner`s moods
       operationId: getMoods
       parameters:
+        - $ref: '#/components/parameters/AuthHeader'
         - name: ownerId
           in: path
           required: true
@@ -551,6 +584,7 @@ paths:
         - mood
       summary: get permission for creating mood
       parameters:
+        - $ref: '#/components/parameters/AuthHeader'
         - name: ownerId
           in: path
           required: true
@@ -566,22 +600,12 @@ paths:
       responses:
         '200':
           description: Can create mood
-          headers:
-            X-Creation-Allowed:
-              schema:
-                type: boolean
-                example: true
         '404':
           description: Owner not found
         '403':
           description: Access denied
         '409':
-          description: Cannot create
-          headers:
-            X-Creation-Allowed:
-              schema:
-                type: boolean
-                example: false
+          description: Cannot create mood
         default:
           description: Unexpected error
           content:
@@ -597,6 +621,7 @@ paths:
       summary: Get mood by id
       operationId: getMood
       parameters:
+        - $ref: '#/components/parameters/AuthHeader'
         - name: moodId
           in: path
           required: true
@@ -628,6 +653,7 @@ paths:
       summary: Update mood by id
       operationId: updateMood
       parameters:
+        - $ref: '#/components/parameters/AuthHeader'
         - name: moodId
           in: path
           required: true
@@ -665,6 +691,7 @@ paths:
       summary: Delete mood by id
       operationId: deleteMood
       parameters:
+        - $ref: '#/components/parameters/AuthHeader'
         - name: moodId
           in: path
           required: true
@@ -697,9 +724,19 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/MoodCreateDTO'
+      parameters:
+        - $ref: '#/components/parameters/AuthHeader'
       responses:
         '201':
-          description: Creates a new mood and assigns it to a owner.
+          description: Creates a new mood and assigns it to a owner
+          headers:
+            Location:
+              description: URL of the created mood
+              schema:
+                type: string
+                format: uri
+        '404':
+          description: Owner not found
           content:
             application/json:
               schema:
@@ -714,6 +751,15 @@ paths:
         - bearerAuth: []
 
 components:
+  parameters:
+    AuthHeader:
+      name: Token
+      in: header
+      description: Bearer JWT access token
+      required: true
+      schema:
+        type: string
+        example: "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
   schemas:
     OwnerCreateDTO:
       type: object
@@ -772,7 +818,6 @@ components:
           example: "Записи о хорошем настроении и целях"
     DiaryUpdateDTO:
       type: object
-      required: [title]
       properties:
         title:
           type: string
@@ -830,12 +875,6 @@ components:
           type: string
           format: date
           example: "2025-06-29"
-    EntryPermissionRes:
-      type: object
-      properties:
-        allowed:
-          type: boolean
-          example: true
           
     EntryCreateDTO:
       type: object
@@ -854,7 +893,6 @@ components:
           example: "Сегодня придумал интересную концепцию..."
     EntryUpdateDTO:
       type: object
-      required: [title, content]
       properties:
         title:
           type: string
@@ -908,7 +946,6 @@ components:
           example: "2025-06-29T07:00:00"
     MoodUpdateDTO:
       type: object
-      required: [scoreMood, scoreProductivity, bedtime, wakeUpTime]
       properties:
         scoreMood:
           type: integer
@@ -953,12 +990,6 @@ components:
           type: string
           format: date
           example: "2025-06-29"
-    MoodPermissionRes:
-      type: object
-      properties:
-        allowed:
-          type: boolean
-          example: true
           
     TokenRequest:
       type: object
