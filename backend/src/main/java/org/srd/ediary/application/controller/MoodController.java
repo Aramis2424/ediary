@@ -34,12 +34,17 @@ public class MoodController {
         return new ResponseEntity<>(service.getMoodsByOwner(ownerId), HttpStatus.OK);
     }
 
-    @GetMapping("/owners/{ownerId}/can-create-mood")
+    //@GetMapping("/owners/{ownerId}/can-create-mood")
+    @RequestMapping(value = "/owners/{ownerId}/moods", method = RequestMethod.HEAD)
     @Operation(summary = "Get permission for creating mood")
     public ResponseEntity<MoodPermission> canCreateMood(@PathVariable Long ownerId,
                                                         @RequestParam("date")
                                                         @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate requestedDate) {
-        return new ResponseEntity<>(service.canCreateMood(ownerId, requestedDate), HttpStatus.OK);
+        if (service.canCreateMood(ownerId, requestedDate).allowed()) {
+            return ResponseEntity.ok().build();
+        }
+        return ResponseEntity.status(HttpStatus.CONFLICT).build();
+        //return new ResponseEntity<>(service.canCreateMood(ownerId, requestedDate), HttpStatus.OK);
     }
 
     @PostMapping("/moods")

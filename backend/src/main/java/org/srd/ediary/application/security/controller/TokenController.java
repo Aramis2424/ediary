@@ -20,7 +20,7 @@ import org.srd.ediary.application.security.service.TokenService;
 public class TokenController {
     private final TokenService tokenService;
 
-    @PostMapping("/token/create")
+    @PostMapping("/tokens")
     @Operation(summary = "Login user")
     public ResponseEntity<TokenResponse> createToken(@RequestBody TokenRequest tokenRequest) {
         return new ResponseEntity<>(tokenService.generateToken(tokenRequest), HttpStatus.OK);

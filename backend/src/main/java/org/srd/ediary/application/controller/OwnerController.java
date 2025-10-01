@@ -1,6 +1,7 @@
 package org.srd.ediary.application.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -29,6 +30,7 @@ public class OwnerController {
 
     @GetMapping("/owners/me")
     @Operation(summary = "Fetch user using token")
+    @SecurityRequirement(name = "Bearer Authentication")
     public ResponseEntity<OwnerInfoDTO> fetchOwnerByToken(@AuthenticationPrincipal OwnerDetails principal) {
         return new ResponseEntity<>(service.fetchOwner(principal.getId()), HttpStatus.OK);
     }

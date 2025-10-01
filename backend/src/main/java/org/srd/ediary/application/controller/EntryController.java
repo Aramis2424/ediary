@@ -42,12 +42,16 @@ public class EntryController {
         return new ResponseEntity<>(serviceCard.getEntryCards(diaryId), HttpStatus.OK);
     }
 
-    @GetMapping("/diaries/{diaryId}/can-create-entry")
+    //@GetMapping("/diaries/{diaryId}/can-create-entry")
+    @RequestMapping(value = "/diaries/{diaryId}/entries", method = RequestMethod.HEAD)
     @Operation(summary = "Get permission for creating entry")
     public ResponseEntity<EntryPermission> canCreateEntry(@PathVariable Long diaryId,
                                                           @RequestParam("date")
                                               @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate requestedDate) {
-        return new ResponseEntity<>(service.canCreateEntry(diaryId, requestedDate), HttpStatus.OK);
+        if (service.canCreateEntry(diaryId, requestedDate).allowed()) {
+            return ResponseEntity.ok().build();
+        }
+        return ResponseEntity.status(HttpStatus.CONFLICT).build();
     }
 
     @PostMapping("/entries")

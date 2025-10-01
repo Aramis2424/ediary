@@ -11,8 +11,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 				title = "eDiary API",
 				version = "v1",
 				description = "Server for personal diaries and moods"
-		),
-		servers = @Server(url = "/api/v1")
+		)
 )
 @SpringBootApplication
 public class EdiaryApplication {
