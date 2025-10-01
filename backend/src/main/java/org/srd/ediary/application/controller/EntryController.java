@@ -1,6 +1,8 @@
 package org.srd.ediary.application.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -45,7 +47,11 @@ public class EntryController {
     //@GetMapping("/diaries/{diaryId}/can-create-entry")
     @RequestMapping(value = "/diaries/{diaryId}/entries", method = RequestMethod.HEAD)
     @Operation(summary = "Get permission for creating entry")
-    public ResponseEntity<EntryPermission> canCreateEntry(@PathVariable Long diaryId,
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Can create entry"),
+            @ApiResponse(responseCode = "409", description = "Cannot create entry")
+    })
+    public ResponseEntity<Void> canCreateEntry(@PathVariable Long diaryId,
                                                           @RequestParam("date")
                                               @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate requestedDate) {
         if (service.canCreateEntry(diaryId, requestedDate).allowed()) {

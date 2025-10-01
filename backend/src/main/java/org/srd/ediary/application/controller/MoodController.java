@@ -1,6 +1,8 @@
 package org.srd.ediary.application.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -37,7 +39,11 @@ public class MoodController {
     //@GetMapping("/owners/{ownerId}/can-create-mood")
     @RequestMapping(value = "/owners/{ownerId}/moods", method = RequestMethod.HEAD)
     @Operation(summary = "Get permission for creating mood")
-    public ResponseEntity<MoodPermission> canCreateMood(@PathVariable Long ownerId,
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Can create mood"),
+            @ApiResponse(responseCode = "409", description = "Cannot create mood")
+    })
+    public ResponseEntity<Void> canCreateMood(@PathVariable Long ownerId,
                                                         @RequestParam("date")
                                                         @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate requestedDate) {
         if (service.canCreateMood(ownerId, requestedDate).allowed()) {
