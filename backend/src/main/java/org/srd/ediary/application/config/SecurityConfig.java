@@ -48,7 +48,7 @@ public class SecurityConfig {
             .csrf(AbstractHttpConfigurer::disable);
 
         http.authorizeHttpRequests(req -> {
-            req.requestMatchers("/api/v1/token/*").permitAll();
+            req.requestMatchers("/api/v1/tokens").permitAll();
             req.requestMatchers("/api/v1/hello").permitAll();
 			req.requestMatchers("/api/v1/owners").permitAll();
             req.requestMatchers("/swagger-ui/**").permitAll();
