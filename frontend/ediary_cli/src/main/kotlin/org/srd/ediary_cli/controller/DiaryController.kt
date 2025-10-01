@@ -69,7 +69,7 @@ private class DiaryExec {
     }
 
     private suspend fun sendGetDiariesRequest(ownerId: Long?): List<DiaryInfoDTO>? {
-        val res = client.get("${HttpService.BASE_URL}/diaries/owner/$ownerId") {
+        val res = client.get("${HttpService.BASE_URL}/owners/$ownerId/diaries") {
             contentType(ContentType.Application.Json)
             headers {
                 append(HttpHeaders.Authorization, "Bearer ${LocalStorage.token}")

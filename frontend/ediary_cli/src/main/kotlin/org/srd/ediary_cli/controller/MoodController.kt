@@ -83,7 +83,7 @@ class MoodExec() {
     }
 
     private suspend fun sendGetMoodsRequest(ownerId: Long?): List<MoodInfoDTO>? {
-        val res = client.get("${HttpService.BASE_URL}/moods/owner/$ownerId") {
+        val res = client.get("${HttpService.BASE_URL}/owners/$ownerId/moods") {
             contentType(ContentType.Application.Json)
             headers {
                 append(HttpHeaders.Authorization, "Bearer ${LocalStorage.token}")

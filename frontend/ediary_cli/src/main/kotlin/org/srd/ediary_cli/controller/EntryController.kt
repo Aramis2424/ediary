@@ -82,7 +82,7 @@ private class EntryExec(val diaryId: Long) {
     }
 
     private suspend fun sendGetEntriesRequest(): List<EntryInfoDTO>? {
-        val res = client.get("${HttpService.BASE_URL}/entries/diary/$diaryId") {
+        val res = client.get("${HttpService.BASE_URL}/diaries/$diaryId/entries") {
             contentType(ContentType.Application.Json)
             headers {
                 append(HttpHeaders.Authorization, "Bearer ${LocalStorage.token}")

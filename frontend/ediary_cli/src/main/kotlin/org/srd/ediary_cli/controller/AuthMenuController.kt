@@ -28,7 +28,7 @@ class AuthMenuExec {
     private val moodController = MoodController()
 
     fun exitApp() {
-        println("Пока-пока, ${LocalStorage.currentOwner?.name}!")
+        println("Пока-пока!")
         kotlin.system.exitProcess(0)
     }
 

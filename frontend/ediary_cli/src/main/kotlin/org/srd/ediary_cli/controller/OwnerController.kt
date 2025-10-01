@@ -62,7 +62,7 @@ class OwnerExec {
     }
 
     private suspend fun extractOwnerInfo(loginDto: OwnerLoginDTO): OwnerInfoDTO? {
-        val res = client.post("${HttpService.BASE_URL}/owner/login") {
+        val res = client.get("${HttpService.BASE_URL}/owners/me") {
             contentType(ContentType.Application.Json)
             setBody(loginDto)
         }
@@ -74,7 +74,7 @@ class OwnerExec {
     }
 
     private suspend fun sendLoginRequest(loginDto: TokenRequest): TokenResponse? {
-        val res = client.post("${HttpService.BASE_URL}/token/create") {
+        val res = client.post("${HttpService.BASE_URL}/tokens") {
             contentType(ContentType.Application.Json)
             setBody(loginDto)
         }
@@ -96,7 +96,7 @@ class OwnerExec {
     }
 
     private suspend fun sendRegisterRequest(registerDTO: OwnerCreateDTO): OwnerInfoDTO? {
-        val res = client.post("${HttpService.BASE_URL}/owner/register") {
+        val res = client.post("${HttpService.BASE_URL}/owners") {
             contentType(ContentType.Application.Json)
             setBody(registerDTO)
         }

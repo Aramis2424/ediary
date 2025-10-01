@@ -29,5 +29,5 @@ data class OwnerCreateDTO(val name: String,
 data class TokenResponse(val token: String)
 
 @Serializable
-data class TokenRequest(val username: String, val password: String)
+data class TokenRequest(val login: String, val password: String)
 
