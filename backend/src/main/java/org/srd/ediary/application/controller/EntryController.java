@@ -28,8 +28,9 @@ public class EntryController {
 
     @GetMapping("/diaries/{diaryId}/entries")
     @Operation(summary = "Get all owner`s entries")
-    public ResponseEntity<List<EntryInfoDTO>> getEntriesByDiary(@PathVariable Long diaryId) {
-            return new ResponseEntity<>(service.getAllEntriesByDiary(diaryId), HttpStatus.OK);
+    public ResponseEntity<List<EntryInfoDTO>> getEntriesByDiary(@PathVariable Long diaryId,
+                                                                @RequestParam(required = false) String title) {
+            return new ResponseEntity<>(service.getEntriesByDiary(diaryId, title), HttpStatus.OK);
     }
 
     @GetMapping("/entries/{entryId}")

@@ -8,5 +8,6 @@ import java.util.Optional;
 
 public interface EntryRepository extends CrudRepository<Entry> {
     List<Entry> getAllByDiary(Long id);
+    List<Entry> getByDiaryAndTitle(Long id, String title);
     Optional<Entry> getByDiaryIdAndCreatedDate(Long diaryId, LocalDate createdDate);
 }

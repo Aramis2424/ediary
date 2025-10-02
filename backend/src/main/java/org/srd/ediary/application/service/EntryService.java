@@ -46,6 +46,20 @@ public class EntryService {
         return dtoList;
     }
 
+    @PreAuthorize("@entryAccess.isDiaryBelongsOwner(#diaryID, authentication.principal.id)")
+    public List<EntryInfoDTO> getEntriesByDiary(Long diaryID, String title) {
+        List<Entry> entries;
+        if (title != null && !title.isBlank()) {
+            entries = entryRepo.getByDiaryAndTitle(diaryID, title);
+        } else {
+            entries = entryRepo.getAllByDiary(diaryID);
+        }
+        List<EntryInfoDTO> dtoList = new ArrayList<>(entries.size());
+        for (var entry : entries)
+            dtoList.add(EntryMapper.INSTANCE.EntryToEntryInfoDto(entry));
+        return dtoList;
+    }
+
     @PreAuthorize("@entryAccess.isDiaryBelongsOwner(#dto.diaryID, authentication.principal.id)")
     public EntryInfoDTO create(EntryCreateDTO dto) {
         Diary diary = diaryRepo.getByID(dto.diaryID()).orElseThrow(() -> new DiaryNotFoundException("No such diary"));

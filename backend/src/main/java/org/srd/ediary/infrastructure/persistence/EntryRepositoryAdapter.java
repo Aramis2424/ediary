@@ -1,7 +1,9 @@
 package org.srd.ediary.infrastructure.persistence;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import org.srd.ediary.domain.model.Entry;
 import org.srd.ediary.domain.repository.EntryRepository;
@@ -17,6 +19,16 @@ import java.util.stream.Collectors;
 interface SpringEntryRepository extends CrudRepository<EntryEntity, Long> {
     List<EntryEntity> getAllByDiaryId(Long id);
     Optional<EntryEntity> getByDiaryIdAndCreatedDate(Long diaryId, LocalDate createdDate);
+    @Query("""
+       SELECT e
+       FROM EntryEntity e
+       WHERE e.diary.id = :diaryId
+         AND (:title IS NULL OR :title = '' OR LOWER(e.title) LIKE LOWER(CONCAT('%', :title, '%')))
+       """)
+    List<EntryEntity> getAllByDiaryIdAndTitle(
+            @Param("diaryId") Long diaryId,
+            @Param("title") String title
+    );
 }
 
 @Repository
@@ -44,6 +56,14 @@ public class EntryRepositoryAdapter implements EntryRepository {
     @Override
     public List<Entry> getAllByDiary(Long id) {
         List<EntryEntity> entityList = repo.getAllByDiaryId(id);
+        return entityList.stream()
+                .map(EntryEntityMapper.INSTANCE::entityToModel)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<Entry> getByDiaryAndTitle(Long id, String title) {
+        List<EntryEntity> entityList = repo.getAllByDiaryIdAndTitle(id, title);
         return entityList.stream()
                 .map(EntryEntityMapper.INSTANCE::entityToModel)
                 .collect(Collectors.toList());
