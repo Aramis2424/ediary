@@ -1,7 +1,7 @@
 services:
-  db-master:
-    build: ./postgre/master
-    container_name: ediary-postgres-master
+  db:
+    build: ./postgre
+    container_name: ediary-db
     environment:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
@@ -9,25 +9,11 @@ services:
     ports:
       - "5432:5432"
     volumes:
-      - ediary-volume-master:/var/lib/postgresql/data
-      - ./postgre/master/scripts:/docker-entrypoint-initdb.d
-
-  db-slave:
-    build: ./postgre/slave
-    container_name: ediary-postgres-slave
-    environment:
-      POSTGRES_USER: ${POSTGRES_USER}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-    ports:
-      - "5433:5432"
-    volumes:
-      - ediary-volume-slave:/var/lib/postgresql/data
-    depends_on:
-      - db-master
+      - ediary-volume-db:/var/lib/postgresql/data
 
   pgadmin:
     image: dpage/pgadmin4
-    container_name: ediary-pgadmin
+    container_name: ediary-pga
     environment:
       PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL}
       PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD}
@@ -36,12 +22,12 @@ services:
     volumes:
       - pgadmin_data:/var/lib/pgadmin
     depends_on:
-      - db-master
+      - db
 
   md-to-html:
     build: ./mdtohtml
     image: pandoc
-    container_name: ediary-pandoc
+    container_name: ediary-mdtohtml
     volumes:
       - ./README.md:/input/index.md
       - ./metaData/diagrams:/input/metaData/diagrams
@@ -51,7 +37,7 @@ services:
   nginx:
     build: ./nginx
     image: ediary-nginx:latest
-    container_name: ediary-nginx
+    container_name: nginx
     ports:
       - "2323:2323"
     volumes:
@@ -64,91 +50,19 @@ services:
     depends_on:
       - md-to-html
       - pgadmin
-      - back-master
-      - back-ro-1
-      - back-ro-2
+      - back
 
-  back-master:
+  back:
     build: ./backend
     image: ediary-backend
-    container_name: ediary-back-master
+    container_name: ediary-back
     env_file:
-      - ./backend/back-master.env
+      - ./backend/back.env
     ports:
       - "2424:2424"
     depends_on:
-      - db-master
-  
-  back-ro-1:
-    build: ./backend
-    image: ediary-backend
-    container_name: ediary-back-ro-1
-    environment:
-        SPRING_JPA_HIBERNATE_DDL_AUTO: none
-        SPRING_SQL_INIT_MODE: never
-    env_file:
-      - ./backend/back-ro.env
-    ports:
-      - "2421:2424"
-    depends_on:
-      - db-master
-      - back-master
-  
-  back-ro-2:
-    build: ./backend
-    image: ediary-backend
-    container_name: ediary-back-ro-2
-    environment:
-      SPRING_JPA_HIBERNATE_DDL_AUTO: none
-      SPRING_SQL_INIT_MODE: never
-    env_file:
-      - ./backend/back-ro.env
-    ports:
-      - "2422:2424"
-    depends_on:
-      - db-master
-      - back-master
-  
-  back-mirror:
-    build: ./backend
-    image: ediary-backend
-    container_name: ediary-back-mirror
-    environment:
-        SPRING_JPA_HIBERNATE_DDL_AUTO: none
-        SPRING_SQL_INIT_MODE: never
-    env_file:
-      - ./backend/back-mirror.env
-    ports:
-      - "2425:2424"
-    depends_on:
-      - db-master
-      - back-master
-  
-  prometheus:
-    image: prom/prometheus:latest
-    container_name: ediary-prometheus
-    volumes:
-      - ./prometheus:/etc/prometheus
-    ports:
-      - "9090:9090"
-    env_file:
-    - ./backend/back-master.env
-
-  grafana:
-    image: grafana/grafana:latest
-    container_name: ediary-grafana
-    volumes:
-      - grafana_data:/var/lib/grafana
-    ports:
-      - "3000:3000"
-    environment:
-      - GF_SECURITY_ADMIN_USER=${GF_SECURITY_ADMIN_USER}
-      - GF_SECURITY_ADMIN_PASSWORD=${GF_SECURITY_ADMIN_PASSWORD}
-    depends_on:
-      - prometheus
+      - db
 
 volumes:
-  ediary-volume-master:
-  ediary-volume-slave:
+  ediary-volume-db:
   pgadmin_data:
-  grafana_data:

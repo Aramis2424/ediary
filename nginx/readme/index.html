@@ -8,17 +8,13 @@
 области</h3>
 <p>Предметная область данного проекта – дневники, самоконтроль, сбор и
 анализ статистики.</p>
-<h3 id="краткое-перечисление-основных-особенностей-приложения">Краткое
-перечисление основных особенностей приложения</h3>
+<h3 id="краткий-перечень-функциональных-требований">Краткий перечень
+функциональных требований</h3>
 <ol type="1">
-<li>Шифрование записей;</li>
-<li>Доступ с любого устройства;</li>
-<li>Построение графиков.</li>
+<li>Регистрация и авторизация;</li>
+<li>Просмотр, создание, удаление записей дневника;</li>
+<li>Построение графиков по данным пользователя.</li>
 </ol>
-<h3 id="краткий-анализ-аналогичных-решений">Краткий анализ аналогичных
-решений</h3>
-<p>Ни одного сервиса для ведения дневников со сбором статистики я не
-нашел (на момент 21.10.2024).</p>
 <h3 id="целесообразность-и-актуальность-проекта">Целесообразность и
 актуальность проекта</h3>
 <p>Мир ускоряется, времени для рефлексирования и самоконтроля все
@@ -70,16 +66,28 @@
 <h2 id="технологический-стек">Технологический стек</h2>
 <ul>
 <li>Тип приложения: web-приложение;</li>
-<li>язык: Java / Vue.js;</li>
-<li>СУБД: PostgreSQL.</li>
+<li>язык:
+<ul>
+<li>backend: Java + Spring Boot;</li>
+<li>frontend: typescript + Vue.js;</li>
+</ul></li>
+<li>СУБД: PostgreSQL;</li>
+<li>способ доставки: docker.</li>
 </ul>
 <h2 id="bpmn-диаграмма">BPMN диаграмма</h2>
+<h5 id="регистрация-пользователя">Регистрация пользователя</h5>
 <figure>
 <img src="./metaData/diagrams/bpmn01.svg" alt="BPMN диаграмма" />
 <figcaption aria-hidden="true">BPMN диаграмма</figcaption>
 </figure>
+<h5 id="просмотр-графика-настроения">Просмотр графика настроения</h5>
 <figure>
 <img src="./metaData/diagrams/bpmn02.svg" alt="BPMN диаграмма" />
+<figcaption aria-hidden="true">BPMN диаграмма</figcaption>
+</figure>
+<h5 id="редактирование-записи">Редактирование записи</h5>
+<figure>
+<img src="./metaData/diagrams/bpmn03.svg" alt="BPMN диаграмма" />
 <figcaption aria-hidden="true">BPMN диаграмма</figcaption>
 </figure>
 <h3 id="верхнеуровневое-разбиение-на-компоненты">Верхнеуровневое
@@ -117,3 +125,18 @@ class="sourceCode bash"><code class="sourceCode bash"><span id="cb2-1"><a href="
 <p>Для сборки контейнера CI:</p>
 <div class="sourceCode" id="cb3"><pre
 class="sourceCode bash"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="ex">docker-compose</span> <span class="at">-f</span> ./cicd/docker-compose.test.yml <span class="at">-p</span> ediary_cicd up <span class="at">--build</span> <span class="at">-d</span></span></code></pre></div>
+<h3 id="запуск-системы">Запуск системы</h3>
+<p>Для запуска всей системы в докере:</p>
+<div class="sourceCode" id="cb4"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="ex">docker-compose</span> <span class="at">-f</span> ./docker-compose.yml <span class="at">-p</span> ediary up <span class="at">--build</span> <span class="at">-d</span></span></code></pre></div>
+<p>В директории <code>backend</code> необходимо наличие
+<code>env-файлов</code>.</p>
+<p>А также наличие <code>Dockerfile</code> в указанных директориях:</p>
+<ul>
+<li><code>backend</code>, с указанием способа сборки приложения;</li>
+<li><code>mdtohtml</code>, с указанием скрипта для перевода
+<code>md-файла</code> в <code>html</code>;</li>
+<li><code>nginx</code>, с указанием образа <code>NGINX</code>;</li>
+<li><code>postgre</code>, с указанием настроек для запуска
+<code>PostgreSQL</code>.</li>
+</ul>
