@@ -120,3 +120,19 @@ gradle test # запуск всех тестов
 docker-compose -f ./cicd/docker-compose.test.yml -p ediary_cicd up --build -d
 ```
 
+### Запуск системы
+
+Для запуска всей системы в докере:
+
+```bash
+docker-compose -f ./docker-compose.yml -p ediary up --build -d
+```
+
+В директории  `backend` необходимо наличие `env-файлов`.
+
+А также наличие `Dockerfile` в указанных директориях:
+
+- `backend`, с указанием способа сборки приложения;
+- `mdtohtml`, с указанием скрипта для перевода `md-файла` в `html`;
+- `nginx`, с указанием образа `NGINX`;
+- `postgre`, с указанием настроек для запуска `PostgreSQL`.
