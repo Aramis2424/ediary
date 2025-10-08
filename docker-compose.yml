@@ -48,6 +48,7 @@ services:
       - ./nginx/status:/usr/share/nginx/html/status:ro
       - ./nginx/managment:/usr/share/nginx/html/managment:ro
       - ./nginx/static:/usr/share/nginx/html/static:ro
+      - ./nginx/legacy:/usr/share/nginx/html/legacy:ro
     depends_on:
       - md-to-html
       - pgadmin
