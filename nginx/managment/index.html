@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Management — Ссылки</title>
+  <style>
+    body{
+      font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, Arial;
+      margin:0;
+      background:#f5f7fa;
+      color:#0f1724;
+      -webkit-font-smoothing:antialiased;
+    }
+    .wrap{
+      max-width:900px;
+      margin:28px auto;
+      padding:20px;
+    }
+    header h1{ margin:0 0 8px 0; font-size:24px; }
+    p.subtitle{ margin:0 0 18px 0; color:#556070; }
+
+    .links{
+      background:white;
+      border-radius:10px;
+      padding:18px;
+      box-shadow: 0 6px 20px rgba(16,24,40,0.06);
+    }
+    ul.link-list{ list-style:none; margin:0; padding:0; }
+    ul.link-list li{ padding:10px 12px; border-bottom:1px solid #f0f2f5; display:flex; align-items:center; justify-content:space-between; }
+    ul.link-list li:last-child{ border-bottom: none; }
+    a.link{ color:#0b6efd; text-decoration:none; font-weight:600; }
+    .note{ color:#8b98a6; font-size:13px; }
+
+    .controls{ margin-top:14px; display:flex; gap:8px; flex-wrap:wrap; }
+    .btn{ padding:8px 12px; border-radius:8px; border:none; cursor:pointer; background:#0b6efd; color:white; }
+    .btn-secondary{ background:#eef3ff; color:#0b6efd; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <h1>Management — endpoints проекта</h1>
+    </header>
+
+    <section class="links" aria-labelledby="links-heading">
+      <h2 id="links-heading" style="font-size:16px;margin:0 0 12px 0;">Список доступных страниц</h2>
+
+      <ul class="link-list">
+		<li>
+          <a class="link" href="/api/v1">/api/v1/ — маршрутизация на API backend</a>
+          <span class="note">api</span>
+        </li>
+		
+		<li>
+          <a class="link" href="/docs/">/docs/ — Swagger UI</a>
+          <span class="note">swagger</span>
+        </li>
+		
+		<li>
+          <a class="link" href="/legacy/">/legacy/ — CLI приложение</a>
+          <span class="note">cli</span>
+        </li>
+		
+		<li>
+          <a class="link" href="/documentation/">/documentation/ — файл README.MD</a>
+          <span class="note">readme</span>
+        </li>
+		
+		<li>
+          <a class="link" href="/">/ — SPA приложение</a>
+          <span class="note">spa</span>
+        </li>
+		
+		<li>
+          <a class="link" href="/reserved">/reserved — SPA приложение (reserved)</a>
+          <span class="note">spa (reserved)</span>
+        </li>
+
+        <li>
+          <a class="link" href="/admin/">/admin/ — Админ-панель (pgAdmin)</a>
+          <span class="note">админка</span>
+        </li>
+		
+		<li>
+          <a class="link" href="/status/">/status/ — Страница статуса</a>
+          <span class="note">статус</span>
+        </li>
+      </ul>
+
+      <div class="controls">
+        <button class="btn" onclick="location.reload()">Обновить страницу</button>
+      </div>
+    </section>
+  </div>
+</body>
+</html>

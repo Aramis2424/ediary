@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Server Status</title>
+  <link rel="stylesheet" href="/status/style.css">
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <h1>Состояние сервера</h1>
+      <p class="subtitle">Nginx status dashboard</p>
+    </header>
+
+    <main>
+      <div class="cards">
+        <div class="card">
+          <h2>Active</h2>
+          <div id="active" class="value">-</div>
+        </div>
+
+        <div class="card">
+          <h2>Accepts</h2>
+          <div id="accepts" class="value">-</div>
+        </div>
+
+        <div class="card">
+          <h2>Handled</h2>
+          <div id="handled" class="value">-</div>
+        </div>
+
+        <div class="card">
+          <h2>Requests</h2>
+          <div id="requests" class="value">-</div>
+        </div>
+      </div>
+
+      <div class="io">
+        <div class="io-item">
+          <h3>Reading</h3>
+          <div id="reading">-</div>
+        </div>
+        <div class="io-item">
+          <h3>Writing</h3>
+          <div id="writing">-</div>
+        </div>
+        <div class="io-item">
+          <h3>Waiting</h3>
+          <div id="waiting">-</div>
+        </div>
+      </div>
+
+      <div class="controls">
+        <button id="refreshBtn">Обновить</button>
+        <label for="autoRefresh">Авто-обновление</label>
+        <input id="autoRefresh" type="checkbox" checked>
+        <select id="interval">
+          <option value="2000">2s</option>
+          <option value="5000" selected>5s</option>
+          <option value="10000">10s</option>
+        </select>
+        <div id="last" class="last">Последнее: -</div>
+      </div>
+    </main>
+
+  </div>
+
+  <script src="/status/status.js"></script>
+</body>
+</html>
