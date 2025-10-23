@@ -136,3 +136,8 @@ docker-compose -f ./docker-compose.yml -p ediary up --build -d
 - `mdtohtml`, с указанием скрипта для перевода `md-файла` в `html`;
 - `nginx`, с указанием образа `NGINX`;
 - `postgre`, с указанием настроек для запуска `PostgreSQL`.
+
+### Макет UI
+
+Ссылка на макет UI в [Figma](https://www.figma.com/design/ll3GgIxYMZoG0k7GHTNosi/eDiaries?node-id=0-1&p=f&t=cpM8ZsVpsHqrwebJ-0)
+
