@@ -5,16 +5,33 @@ import Home from '@/views/Home.vue'
 import MoodMenu from '@/views/MoodMenu.vue'
 import EntriesMenu from '@/views/EntriesMenu.vue'
 import MarkdownEditor from '@/views/MarkdownEditor.vue'
+import SidebarHome from '@/components/SidebarHome.vue'
+import SidebarEntries from '@/components/SidebarEntries.vue'
+import SidebarEntry from '@/components/SidebarEntry.vue'
+import SidebarMood from '@/components/SidebarMood.vue'
 import { useAuthStore } from '@/stores/auth'
+
 
 const routes = [
   { path: '/', redirect: '/login', meta: { public: true } },
   { path: '/login', component: LoginPage, meta: { public: true } },
   { path: '/register', component: RegisterPage, meta: { public: true } },
-  { path: '/home', component: Home },
-  { path: '/mood', component: MoodMenu },
-  { path: '/menu', component: EntriesMenu },
-  { path: '/entry/:id', component: MarkdownEditor },
+  {
+    path: '/home',
+    components: { default: Home, sidebar: SidebarHome }
+  },
+  {
+    path: '/mood',
+    components: { default: MoodMenu, sidebar: SidebarMood }
+  },
+  {
+    path: '/menu',
+    components: { default: EntriesMenu, sidebar: SidebarEntries }
+  },
+  {
+    path: '/entry/:id',
+    components: { default: MarkdownEditor, sidebar: SidebarEntry }
+  },
 ]
 
 const router = createRouter({
