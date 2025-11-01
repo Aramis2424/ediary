@@ -6,14 +6,13 @@ import Settings from '@/views/Settings.vue';
 import AboutYourself from '@/views/AboutYourself.vue';
 import type { DiaryInfoDTO } from '@/types/Diary';
 import { useAuthStore } from '@/stores/auth';
+import { useUiStore } from '@/stores/ui'
 import { fetchDiary, createDiary } from '@/services/diaryService';
 
 const router = useRouter();
 const owner = useAuthStore();
 const diaryStore = useDiaryStore()
-
-const showSettings = ref(false);
-const showAboutYourself = ref(false);
+const ui = useUiStore()
 
 const ownerName: Ref<string> = ref('');
 let diaryInfo: DiaryInfoDTO | null = null
@@ -42,12 +41,12 @@ const gotoMoodMenu = () => {router.push('/mood')}
 </script>
 
 <template>
-   <div class="h-screen overflow-auto flex flex-col items-center justify-between p-2 relative bg-lemon space-y-10">
+   <div class="h-screen w-full overflow-auto flex flex-col items-center justify-between p-2 relative bg-lemon space-y-10">
     <h1 class="font-czizh text-white bg-[#B4B4B4] bg-opacity-10 text-6xl absolute top-4 left-1/2 -translate-x-1/2">
       Ваши мысли, {{ ownerName }}!
     </h1>
-    <div class="flex flex-1 w-full items-center justify-between">
-      <button @click="showAboutYourself = true" class="sideBtnL"> О себе </button>
+    <div class="flex flex-1 w-full items-center justify-center">
+      <!-- <button @click="showAboutYourself = true" class="sideBtnL"> О себе </button> -->
 
       <div class="flex flex-col items-center justify-center gap-4 h-full w-full max-w-md">
         <button @click="gotoEntriesMenu()" class="w-[30vw] h-16 baseBtn text-black text-2xl md:text-3xl lg:text-4xl font-czizh">
@@ -58,12 +57,12 @@ const gotoMoodMenu = () => {router.push('/mood')}
         </button>
       </div>
 
-      <button @click="showSettings = true" class="sideBtnR" style="letter-spacing: 2px;"> Настройки </button>
+      <!-- <button @click="showSettings = true" class="sideBtnR" style="letter-spacing: 2px;"> Настройки </button> -->
     </div>
   </div>
 
-  <Settings v-if="showSettings" @clicked="showSettings = false"/> 
-  <AboutYourself v-if="showAboutYourself" @clicked="showAboutYourself = false"/> 
+  <Settings v-if="ui.showSettings" @clicked="ui.showSettings = false" />
+  <AboutYourself v-if="ui.showAboutYourself" @clicked="ui.showAboutYourself = false" />
 
 </template>
 
