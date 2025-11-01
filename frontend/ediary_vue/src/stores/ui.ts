@@ -10,5 +10,8 @@ export const useUiStore = defineStore('ui', {
     gotoHome(router: any) {
       router.push('/home')
     },
+    gotoMenu(router: any) {
+      router.push('/menu')
+    },
   },
 })
