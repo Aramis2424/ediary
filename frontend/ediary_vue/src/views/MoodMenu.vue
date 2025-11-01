@@ -8,9 +8,11 @@ import type { MoodInfoDTO, MoodScoreGraph, MoodTimeGraph } from '@/types/Mood';
 import { computed, onMounted, ref } from 'vue';
 import { fetchMoods, fetchPermissionMood } from '@/services/moodService';
 import { useAuthStore } from '@/stores/auth';
+import { useUiStore } from '@/stores/ui'
 
 const router = useRouter();
 const owner = useAuthStore();
+const ui = useUiStore()
 
 const showSurveyMood = ref(false);
 const enableCreateMood = ref(false);
@@ -76,13 +78,12 @@ const scoreData = computed(() => toMoodScoreGraph(moodList.value));
 const wakeUpData = computed(() => toTimeGraph(moodList.value, 'wake'));
 const bedtimeData = computed(() => toTimeGraph(moodList.value, 'bed'));
 
-const gotoHome = () => {router.push('/home')}
 </script>
 
 <template>
 
-<div class="h-screen w-full flex items-center px-2 bg-fire">
-  <button class="sideBtnL" @click="gotoHome"> Назад </button>
+<div class="h-screen w-full flex flex-col items-center px-2 bg-fire">
+  <!-- <button class="sideBtnL" @click="gotoHome"> Назад </button> -->
   <div class="h-[90vh] w-full overflow-y-scroll hide-scrollbar">
     <div class="flex flex-col gap-y-16">
       <MoodProdGraph :scoreData="scoreData" />
@@ -90,8 +91,10 @@ const gotoHome = () => {router.push('/home')}
       <BedtimeGraph :wakeUpData="bedtimeData" />
     </div>
   </div>
-  <button v-if="enableCreateMood" class="sideBtnR" @click="surveyMood"> Отметить настроение </button>
-  <button v-else class="diableSideBtnR"> Сегодня настроение уже отмечено </button>
+  <div class="mt-4 w-full flex items-center justify-center">
+    <button v-if="enableCreateMood" class="baseBtn w-1/5 h-16" @click="surveyMood"> Отметить настроение </button>
+    <button v-else class="disableBtn w-1/5 h-16"> Сегодня настроение уже отмечено </button>
+  </div>
 </div>
 <SurveyMood v-if="showSurveyMood" @clicked="showSurveyMood=false; pullMoods(); pullPermission();"/>
 

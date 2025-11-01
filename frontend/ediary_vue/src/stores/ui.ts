@@ -5,6 +5,7 @@ export const useUiStore = defineStore('ui', {
     showSettings: false,
     showAboutYourself: false,
     showSearching: false,
+    showSurveyMood: false,
   }),
   actions: {
     gotoHome(router: any) {
