@@ -2,6 +2,7 @@
 import { useRouter } from 'vue-router'
 import { ref, onMounted } from 'vue'
 import { useDiaryStore } from '@/stores/diaries';
+import { useUiStore } from '@/stores/ui'
 import EntryCard from '@/components/EntryCard.vue';
 import EntriesSearching from '@/views/EntriesSearching.vue';
 import NewEntryCard from '@/components/NewEntryCard.vue';
@@ -10,11 +11,11 @@ import type { EntryCard as EntryCardType } from '@/types/EntryCard';
 import { createEntry, fetchPermissionEntry } from '@/services/entryService';
 import { fetchEntryCards } from '@/services/entryCardService';
 
+const ui = useUiStore()
 const router = useRouter();
 const diary = useDiaryStore();
 
 const entries = ref<EntryCardType[]>([])
-const showSearching = ref(false);
 const enableCreateEntry = ref(false);
 
 onMounted(async () => {
@@ -39,20 +40,19 @@ async function createNewEntry(): Promise<void> {
 }
 
 const gotoEntry = (id: number) => {router.push(`entry/${id}`)}
-const gotoHome = () => {router.push('/home')}
 </script>
 
 <template>
-<div class="h-screen w-full flex justify-between items-center px-2 bg-fire">
-  <button class="sideBtnL" @click="gotoHome"> Назад </button>
+<div class="h-screen w-full flex justify-center items-center px-2 bg-fire">
+  <!-- <button class="sideBtnL" @click="gotoHome"> Назад </button> -->
   <div class="h-[90vh] w-full max-w-5xl flex flex-wrap gap-5 justify-center content-start p-4 overflow-y-scroll hide-scrollbar">
     <NewEntryCard @clicked="createNewEntry" :enable="enableCreateEntry"/>
     <EntryCard v-for="entry in entries" :key="entry.entryId" :entry="entry" @clicked="gotoEntry(entry.entryId)" />
   </div>
-  <button @click="showSearching = true" class="sideBtnR"> Поиск записей </button>
+  <!-- <button @click="showSearching = true" class="sideBtnR"> Поиск записей </button> -->
 </div>
 
-<EntriesSearching v-if="showSearching" @clicked="showSearching = false"/> 
+<EntriesSearching v-if="ui.showSearching" @clicked="ui.showSearching = false"/> 
 </template>
 
 <style scoped>
