@@ -58,7 +58,7 @@ export const updateEntry = async (entryId: number, updatedEntry: EntryUpdateDTO)
 export const removeEntry = async (entryId: number): Promise<void> => {
     try {
         const res = await deleteEntry(entryId);
-        if (res.status !== 204) {
+        if (res.status !== 200) {
             throw new Error('Cannot remove entry');
         }
     } catch (error: any) {
