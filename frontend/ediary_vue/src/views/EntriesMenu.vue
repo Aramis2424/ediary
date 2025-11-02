@@ -22,8 +22,8 @@ const enableCreateEntry = ref(false);
 onMounted(async () => {
   await loadEntriesCard({
     title: '',
-    dateFrom: '',
-    dateTo: ''
+    date_from: '',
+    date_to: ''
   });
 })
 

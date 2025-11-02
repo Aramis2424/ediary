@@ -27,8 +27,8 @@ const emit = defineEmits(['update:filters', "clicked"])
 function applyFilters() {
     emit('update:filters', {
         title: title.value || null,
-        dateFrom: dateFrom.value || null,
-        dateTo: dateTo.value || null
+        date_from: dateFrom.value || null,
+        date_to: dateTo.value || null
     })
 }
 </script>

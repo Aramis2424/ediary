@@ -9,6 +9,6 @@ export interface EntryCard {
 
 export interface EntryCardFilter {
     title: string | null;
-    dateFrom: string | null;
-    dateTo: string | null;
+    date_from: string | null;
+    date_to: string | null;
 }
