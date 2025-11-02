@@ -65,7 +65,7 @@ const workColor: ComputedRef<string> = computed(() => {
         </div>
         <div class="flex items-center space-x-2">
             <div :class="['w-4 h-4 rounded-full', workColor]"></div>
-            <span class="text-sm font-medium">{{ 'день' + (entry.scoreProductivity > 0 ? ': ' + entry.scoreProductivity : '') }}</span>
+            <span class="text-sm font-medium">{{ 'работа' + (entry.scoreProductivity > 0 ? ': ' + entry.scoreProductivity : '') }}</span>
         </div>
     </div>
   </div>
