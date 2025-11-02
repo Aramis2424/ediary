@@ -64,6 +64,7 @@ async function pullPermission() {
     const result = await fetchPermissionMood(owner.user?.id);
     enableCreateMood.value = result;
   } catch {
+    enableCreateMood.value = false;
     console.error("Error while fetching permission mood");
   }
 }

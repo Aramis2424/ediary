@@ -15,7 +15,7 @@ const wakeTime = ref('')
 
 const handleSubmit = async () => {
   if (dayRating.value === null || moodRating.value === null) {
-    alert('Пожалуйста, укажите оценки дня и настроения')
+    alert('Пожалуйста, укажите оценки работы и настроения')
     return
   }
   if (sleepTime.value === '' || wakeTime.value === '') {
@@ -48,7 +48,7 @@ const handleSubmit = async () => {
                   shadow space-y-6 flex flex-col content-start relative">
         <h1 class="text-2xl font-semibold text-center">Опросник дня</h1>
 
-        <SurveySelectInput label="1. Как прошёл ваш день?" v-model="dayRating" />
+        <SurveySelectInput label="1. Ваша продуктивность?" v-model="dayRating" />
         <SurveySelectInput label="2. Какое у вас настроение?" v-model="moodRating" />
         <SurveyBaseInput v-model="sleepTime" type="time" label="3. Во сколько вы уснули вчера?" />
         <SurveyBaseInput v-model="wakeTime" type="time" label="4. Во сколько Вы проснулись сегодня?" />
