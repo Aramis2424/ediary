@@ -5,12 +5,11 @@ import Home from '@/views/Home.vue'
 import MoodMenu from '@/views/MoodMenu.vue'
 import EntriesMenu from '@/views/EntriesMenu.vue'
 import MarkdownEditor from '@/views/MarkdownEditor.vue'
-import SidebarHome from '@/components/SidebarHome.vue'
-import SidebarEntries from '@/components/SidebarEntries.vue'
-import SidebarEntry from '@/components/SidebarEntry.vue'
-import SidebarMood from '@/components/SidebarMood.vue'
+import SidebarHome from '@/views/sidebars/SidebarHome.vue'
+import SidebarEntries from '@/views/sidebars/SidebarEntries.vue'
+import SidebarEntry from '@/views/sidebars/SidebarEntry.vue'
+import SidebarMood from '@/views/sidebars/SidebarMood.vue'
 import { useAuthStore } from '@/stores/auth'
-
 
 const routes = [
   { path: '/', redirect: '/login', meta: { public: true } },
