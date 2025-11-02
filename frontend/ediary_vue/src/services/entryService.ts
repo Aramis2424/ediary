@@ -1,5 +1,5 @@
 import { postEntry, getEntry, deleteEntry, putEntry, getPermissionEntry } from '@/api/entryApi';
-import type { EntryInfoDTO, EntryCreateDTO, EntryUpdateDTO, EntryPermissionRes } from '@/types/Entry';
+import type { EntryInfoDTO, EntryCreateDTO, EntryUpdateDTO } from '@/types/Entry';
 import { currentDate } from '@/utils/timeUtil';
 
 export const fetchEntry = async (entryId: number): Promise<EntryInfoDTO> => {
@@ -66,13 +66,13 @@ export const removeEntry = async (entryId: number): Promise<void> => {
     }
 };
 
-export const fetchPermissionEntry = async (diaryId: number): Promise<EntryPermissionRes> => {
+export const fetchPermissionEntry = async (diaryId: number): Promise<boolean> => {
     try {
         const res = await getPermissionEntry(diaryId, currentDate);
-        if (!res.data || res.status !== 200) {
+        if (res.status !== 200) {
             throw new Error('Cannot get permission for creating entry');
         }
-        return res.data;
+        return res.status === 200;
     } catch (error: any) {
         if (error.response?.status === 404) {
             throw new Error("Diary not found");

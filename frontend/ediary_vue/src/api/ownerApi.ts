@@ -8,7 +8,7 @@ export const postOwnerRegister = async (newOnwer: OwnerCreateDTO): Promise<Axios
 };
 
 export const postOwnerLogin = async (loginData: TokenRequest): Promise<AxiosResponse<TokenResponse>> => {
-    const res = await api.post<TokenResponse, AxiosResponse<TokenResponse>, TokenRequest>('/token/create', loginData);
+    const res = await api.post<TokenResponse, AxiosResponse<TokenResponse>, TokenRequest>('/tokens', loginData);
     return res;
 };
 

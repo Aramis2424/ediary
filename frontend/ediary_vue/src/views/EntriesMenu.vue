@@ -44,7 +44,7 @@ async function loadEntriesCard(newFilters: EntryCardFilter) {
     entries.value = cards;
 
     const result = await fetchPermissionEntry(diary.id);
-    enableCreateEntry.value = result.allowed;
+    enableCreateEntry.value = result;
   } catch {
     console.error("Error while fetching entry cards");
   }

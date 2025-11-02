@@ -1,6 +1,6 @@
 import { api } from './axios.ts'
 import type { AxiosResponse } from 'axios';
-import type { EntryInfoDTO, EntryCreateDTO, EntryUpdateDTO, EntryPermissionRes } from '@/types/Entry.ts';
+import type { EntryInfoDTO, EntryCreateDTO, EntryUpdateDTO } from '@/types/Entry.ts';
 
 export const getEntry = async (entryId: number): Promise<AxiosResponse<EntryInfoDTO>> => {
   const res: AxiosResponse<EntryInfoDTO> = await api.get(`/entries/${entryId}`);
@@ -24,8 +24,8 @@ export const deleteEntry = async (entryId: number): Promise<AxiosResponse<void>>
   return res;
 };
 
-export const getPermissionEntry = async (diaryId: number, date: string): Promise<AxiosResponse<EntryPermissionRes>> => {
-  const res: AxiosResponse<EntryPermissionRes> = await api.get(`/diaries/${diaryId}/can-create-entry`, {
+export const getPermissionEntry = async (diaryId: number, date: string): Promise<AxiosResponse<void>> => {
+  const res: AxiosResponse<void> = await api.head(`/diaries/${diaryId}/entries`, {
     params: {
       date: date
     }

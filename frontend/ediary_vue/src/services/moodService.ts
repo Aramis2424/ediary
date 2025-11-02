@@ -1,5 +1,5 @@
 import { getMoods, getPermissionMood, postMood } from '@/api/moodApi';
-import type { MoodCreateDTO, MoodInfoDTO, MoodPermissionRes } from '@/types/Mood';
+import type { MoodCreateDTO, MoodInfoDTO } from '@/types/Mood';
 import { currentDate } from '@/utils/timeUtil';
 import dayjs from 'dayjs'
 
@@ -39,13 +39,13 @@ export const fetchMoods = async (ownerId: number): Promise<MoodInfoDTO[]> => {
     }
 };
 
-export const fetchPermissionMood = async (ownerId: number): Promise<MoodPermissionRes> => {
+export const fetchPermissionMood = async (ownerId: number): Promise<boolean> => {
     try {
         const res = await getPermissionMood(ownerId, currentDate);
-        if (!res.data || res.status !== 200) {
+        if (res.status !== 200) {
             throw new Error('Cannot get permission for creating mood');
         }
-        return res.data;
+        return res.status === 200;
     } catch (error: any) {
         if (error.response?.status === 404) {
             throw new Error("Owner not found");
