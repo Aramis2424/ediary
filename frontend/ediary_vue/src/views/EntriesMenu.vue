@@ -10,6 +10,7 @@ import type { EntryInfoDTO } from '@/types/Entry';
 import type { EntryCard as EntryCardType } from '@/types/EntryCard';
 import { createEntry, fetchPermissionEntry } from '@/services/entryService';
 import { fetchEntryCards } from '@/services/entryCardService';
+import type { EntryCardFilter } from '@/types/EntryCard'
 
 const ui = useUiStore()
 const router = useRouter();
@@ -19,15 +20,11 @@ const entries = ref<EntryCardType[]>([])
 const enableCreateEntry = ref(false);
 
 onMounted(async () => {
-  try {
-    const cards = await fetchEntryCards(diary.id)
-    entries.value = cards;
-
-    const result = await fetchPermissionEntry(diary.id);
-    enableCreateEntry.value = result.allowed;
-  } catch {
-    console.error("Error while fetching entry cards");
-  }
+  await loadEntriesCard({
+    title: '',
+    dateFrom: '',
+    dateTo: ''
+  });
 })
 
 async function createNewEntry(): Promise<void> {
@@ -40,6 +37,18 @@ async function createNewEntry(): Promise<void> {
 }
 
 const gotoEntry = (id: number) => {router.push(`entry/${id}`)}
+
+async function loadEntriesCard(newFilters: EntryCardFilter) {
+  try {
+    const cards = await fetchEntryCards(diary.id, newFilters)
+    entries.value = cards;
+
+    const result = await fetchPermissionEntry(diary.id);
+    enableCreateEntry.value = result.allowed;
+  } catch {
+    console.error("Error while fetching entry cards");
+  }
+}
 </script>
 
 <template>
@@ -52,7 +61,7 @@ const gotoEntry = (id: number) => {router.push(`entry/${id}`)}
   <!-- <button @click="showSearching = true" class="sideBtnR"> Поиск записей </button> -->
 </div>
 
-<EntriesSearching v-if="ui.showSearching" @clicked="ui.showSearching = false"/> 
+<EntriesSearching v-if="ui.showSearching" @clicked="ui.showSearching = false" @update:filters="loadEntriesCard"/> 
 </template>
 
 <style scoped>
