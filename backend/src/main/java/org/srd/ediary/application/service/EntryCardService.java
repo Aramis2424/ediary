@@ -11,6 +11,7 @@ import org.srd.ediary.application.exception.EntryNotFoundException;
 import org.srd.ediary.application.exception.MoodNotFoundException;
 import org.srd.ediary.application.security.utils.AuthHelper;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -41,6 +42,34 @@ public class EntryCardService {
         for (var entry: diaryEntries) {
             Optional<MoodInfoDTO> mood = ownerMoods.stream().filter(
                         it -> it.createdAt().isEqual(entry.createdDate()))
+                    .findFirst();
+            EntryCardDTO card = new EntryCardDTO(entry.id(), diaryId, entry.title(),
+                    mood.map(MoodInfoDTO::scoreMood).orElse(-1),
+                    mood.map(MoodInfoDTO::scoreProductivity).orElse(-1),
+                    entry.createdDate());
+            cards.add(card);
+        }
+        return cards;
+    }
+
+    @PreAuthorize("@entryAccess.isDiaryBelongsOwner(#diaryId, authentication.principal.id)")
+    public List<EntryCardDTO> getEntryCardsWithFilter(Long diaryId, String title, LocalDate dateFrom, LocalDate dateTo) {
+        Long ownerId = authHelper.getCurrentUserId();
+
+        List<EntryInfoDTO> diaryEntries = entryService.getEntriesByDiary(diaryId, title, dateFrom, dateTo);
+        List<MoodInfoDTO> ownerMoods = moodService.getMoodsByOwner(ownerId);
+
+        if (diaryEntries == null) {
+            throw new EntryNotFoundException("There are not any entries");
+        }
+        if (ownerMoods == null) {
+            throw new MoodNotFoundException("There are not any moods");
+        }
+        List<EntryCardDTO> cards = new ArrayList<>(diaryEntries.size());
+
+        for (var entry: diaryEntries) {
+            Optional<MoodInfoDTO> mood = ownerMoods.stream().filter(
+                            it -> it.createdAt().isEqual(entry.createdDate()))
                     .findFirst();
             EntryCardDTO card = new EntryCardDTO(entry.id(), diaryId, entry.title(),
                     mood.map(MoodInfoDTO::scoreMood).orElse(-1),

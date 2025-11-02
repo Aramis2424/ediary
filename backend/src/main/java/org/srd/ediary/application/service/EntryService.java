@@ -47,13 +47,12 @@ public class EntryService {
     }
 
     @PreAuthorize("@entryAccess.isDiaryBelongsOwner(#diaryID, authentication.principal.id)")
-    public List<EntryInfoDTO> getEntriesByDiary(Long diaryID, String title) {
-        List<Entry> entries;
-        if (title != null && !title.isBlank()) {
-            entries = entryRepo.getByDiaryAndTitle(diaryID, title);
-        } else {
-            entries = entryRepo.getAllByDiary(diaryID);
-        }
+    public List<EntryInfoDTO> getEntriesByDiary(Long diaryID, String title, LocalDate dateFrom, LocalDate dateTo) {
+        if (title == null) title = "";
+        if (dateFrom == null) dateFrom = LocalDate.of(1, 1, 1);
+        if (dateTo == null) dateTo = LocalDate.of(3000, 1, 1);
+
+        List<Entry> entries = entryRepo.getAllWithFilter(diaryID, title, dateFrom, dateTo);
         List<EntryInfoDTO> dtoList = new ArrayList<>(entries.size());
         for (var entry : entries)
             dtoList.add(EntryMapper.INSTANCE.EntryToEntryInfoDto(entry));

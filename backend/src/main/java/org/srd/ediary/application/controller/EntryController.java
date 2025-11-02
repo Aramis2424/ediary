@@ -9,7 +9,10 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.srd.ediary.application.dto.*;
+import org.srd.ediary.application.dto.EntryCardDTO;
+import org.srd.ediary.application.dto.EntryCreateDTO;
+import org.srd.ediary.application.dto.EntryInfoDTO;
+import org.srd.ediary.application.dto.EntryUpdateDTO;
 import org.srd.ediary.application.exception.DiaryNotFoundException;
 import org.srd.ediary.application.exception.EntryNotFoundException;
 import org.srd.ediary.application.service.EntryCardService;
@@ -30,7 +33,7 @@ public class EntryController {
     @Operation(summary = "Get all owner`s entries")
     public ResponseEntity<List<EntryInfoDTO>> getEntriesByDiary(@PathVariable Long diaryId,
                                                                 @RequestParam(required = false) String title) {
-            return new ResponseEntity<>(service.getEntriesByDiary(diaryId, title), HttpStatus.OK);
+        return new ResponseEntity<>(service.getEntriesByDiary(diaryId, title, null, null), HttpStatus.OK);
     }
 
     @GetMapping("/entries/{entryId}")
@@ -41,8 +44,12 @@ public class EntryController {
 
     @GetMapping("/diaries/{diaryId}/entry-cards")
     @Operation(summary = "Get entry cards representation")
-    public ResponseEntity<List<EntryCardDTO>> getEntryCards(@PathVariable Long diaryId) {
-        return new ResponseEntity<>(serviceCard.getEntryCards(diaryId), HttpStatus.OK);
+    public ResponseEntity<List<EntryCardDTO>> getEntryCards(
+            @PathVariable Long diaryId,
+            @RequestParam(required = false) String title,
+            @RequestParam(required = false, name = "date_from") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dateFrom,
+            @RequestParam(required = false, name = "date_to") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dateTo) {
+        return new ResponseEntity<>(serviceCard.getEntryCardsWithFilter(diaryId, title, dateFrom, dateTo), HttpStatus.OK);
     }
 
     //@GetMapping("/diaries/{diaryId}/can-create-entry")
@@ -53,8 +60,8 @@ public class EntryController {
             @ApiResponse(responseCode = "409", description = "Cannot create entry")
     })
     public ResponseEntity<Void> canCreateEntry(@PathVariable Long diaryId,
-                                                          @RequestParam("date")
-                                              @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate requestedDate) {
+                                               @RequestParam("date")
+                                               @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate requestedDate) {
         if (service.canCreateEntry(diaryId, requestedDate).allowed()) {
             return ResponseEntity.ok().build();
         }

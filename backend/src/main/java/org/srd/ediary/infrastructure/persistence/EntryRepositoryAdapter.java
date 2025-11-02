@@ -1,6 +1,7 @@
 package org.srd.ediary.infrastructure.persistence;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
@@ -28,6 +29,21 @@ interface SpringEntryRepository extends CrudRepository<EntryEntity, Long> {
     List<EntryEntity> getAllByDiaryIdAndTitle(
             @Param("diaryId") Long diaryId,
             @Param("title") String title
+    );
+
+    @Query("""
+        SELECT e FROM EntryEntity e
+        WHERE (:title IS NULL OR LOWER(e.title) LIKE LOWER(CONCAT('%', COALESCE(:title, ''), '%')))
+          AND (e.createdDate >= :dateFrom)
+          AND (e.createdDate <= :dateTo)
+          AND (:diaryId IS NULL OR e.diary.id = :diaryId)
+        ORDER BY e.createdDate DESC
+    """)
+    List<EntryEntity> searchEntries(
+            @Param("diaryId") Long diaryId,
+            @Param("title") String title,
+            @Param("dateFrom") LocalDate dateFrom,
+            @Param("dateTo") LocalDate dateTo
     );
 }
 
@@ -72,5 +88,15 @@ public class EntryRepositoryAdapter implements EntryRepository {
     @Override
     public Optional<Entry> getByDiaryIdAndCreatedDate(Long diaryId, LocalDate createdDate) {
         return repo.getByDiaryIdAndCreatedDate(diaryId, createdDate).map(EntryEntityMapper.INSTANCE::entityToModel);
+    }
+
+    @Override
+    public List<Entry> getAllWithFilter(Long diaryId, String title, LocalDate dateFrom, LocalDate dateTo) {
+        System.out.println(dateFrom);
+        System.out.println(dateTo);
+        List<EntryEntity> entityList = repo.searchEntries(diaryId, title, dateFrom, dateTo);
+        return entityList.stream()
+                .map(EntryEntityMapper.INSTANCE::entityToModel)
+                .collect(Collectors.toList());
     }
 }
