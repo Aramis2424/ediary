@@ -14,7 +14,7 @@
           Войти
         </button>
       </form>
-      <p class="text-base text-center">
+      <p class="text-base text-center mt-4">
         Нет аккаунта?
         <router-link to="/register" class="text-[#E67E22] font-bold hover:underline"> Регистрация </router-link>
       </p>
