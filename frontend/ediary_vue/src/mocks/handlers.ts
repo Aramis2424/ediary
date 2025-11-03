@@ -44,7 +44,7 @@ export const handlers = [
     owners.push(createdOwner)
     return HttpResponse.json(createdOwner, { status: 201 })
   }),
-  http.post('/api/v1/token/create', async ({ request }) => {
+  http.post('/api/v1/tokens', async ({ request }) => {
     const { login, password } = await request.json() as TokenRequest
     const user = owners.find(v => v.login === login && v.password === password)
     if (!user) {
@@ -91,7 +91,7 @@ export const handlers = [
 
     return HttpResponse.json({ success: true }, { status: 204 })
   }),
-  http.get('/api/v1/diaries/:diaryId/can-create-entry', ({  }) => {
+  http.head('/api/v1/diaries/:diaryId/entry', ({  }) => {
     const permission: EntryPermissionRes =  {allowed: Math.random() < 0.7};
     return HttpResponse.json(permission)
   }),
@@ -150,7 +150,7 @@ export const handlers = [
     const requiredDtoMoods = requiredMoods.map(it => toMoodInfoDto(it))
     return HttpResponse.json(requiredDtoMoods)
   }),
-  http.get('/api/v1/owners/:ownerId/can-create-mood', ({  }) => {
+  http.head('/api/v1/owners/:ownerId/moods', ({  }) => {
     const permission: MoodPermissionRes =  {allowed: Math.random() < 0.7};
     return HttpResponse.json(permission)
   }),
