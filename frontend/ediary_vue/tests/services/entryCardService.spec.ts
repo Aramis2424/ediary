@@ -27,9 +27,14 @@ describe('entryService', () => {
       };
       (entryApi.getEntryCards as any).mockResolvedValue(mockResponse)
 
-      const result = await fetchEntryCards(1)
+      const params: EntryCardFilter = {
+        title: null,
+        date_from: null,
+        date_to: null,
+      };
+      const result = await fetchEntryCards(1, params)
       expect(result).toEqual(mockCards)
-      expect(entryApi.getEntryCards).toHaveBeenCalledWith(1)
+      expect(entryApi.getEntryCards).toHaveBeenCalledWith(1, params)
     })
 
     it('should throw "Diary not found" on 404', async () => {

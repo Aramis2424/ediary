@@ -51,7 +51,7 @@ describe('ownerApi', () => {
     const result = await postOwnerLogin(loginData)
 
     expect(api.post).toHaveBeenCalledTimes(1)
-    expect(api.post).toHaveBeenCalledWith('/token/create', loginData)
+    expect(api.post).toHaveBeenCalledWith('/tokens', loginData)
     expect(result).toEqual(mockResponse)
   })
 

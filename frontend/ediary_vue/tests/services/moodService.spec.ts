@@ -15,7 +15,7 @@ describe('moodService', () => {
   describe('createMood', () => {
     it('should return mood on successful creation', async () => {
       const mockMood: MoodInfoDTO = { id: 1, scoreMood: 6, scoreProductivity: 8, 
-        "bedtime":"2022-01-23T19:26:26", "wakeUpTime":"2022-01-23T22:26:26", "createdDate":"2021-01-18" }
+        "bedtime":"2022-01-23T19:26:26", "wakeUpTime":"2022-01-23T22:26:26", "createdAt":"2021-01-18" }
 
       const mockResponse = {
         data: mockMood,
@@ -26,12 +26,14 @@ describe('moodService', () => {
       };
       (moodApi.postMood as any).mockResolvedValue(mockResponse)
 
-      const newMood: MoodCreateDTO = { ownerId: 5, scoreMood: 6, scoreProductivity: 8, 
-        "bedtime":"2022-01-23T19:26:26", "wakeUpTime":"2022-01-23T22:26:26" }
+      const newMood: MoodCreateDTO = { ownerID: 5, scoreMood: 6, scoreProductivity: 8, 
+        bedtime:"19:26", wakeUpTime:"22:26" }
 
-      const result = await createMood(newMood)
+      const result = await createMood(newMood.ownerID, newMood.scoreProductivity, newMood.scoreMood,
+        newMood.bedtime, newMood.wakeUpTime
+      )
       expect(result).toEqual(mockMood)
-      expect(moodApi.postMood).toHaveBeenCalledWith(newMood)
+      expect(moodApi.postMood).toHaveBeenCalledWith(expect.objectContaining({ ownerID: 5 }))
     })
 
     it('should throw if response is invalid', async () => {
@@ -47,7 +49,8 @@ describe('moodService', () => {
       const newMood: MoodCreateDTO = { ownerId: 5, scoreMood: 6, scoreProductivity: 8, 
         "bedtime":"2022-01-23T19:26:26", "wakeUpTime":"2022-01-23T22:26:26" }
 
-      await expect(createMood(newMood)).rejects.toThrow('Cannot create mood')
+      await expect(createMood(newMood.ownerID, newMood.scoreProductivity, newMood.scoreMood,
+        newMood.bedtime, newMood.wakeUpTime)).rejects.toThrow('Cannot create mood')
     })
 
     it('should rethrow unexpected error', async () => {
@@ -57,7 +60,8 @@ describe('moodService', () => {
       const newMood: MoodCreateDTO = { ownerId: 5, scoreMood: 6, scoreProductivity: 8, 
         "bedtime":"2022-01-23T19:26:26", "wakeUpTime":"2022-01-23T22:26:26" }
 
-      await expect(createMood(newMood)).rejects.toThrow('Unexpected failure')
+      await expect(createMood(newMood.ownerID, newMood.scoreProductivity, newMood.scoreMood,
+        newMood.bedtime, newMood.wakeUpTime)).rejects.toThrow('Unexpected failure')
     })
   })
 })

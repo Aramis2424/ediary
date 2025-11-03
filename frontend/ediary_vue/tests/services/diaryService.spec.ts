@@ -68,7 +68,7 @@ describe('diaryService', () => {
       expect(result).toEqual(mockDiary)
 
       const expectedPayload: DiaryCreateDTO = {
-        ownerId: 1,
+        ownerID: 1,
         title: 'New diary',
         description: 'Description for new diary',
       }

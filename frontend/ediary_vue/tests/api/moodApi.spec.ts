@@ -32,7 +32,7 @@ describe('moodApi', () => {
     const result = await postMood(newMood)
 
     expect(api.post).toHaveBeenCalledTimes(1)
-    expect(api.post).toHaveBeenCalledWith('/moods/', newMood)
+    expect(api.post).toHaveBeenCalledWith('/moods', newMood)
     expect(result).toEqual(mockResponse)
   })
 })

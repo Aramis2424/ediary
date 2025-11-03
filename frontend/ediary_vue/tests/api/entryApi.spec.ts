@@ -50,7 +50,7 @@ describe('entryApi', () => {
     (api.post as any).mockResolvedValue(mockResponse)
 
     const result = await postEntry(newEntry)
-    expect(api.post).toHaveBeenCalledWith('/entries/', newEntry)
+    expect(api.post).toHaveBeenCalledWith('/entries', newEntry)
     expect(result).toEqual(mockResponse)
   })
 

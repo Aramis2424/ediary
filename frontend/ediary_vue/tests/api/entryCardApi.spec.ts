@@ -26,14 +26,19 @@ describe('entryApi', () => {
       headers: {},
       config: {},
     };
-
     (api.get as any).mockResolvedValue(mockResponse)
 
+    const params: EntryCardFilter = {
+        title: '',
+        date_from: '',
+        date_to: '',
+      };
+
     const diaryId = 42
-    const result = await getEntryCards(diaryId)
+    const result = await getEntryCards(diaryId, params)
 
     expect(api.get).toHaveBeenCalledTimes(1)
-    expect(api.get).toHaveBeenCalledWith(`/diaries/${diaryId}/entry-cards`)
+    expect(api.get).toHaveBeenCalledWith(`/diaries/${diaryId}/entry-cards`, {"params": params})
     expect(result).toEqual(mockResponse)
   })
 })

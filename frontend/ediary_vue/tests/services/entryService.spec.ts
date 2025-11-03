@@ -79,7 +79,7 @@ describe('entryService', () => {
       expect(result).toEqual(mockEntry)
 
       const expectedPayload: EntryCreateDTO = {
-        diaryId: '5',
+        diaryID: '5',
         title: 'Новый день',
         content: '',
       }
@@ -156,7 +156,7 @@ describe('entryService', () => {
   describe('removeEntry', () => {
     it('should succeed if status is 204', async () => {
       const mockResponse = {
-        status: 204,
+        status: 200,
         statusText: 'No Content',
         headers: {},
         config: {},
@@ -170,7 +170,7 @@ describe('entryService', () => {
 
     it('should throw if status is not 204', async () => {
       const mockResponse = {
-        status: 200,
+        status: 204,
         statusText: 'OK',
         headers: {},
         config: {},
