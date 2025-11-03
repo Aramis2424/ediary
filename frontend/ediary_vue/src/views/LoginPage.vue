@@ -27,7 +27,9 @@ import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { useAuthStore } from '@/stores/auth';
 import FormField from '@/components/FormField.vue';
+import { useToast } from 'vue-toastification'
 
+const toast = useToast()
 const router = useRouter();
 const auth = useAuthStore();
 
@@ -39,7 +41,7 @@ async function handleLogin() {
     await auth.login({ login: login.value, password: password.value })
     router.push('/home');
   } catch {
-    alert('Неверные данные')
+    toast.error('Неверные данные')
   }
 }
 </script>

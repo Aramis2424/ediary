@@ -4,7 +4,9 @@ import { useAuthStore } from '@/stores/auth'
 import { createMood } from '@/services/moodService'
 import SurveyBaseInput from '@/components/SurveyBaseInput.vue'
 import SurveySelectInput from '@/components/SurveySelectInput.vue'
+import { useToast } from 'vue-toastification'
 
+const toast = useToast()
 const emit = defineEmits(['clicked'])
 const owner = useAuthStore()
 
@@ -15,11 +17,11 @@ const wakeTime = ref('')
 
 const handleSubmit = async () => {
   if (dayRating.value === null || moodRating.value === null) {
-    alert('Пожалуйста, укажите оценки работы и настроения')
+    toast.error('Пожалуйста, укажите оценки работы и настроения')
     return
   }
   if (sleepTime.value === '' || wakeTime.value === '') {
-    alert('Пожалуйста, укажите время сна и пробуждения')
+    toast.error('Пожалуйста, укажите время сна и пробуждения')
     return
   }
   

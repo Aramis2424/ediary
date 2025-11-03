@@ -31,7 +31,9 @@ import { useRouter } from 'vue-router';
 import type { OwnerCreateDTO } from '@/types/Owner';
 import { useAuthStore } from '@/stores/auth';
 import FormField from '@/components/FormField.vue';
+import { useToast } from 'vue-toastification'
 
+const toast = useToast()
 const router = useRouter();
 const auth = useAuthStore();
 
@@ -43,7 +45,7 @@ const confirmPassword = ref('');
 
 async function handleRegister() {
   if (password.value !== confirmPassword.value) {
-    alert('Пароли не совпадают!');
+    toast.error('Пароли не совпадают!')
     return;
   }
 
@@ -57,7 +59,7 @@ async function handleRegister() {
     await auth.register(newOwner)
     router.push('/home');
   } catch {
-    alert('Такой логин уже существует')
+    toast.error('Такой логин уже существует')
   }
 }
 </script>

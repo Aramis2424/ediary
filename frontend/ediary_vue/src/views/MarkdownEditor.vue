@@ -21,7 +21,9 @@ import type { EntryInfoDTO, EntryUpdateDTO } from '@/types/Entry';
 import { fetchEntry, removeEntry, updateEntry } from '@/services/entryService';
 
 import MdEditor from '@/components/MdEditor.vue';
+import { useToast } from 'vue-toastification'
 
+const toast = useToast()
 const route = useRoute()
 const router = useRouter()
 const entryId = route.params.id
@@ -47,8 +49,10 @@ async function save(): Promise<void> {
   const updatedEntry: EntryUpdateDTO = { title: title.value, content: content.value}
   try {
     await updateEntry(Number(entryId), updatedEntry);
+    toast.success('Сохранено')
   } catch {
     console.error("Error while removing entry");
+    toast.error('Ошибка. попробуйте снова')
   }
 }
 
