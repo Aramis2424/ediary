@@ -25,6 +25,7 @@ const routes = [
   },
   {
     path: '/menu',
+    name: 'menu',
     components: { default: EntriesMenu, sidebar: SidebarEntries }
   },
   {

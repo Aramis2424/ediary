@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { useRouter } from 'vue-router'
-import { ref, onMounted } from 'vue'
+import { useRouter, useRoute } from 'vue-router'
+import { ref, onMounted, watch  } from 'vue'
 import { useDiaryStore } from '@/stores/diaries';
 import { useUiStore } from '@/stores/ui'
 import EntryCard from '@/components/EntryCard.vue';
@@ -14,17 +14,16 @@ import type { EntryCardFilter } from '@/types/EntryCard'
 
 const ui = useUiStore()
 const router = useRouter();
+const route = useRoute();
 const diary = useDiaryStore();
 
 const entries = ref<EntryCardType[]>([])
 const enableCreateEntry = ref(false);
 
 onMounted(async () => {
-  await loadEntriesCard({
-    title: '',
-    date_from: '',
-    date_to: ''
-  });
+  watch(() => route.query, loadEntriesCard, { deep: true });
+
+  await loadEntriesCard();
 })
 
 async function createNewEntry(): Promise<void> {
@@ -38,9 +37,15 @@ async function createNewEntry(): Promise<void> {
 
 const gotoEntry = (id: number) => {router.push(`entry/${id}`)}
 
-async function loadEntriesCard(newFilters: EntryCardFilter) {
+async function loadEntriesCard() {
+  const params: EntryCardFilter = {
+    title: (route.query.title as string) || null,
+    date_from: (route.query.date_from as string) || null,
+    date_to: (route.query.date_to as string) || null,
+  };
+
   try {
-    const cards = await fetchEntryCards(diary.id, newFilters)
+    const cards = await fetchEntryCards(diary.id, params)
     entries.value = cards;
 
     const result = await fetchPermissionEntry(diary.id);
@@ -61,7 +66,8 @@ async function loadEntriesCard(newFilters: EntryCardFilter) {
   <!-- <button @click="showSearching = true" class="sideBtnR"> Поиск записей </button> -->
 </div>
 
-<EntriesSearching v-if="ui.showSearching" @clicked="ui.showSearching = false" @update:filters="loadEntriesCard"/> 
+<!-- <EntriesSearching v-if="ui.showSearching" @clicked="ui.showSearching = false" @update:filters="loadEntriesCard"/>  -->
+ <EntriesSearching v-if="ui.showSearching" @clicked="ui.showSearching = false"/> 
 </template>
 
 <style scoped>
