@@ -47,7 +47,8 @@ services:
       - ./nginx/readme:/usr/share/nginx/html/readme:ro
       - ./nginx/status:/usr/share/nginx/html/status:ro
       - ./nginx/managment:/usr/share/nginx/html/managment:ro
-      - ./nginx/static:/usr/share/nginx/html/static:ro
+      #- ./nginx/static:/usr/share/nginx/html/static:ro
+      - ./frontend/ediary_vue/dist:/usr/share/nginx/html
       - ./nginx/legacy:/usr/share/nginx/html/legacy:ro
     depends_on:
       - md-to-html
