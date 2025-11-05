@@ -30,6 +30,7 @@
     "vue-toastification": "^2.0.0-rc.5"
   },
   "devDependencies": {
+    "@pinia/testing": "^1.0.3",
     "@types/lodash-es": "^4.17.12",
     "@types/node": "^22.15.21",
     "@types/prismjs": "^1.26.5",

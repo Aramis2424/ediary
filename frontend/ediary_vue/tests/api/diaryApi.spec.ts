@@ -39,7 +39,7 @@ describe('diaryApi', () => {
   })
 
   it('postDiary should call POST /diaries with newDiary and return AxiosResponse<DiaryInfoDTO>', async () => {
-    const newDiary: DiaryCreateDTO = { title: 'New Diary', description: 'Test 1', ownerId: 1 }
+    const newDiary: DiaryCreateDTO = { title: 'New Diary', description: 'Test 1', ownerID: 1 }
     const mockData: DiaryInfoDTO = { id: 1, title: 'New Diary', description: 'Test 1', cntEntries: 10, createdDate: '2020-01-01' }
     const mockResponse = {
       data: mockData,

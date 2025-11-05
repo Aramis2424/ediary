@@ -27,6 +27,7 @@ export default defineConfig({
     ],
     coverage: {
       reporter: ['text', 'json', 'html'], 
+	  exclude: ['dist', 'dist_legacy', 'public', 'src/mocks', '*.config.*'],
     },
   },
 })

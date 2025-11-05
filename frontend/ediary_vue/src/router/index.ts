@@ -11,7 +11,7 @@ import SidebarEntry from '@/views/sidebars/SidebarEntry.vue'
 import SidebarMood from '@/views/sidebars/SidebarMood.vue'
 import { useAuthStore } from '@/stores/auth'
 
-const routes = [
+export const routes = [
   { path: '/', redirect: '/login', meta: { public: true } },
   { path: '/login', component: LoginPage, meta: { public: true } },
   { path: '/register', component: RegisterPage, meta: { public: true } },

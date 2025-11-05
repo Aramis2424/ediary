@@ -36,7 +36,7 @@ describe('entryApi', () => {
   })
 
   it('postEntry should post new entry and return AxiosResponse<EntryInfoDTO>', async () => {
-    const newEntry: EntryCreateDTO = { title: 'New', content: 'Hello', diaryId: "1" }
+    const newEntry: EntryCreateDTO = { title: 'New', content: 'Hello', diaryID: "1" }
     const mockData: EntryInfoDTO = { id: 1, title: 'New', 
       content: 'Hello', createdDate: '2020-01-01' }
     const mockResponse = {
