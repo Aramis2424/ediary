@@ -1,7 +1,7 @@
 <template>
 
 <div class="w-[90vw] h-full flex items-center opacity-95">
-    <v-md-editor v-model="localContent" height="90vh" class="w-full"/>
+    <v-md-editor v-model="localContent" height="85vh" class="w-full"/>
 </div>
   
 </template>
