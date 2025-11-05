@@ -11,13 +11,12 @@
 </template>
 
 <script setup lang="ts">
-import { ArrowLeft, Smile } from 'lucide-vue-next'
+import { ArrowLeft } from 'lucide-vue-next'
 import { useRouter } from 'vue-router'
 import { useUiStore } from '@/stores/ui'
 
 const router = useRouter()
 const ui = useUiStore()
-function onTest() { ui.showSurveyMood = !ui.showSurveyMood }
 </script>
 
 <style scoped>

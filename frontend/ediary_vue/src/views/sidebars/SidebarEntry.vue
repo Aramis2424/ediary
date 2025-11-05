@@ -15,20 +15,15 @@
 </template>
 
 <script setup lang="ts">
-import { ArrowLeft, Save, Trash2 } from 'lucide-vue-next'
+import { ArrowLeft } from 'lucide-vue-next'
 import { useRouter } from 'vue-router'
-import { defineEmits } from 'vue'
 import { useUiStore } from '@/stores/ui'
 
 const router = useRouter()
 const ui = useUiStore()
-const emit = defineEmits<{
-  (e: 'save'): void
-  (e: 'delete'): void
-}>()
 
-function onSave() { emit('save') }
-function onDelete() { emit('delete') }
+// function onSave() { emit('save') }
+// function onDelete() { emit('delete') }
 </script>
 
 <style scoped>

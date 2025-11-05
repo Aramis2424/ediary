@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-import { useRouter } from 'vue-router'
 import WakeUpTimeGraph from '@/components/WakeUpTimeGraph.vue'
 import BedtimeGraph from '@/components/BedtimeGraph.vue';
 import MoodProdGraph from '@/components/MoodProdGraph.vue';
@@ -8,11 +7,8 @@ import type { MoodInfoDTO, MoodScoreGraph, MoodTimeGraph } from '@/types/Mood';
 import { computed, onMounted, ref } from 'vue';
 import { fetchMoods, fetchPermissionMood } from '@/services/moodService';
 import { useAuthStore } from '@/stores/auth';
-import { useUiStore } from '@/stores/ui'
 
-const router = useRouter();
 const owner = useAuthStore();
-const ui = useUiStore()
 
 const showSurveyMood = ref(false);
 const enableCreateMood = ref(false);

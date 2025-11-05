@@ -22,16 +22,9 @@
 import { ref } from 'vue'
 import SearchingField from '@/components/SearchingField.vue';
 import { useRouter, useRoute } from "vue-router";
-import type { EntryCardFilter } from "@/types/EntryCard";
 
 const router = useRouter();
 const route = useRoute();
-
-const filters = ref<EntryCardFilter>({
-  title: (route.query.title as string) || null,
-  date_from: (route.query.date_from as string) || null,
-  date_to: (route.query.date_to as string) || null,
-});
 
 const title = ref(route.query.title as string)
 const dateFrom = ref(route.query.date_from as string)
