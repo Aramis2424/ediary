@@ -1,11 +1,15 @@
 <template>
 <div class="baseBacking">
-    <div class="bg-white rounded-xl p-2 w-1/6 min-h-1/6 shadow-xl relative flex flex-col justify-evenly content-start items-start">
+    <div class="bg-white rounded-xl p-2 w-1/5 min-h-1/6 shadow-xl relative flex flex-col justify-evenly content-start items-start">
         <h2 class="text-xl font-semibold mb-4">О себе</h2>
-        <p> Имя: {{ ownerName }} </p>
+        <BaseField label="Имя" :value=ownerName />
+        <BaseField label="Логин" :value=ownerLogin />
+        <BaseField label="Дата рождения" :value=ownerBirthdate />
+        <BaseField label="Зарегистрирован" :value=ownerCreateDate />
+        <!-- <p> Имя: {{ ownerName }} </p>
         <p> Дата рождения: {{ ownerBirthdate }} </p>
         <p> Логин: {{ ownerLogin }} </p>
-        <p> Зарегистрирован: {{ ownerCreateDate }} </p>
+        <p> Зарегистрирован: {{ ownerCreateDate }} </p> -->
         <button @click="$emit('clicked')" class="absolute top-2 right-2 text-gray-500 hover:text-black">
             ✕
         </button>
@@ -15,6 +19,7 @@
 
 <script setup lang="ts">
 import { ref, type Ref } from 'vue';
+import BaseField from '@/components/BaseField.vue';
 import { useAuthStore } from '@/stores/auth';
 
 const emit = defineEmits(["clicked"])
