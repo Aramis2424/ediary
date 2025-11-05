@@ -46,7 +46,7 @@ const handleSubmit = async () => {
 <template>
   <div class="baseBacking">
     <div class="moodBacking flex justify-center items-center">
-      <div class="max-w-lg w-full mx-auto p-6 bg-white rounded-2xl 
+      <div class="max-w-lg w-full mx-auto p-6 bg-white rounded-2xl opacity-90 
                   shadow space-y-6 flex flex-col content-start relative">
         <h1 class="text-2xl font-semibold text-center">Опросник дня</h1>
 
