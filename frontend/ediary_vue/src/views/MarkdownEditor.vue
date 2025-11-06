@@ -1,11 +1,13 @@
 <template>
 
   <div class="h-[100vh] w-4/5 flex flex-col justify-center items-center gap-2 bg-fire">
-    <input type="text" v-model="title" class="baseBtn text-center font-bold">
+    <div class="flex mt-1 -mb-1">
+      <input type="text" v-model="title" class="baseTitle text-center font-bold text-3xl">
+    </div>
     <div class="h-screen w-full flex justify-between content-center items-center gap-0">
       <MdEditor v-model:content="content" />
     </div>
-    <div class="flex justify-center gap-2 mt-0 w-full">
+    <div class="flex justify-center gap-2 -mt-1 w-full">
       <button @click="save" class="baseBtn w-1/5"> Сохранить </button>
       <button @click="remove" class="baseBtn w-1/5"> Удалить </button>
     </div>

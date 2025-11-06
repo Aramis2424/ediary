@@ -71,6 +71,13 @@
   h-72
 }
 
+.baseTitle {
+    @apply 
+     bg-[#FFF8F0] bg-opacity-90 active:bg-[#c2bbb3]
+     border-[#F4A261] border-2
+     rounded-xl transition;
+}
+
 .sidebar-inner { display:flex; flex-direction:column; gap:15px; }
 .icon-btn {
   background:none;
