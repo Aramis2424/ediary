@@ -24,7 +24,6 @@ const handleSubmit = async () => {
     toast.error('Пожалуйста, укажите время сна и пробуждения')
     return
   }
-  
   if (!owner.user)
     throw new Error("Error while creating mood")
   

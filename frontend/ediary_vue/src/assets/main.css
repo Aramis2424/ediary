@@ -77,6 +77,12 @@
      border-[#F4A261] border-2
      rounded-xl transition;
 }
+.circleBtn {
+    @apply 
+     bg-[#FFF8F0] bg-opacity-60 hover:bg-[#D9D2CA] active:bg-[#c2bbb3]
+     border-[#F4A261] border-4
+     rounded-xl transition;
+}
 
 .sidebar-inner { display:flex; flex-direction:column; gap:15px; }
 .icon-btn {
