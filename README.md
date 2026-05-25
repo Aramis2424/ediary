@@ -79,13 +79,15 @@
 
 ![Компоненты системы](./metaData/diagrams/components.svg)
 
-## UML диаграмма классов
-
-![UML диаграмма](./metaData/diagrams/UML.svg)
-
 ## RESTFul api
 
 [Внешнее API в формате OpenAPI]: ./OPENAPI.md
+
+## Скриншоты приложения
+
+![Главное меню](./metaData/diagrams/s1.png)
+![Меню записей](./metaData/diagrams/s2.png)
+![Редактор записи](./metaData/diagrams/s3.png)
 
 ### Запуск тестов
 
